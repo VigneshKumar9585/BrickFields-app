@@ -171,6 +171,8 @@ const Login = () => {
               {/* Login button */}
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <Button
+                  component={RouterLink}
+                 to="/dashboard"
                   fullWidth
                   variant="contained"
                   sx={{
