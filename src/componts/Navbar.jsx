@@ -96,7 +96,7 @@ const SidebarLayout = () => {
           <AssignmentIcon sx={{ mr: 2, color: "white" }} />
           <ListItemText
             primary="Enquiry"
-            primaryTypographyProps={{ fontSize: "20px", fontWeight: 600 }}
+            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
           />
         </ListItemButton>
         <Collapse in={openKeys.Enquiry} timeout="auto" unmountOnExit>
@@ -109,7 +109,7 @@ const SidebarLayout = () => {
             >
               <ListItemText
                 primary="New Enquiry"
-                primaryTypographyProps={{ fontSize: "16px", fontWeight: 500 }}
+                primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
               />
             </ListItemButton>
             <ListItemButton
@@ -120,7 +120,7 @@ const SidebarLayout = () => {
             >
               <ListItemText
                 primary="Manage Enquiry"
-                primaryTypographyProps={{ fontSize: "16px", fontWeight: 500 }}
+                primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
               />
             </ListItemButton>
           </List>
@@ -131,7 +131,7 @@ const SidebarLayout = () => {
           <GroupIcon sx={{ mr: 2, color: "white" }} />
           <ListItemText
             primary="Add User"
-            primaryTypographyProps={{ fontSize: "20px", fontWeight: 600 }}
+            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
           />
         </ListItemButton>
         <Collapse in={openKeys["Add User"]} timeout="auto" unmountOnExit>
@@ -152,7 +152,7 @@ const SidebarLayout = () => {
               >
                 <ListItemText
                   primary={item}
-                  primaryTypographyProps={{ fontSize: "16px", fontWeight: 500 }}
+                  primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
                 />
               </ListItemButton>
             ))}
@@ -169,7 +169,7 @@ const SidebarLayout = () => {
           <ReportIcon sx={{ mr: 2, color: "white" }} />
           <ListItemText
             primary="Report"
-            primaryTypographyProps={{ fontSize: "20px", fontWeight: 600 }}
+            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
           />
         </ListItemButton>
 
@@ -178,7 +178,7 @@ const SidebarLayout = () => {
           <SettingsIcon sx={{ mr: 2, color: "white" }} />
           <ListItemText
             primary="Master"
-            primaryTypographyProps={{ fontSize: "20px", fontWeight: 600 }}
+            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
           />
         </ListItemButton>
         <Collapse in={openKeys.Master} timeout="auto" unmountOnExit>
@@ -201,7 +201,7 @@ const SidebarLayout = () => {
               >
                 <ListItemText
                   primary={item}
-                  primaryTypographyProps={{ fontSize: "16px", fontWeight: 500 }}
+                  primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
                 />
               </ListItemButton>
             ))}
@@ -218,7 +218,7 @@ const SidebarLayout = () => {
           <AssignmentIcon sx={{ mr: 2, color: "white" }} />
           <ListItemText
             primary="Inspection"
-            primaryTypographyProps={{ fontSize: "20px", fontWeight: 600 }}
+            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
           />
         </ListItemButton>
       </List>

@@ -5,6 +5,10 @@ import Login from "./page/Login.jsx"
 import Forgot from "./page/ForgotPasswored.jsx";
 import Reset from "./page/ResetPasssword.jsx"
 import Profile from "./page/Profile.jsx"
+import NewEnqiry from "./page/NewEnqiry.jsx"
+import ManageEnqiry from "./page/ManageEnquiry.jsx"
+
+
 import { Routes, Route } from "react-router-dom";
 
 function App() {
@@ -18,6 +22,8 @@ function App() {
       <Route path="/reset-password" element={<Reset />} />
       <Route path='/dashboard' element={<Dashboard/>} />
       <Route path='/profile' element={<Profile/>}/>
+      <Route path='/enquiry/new' element={<NewEnqiry/>}/>
+      <Route path='/enquiry/manage' element={<ManageEnqiry/>}/>
     </Routes>
     </>
   )
