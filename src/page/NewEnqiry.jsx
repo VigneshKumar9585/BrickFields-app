@@ -168,7 +168,7 @@ export default function ManageEnquiry() {
     }}
   >
     <Table>
-      <TableHead sx={{ bgcolor: "rgba(48, 48, 48, 1)" }}>
+      <TableHead sx={{ bgcolor: "#029898" }}>
         <TableRow>
           <TableCell sx={{ color: "white" }}>S.No</TableCell>
           <TableCell sx={{ color: "white" }}>Task Id</TableCell>

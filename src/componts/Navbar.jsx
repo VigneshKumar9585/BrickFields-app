@@ -12,7 +12,6 @@ import {
   Menu,
   MenuItem,
   Divider,
-  Avatar,
 } from "@mui/material";
 import { NavLink, useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -24,8 +23,8 @@ import GroupIcon from "@mui/icons-material/Group";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 
 import Notifications from "../assets/icons/Group 139.png";
-import { TbLockPassword } from "react-icons/tb";
-import { TbLogout } from "react-icons/tb";
+import logo from "../assets/logo/logo.webp";
+import { TbLockPassword, TbLogout } from "react-icons/tb";
 
 const SidebarLayout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -44,16 +43,12 @@ const SidebarLayout = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  // ✅ Only toggle main menu, do not close when submenu is clicked
   const toggleOpen = (key) => {
     setOpenKeys((prev) => {
       let newKeys = { Enquiry: false, "Add User": false, Master: false };
-
       if (!prev[key]) {
         newKeys[key] = true;
-
-        if (key === "Enquiry") navigate("/enquiry/new");
-        if (key === "Add User") navigate("/user/manager");
-        if (key === "Master") navigate("/master/setting");
       }
       return newKeys;
     });
@@ -71,29 +66,46 @@ const SidebarLayout = () => {
     <div
       style={{
         height: "100%",
-        backgroundColor: "rgba(120, 120, 120, 1)",
-        color: "rgba(255, 255, 255, 1)",
+        backgroundColor: "#F0F6F6",
+        color: "rgba(0, 0, 0, 1)",
       }}
     >
-      <Toolbar />
-      <List>
+      {/* ✅ Logo Section */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          py: 2,
+        }}
+      >
+        <img
+          src={logo}
+          alt="Logo"
+          style={{ width: "140px", height: "auto", objectFit: "contain" }}
+        />
+      </Box>
+
+      {/* <Divider sx={{ bgcolor: "rgba(0, 0, 0, 1)" }} /> */}
+
+      <List >
         {/* Dashboard */}
         <ListItemButton
           component={NavLink}
           to="/dashboard"
           onClick={handleDrawerToggle}
-          sx={{ color: "white" }}
+          sx={{color:"rgba(0, 0, 0, 1)"}}
         >
-          <DashboardIcon sx={{ mr: 2, color: "white" }} />
+          <DashboardIcon sx={{ mr: 2, color: "black" }} />
           <ListItemText
             primary="Dashboard"
-            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
+            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400  }}
           />
         </ListItemButton>
 
         {/* Enquiry */}
-        <ListItemButton onClick={() => toggleOpen("Enquiry")} sx={{ color: "white" }}>
-          <AssignmentIcon sx={{ mr: 2, color: "white" }} />
+        <ListItemButton onClick={() => toggleOpen("Enquiry")} sx={{ color: " black" }}>
+          <AssignmentIcon sx={{ mr: 2, color: "black" }} />
           <ListItemText
             primary="Enquiry"
             primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
@@ -102,7 +114,7 @@ const SidebarLayout = () => {
         <Collapse in={openKeys.Enquiry} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItemButton
-              sx={{ pl: 4, color: "white" }}
+              sx={{ pl: 4, color: "black" }}
               component={NavLink}
               to="/enquiry/new"
               onClick={handleDrawerToggle}
@@ -113,7 +125,7 @@ const SidebarLayout = () => {
               />
             </ListItemButton>
             <ListItemButton
-              sx={{ pl: 4, color: "white" }}
+              sx={{ pl: 4, color: "black" }}
               component={NavLink}
               to="/enquiry/manage"
               onClick={handleDrawerToggle}
@@ -127,8 +139,8 @@ const SidebarLayout = () => {
         </Collapse>
 
         {/* Add User */}
-        <ListItemButton onClick={() => toggleOpen("Add User")} sx={{ color: "white" }}>
-          <GroupIcon sx={{ mr: 2, color: "white" }} />
+        <ListItemButton onClick={() => toggleOpen("Add User")} sx={{ color: "black" }}>
+          <GroupIcon sx={{ mr: 2, color: "black" }} />
           <ListItemText
             primary="Add User"
             primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
@@ -139,7 +151,7 @@ const SidebarLayout = () => {
             {["Add Manager", "Add Staff", "Manage User"].map((item, idx) => (
               <ListItemButton
                 key={item}
-                sx={{ pl: 4, color: "white" }}
+                sx={{ pl: 4, color: "black" }}
                 component={NavLink}
                 to={
                   idx === 0
@@ -164,9 +176,9 @@ const SidebarLayout = () => {
           component={NavLink}
           to="/report"
           onClick={handleDrawerToggle}
-          sx={{ color: "white" }}
+          sx={{ color: "black" }}
         >
-          <ReportIcon sx={{ mr: 2, color: "white" }} />
+          <ReportIcon sx={{ mr: 2, color: "black" }} />
           <ListItemText
             primary="Report"
             primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
@@ -174,8 +186,8 @@ const SidebarLayout = () => {
         </ListItemButton>
 
         {/* Master */}
-        <ListItemButton onClick={() => toggleOpen("Master")} sx={{ color: "white" }}>
-          <SettingsIcon sx={{ mr: 2, color: "white" }} />
+        <ListItemButton onClick={() => toggleOpen("Master")} sx={{ color: "black" }}>
+          <SettingsIcon sx={{ mr: 2, color: "black" }} />
           <ListItemText
             primary="Master"
             primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
@@ -194,7 +206,7 @@ const SidebarLayout = () => {
             ].map((item) => (
               <ListItemButton
                 key={item}
-                sx={{ pl: 4, color: "white" }}
+                sx={{ pl: 4, color: "black" }}
                 component={NavLink}
                 to={`/master/${item.toLowerCase()}`}
                 onClick={handleDrawerToggle}
@@ -213,9 +225,9 @@ const SidebarLayout = () => {
           component={NavLink}
           to="/inspection"
           onClick={handleDrawerToggle}
-          sx={{ color: "white" }}
+          sx={{ color: "black" }}
         >
-          <AssignmentIcon sx={{ mr: 2, color: "white" }} />
+          <AssignmentIcon sx={{ mr: 2, color: "black" }} />
           <ListItemText
             primary="Inspection"
             primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
@@ -226,58 +238,63 @@ const SidebarLayout = () => {
   );
 
   return (
-    
-    <div style={{ display: "flex", width: "100%",
-    justifyContent: "flex-start",
-    alignItems: "flex-start", }}>
+    <div
+      style={{
+        display: "flex",
+        width: "100%",
+        justifyContent: "flex-start",
+        alignItems: "flex-start",
+      }}
+    >
       {/* Mobile toggle button */}
       <Box>
-      <IconButton
-        color="inherit"
-        aria-label="open drawer"
-        edge="start"
-        onClick={handleDrawerToggle}
-        sx={{ m: 2,mt:3, display: { sm: "none" }, color: "rgb(0,0,0)" }}
-      >
-        <MenuIcon />
-      </IconButton>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          onClick={handleDrawerToggle}
+          sx={{ m: 2, mt: 3, display: { sm: "none" }, color: "rgb(0,0,0)" }}
+        >
+          <MenuIcon />
+        </IconButton>
 
-      {/* Drawer */}
-      <Drawer
-        variant="temporary"
-        open={mobileOpen}
-        onClose={handleDrawerToggle}
-        ModalProps={{ keepMounted: true }}
-        sx={{
-          display: { xs: "block", sm: "none" },
-          "& .MuiDrawer-paper": {
-            boxSizing: "border-box",
-            width: 240,
-            backgroundColor: "#2f2f52ff",
-          },
-        }}
-      >
-        {drawer}
-      </Drawer>
-      <Drawer
-        variant="permanent"
-        sx={{
-          display: { xs: "none", sm: "block" },
-          "& .MuiDrawer-paper": {
-            boxSizing: "border-box",
-            width: 260,
-            backgroundColor: "#1e1e2f",
-          },
-        }}
-        open
-      >
-        {drawer}
-      </Drawer>
+        {/* Mobile Drawer */}
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{ keepMounted: true }}
+          sx={{
+            display: { xs: "block", sm: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: 240,
+              backgroundColor: "#029898",
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+
+        {/* Permanent Drawer */}
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: "none", sm: "block" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: 260,
+              backgroundColor: "#1e1e2f",
+            },
+          }}
+          open
+        >
+          {drawer}
+        </Drawer>
       </Box>
 
       {/* Main Content with Top Header */}
-      
-      <Box component="main" sx={{ flexGrow: 1, p: 3, pb: 0,pt:"9px" }}>
+      <Box component="main" sx={{ flexGrow: 1, p: 3, pb: 0, pt: "9px" }}>
         {/* Header Section */}
         <Box
           sx={{
@@ -295,11 +312,12 @@ const SidebarLayout = () => {
                 style={{ width: 30, height: 35 }}
               />
             </IconButton>
-            
 
             {/* Profile Menu */}
             <IconButton onClick={handleMenuOpen}>
-              <AccountCircle sx={{ width: "55px", height: "55px", color: "black" }} />
+              <AccountCircle
+                sx={{ width: "55px", height: "55px", color: "black" }}
+              />
             </IconButton>
 
             <Menu
@@ -307,54 +325,65 @@ const SidebarLayout = () => {
               open={open}
               onClose={handleMenuClose}
               PaperProps={{
-                sx: { width: 210, borderRadius: 2, },
+                sx: { width: 210, borderRadius: 2 },
               }}
             >
-                <Box sx={{display:"flex", justifyContent:"flex-start",alignItems:"center", pl:2}}>
-                    <Box>
-              <img
-              src=""
-                style={{ width: 45, height: 45 ,borderRadius:"100%" ,color:"rgb(0,0,0)"}}
-              />
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  pl: 2,
+                }}
+              >
+                <Box>
+                  <img
+                    src=""
+                    alt="profile"
+                    style={{
+                      width: 45,
+                      height: 45,
+                      borderRadius: "100%",
+                      color: "rgb(0,0,0)",
+                    }}
+                  />
+                </Box>
+                <Box sx={{ p: 2 }}>
+                  <Typography variant="subtitle1" fontWeight={600}>
+                    Username
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Email Id
+                  </Typography>
+                </Box>
               </Box>
-              <Box sx={{ p: 2 }}>
-                <Typography variant="subtitle1" fontWeight={600}>
-                  Username
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Email Id
-                </Typography>
-              </Box>
-              </Box>
-              {/* <Divider /> */}
-            <MenuItem onClick={handleMenuClose} 
-              component={NavLink}
-              to="/profile">
-             <IconButton>
-              <AccountCircle sx={{ width: "20px", height: "20px", color: "black" }} />
-             </IconButton>
-              Profile
-            </MenuItem>
 
-              <MenuItem onClick={handleMenuClose}>
-              <IconButton>
-                <TbLockPassword />
-             </IconButton>
-              Change Password
+              <MenuItem onClick={handleMenuClose} component={NavLink} to="/profile">
+                <IconButton>
+                  <AccountCircle
+                    sx={{ width: "20px", height: "20px", color: "black" }}
+                  />
+                </IconButton>
+                Profile
               </MenuItem>
 
               <MenuItem onClick={handleMenuClose}>
-               <IconButton>
-                <TbLogout />
-               </IconButton>
-              Logout
+                <IconButton>
+                  <TbLockPassword />
+                </IconButton>
+                Change Password
+              </MenuItem>
+
+              <MenuItem onClick={handleMenuClose}>
+                <IconButton>
+                  <TbLogout />
+                </IconButton>
+                Logout
               </MenuItem>
             </Menu>
           </Box>
         </Box>
       </Box>
-     
-
     </div>
   );
 };

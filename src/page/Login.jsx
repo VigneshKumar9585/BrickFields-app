@@ -1,42 +1,78 @@
-import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 import {
   Box,
   Paper,
   TextField,
   Button,
   Typography,
-  Link
+  Link,
+  Alert,
 } from "@mui/material";
+import logo from "../assets/logo/logo.webp";
+
+// Add Poppins font in index.html:
+// <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
 const Login = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleLogin = () => {
+    if (email === "admin@gmail.com" && password === "admin") {
+      setError("");
+      navigate("/dashboard"); // ✅ go to dashboard if correct
+    } else {
+      setError("Invalid email or password");
+    }
+  };
+
   return (
     <Box
       sx={{
         display: "flex",
         height: "100vh",
-        flexDirection: { xs: "column", md: "row" }, // mobile = stacked, desktop = row
+        fontFamily: "Poppins, sans-serif",
       }}
     >
-      {/* Left Side - White Background (hidden on small screens) */}
+      {/* Left Side */}
       <Box
         sx={{
-          flex: "0 0 62%",
-          backgroundColor: "white",
-          display: { xs: "none", md: "block" }, // ❌ hide on mobile, ✅ show on md+
+          flex: "0 0 60%",
+          backgroundColor: "#F0F6F6",
+          display: { xs: "none", md: "flex" }, // hide on mobile
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
         }}
-      />
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            py: 2,
+          }}
+        >
+          <img
+            src={logo}
+            alt="Logo"
+            style={{ width: "500px", height: "auto", objectFit: "contain" }}
+          />
+        </Box>
+      </Box>
 
-      {/* Right Side - Gray Background */}
+      {/* Right Side */}
       <Box
         sx={{
-          flex: { xs: "1 1 100%", md: "0 0 38%" }, // full width on mobile, 38% on desktop
+          flex: { xs: "100%", md: "0 0 40%" },
           backgroundColor: "#d9d9d9",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           p: 2,
-    height: "100%",  
         }}
       >
         {/* Login Card */}
@@ -44,7 +80,6 @@ const Login = () => {
           sx={{
             width: { xs: "100%", sm: "380px" },
             maxWidth: "380px",
-            height: "400px",
             padding: "32px",
             borderRadius: "24px",
             backgroundColor: "#ffffff",
@@ -55,7 +90,7 @@ const Login = () => {
               variant="h5"
               sx={{
                 textAlign: "center",
-                fontWeight: "normal",
+                fontWeight: 500,
                 color: "#333333",
                 fontSize: "24px",
               }}
@@ -63,22 +98,22 @@ const Login = () => {
               Log In
             </Typography>
 
+            {error && <Alert severity="error">{error}</Alert>}
+
             <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              {/* Username */}
+              {/* Email */}
               <Box>
                 <Typography
                   variant="body2"
-                  sx={{
-                    marginBottom: "8px",
-                    color: "#333333",
-                    fontSize: "15px",
-                  }}
+                  sx={{ mb: 1, color: "#333", fontSize: "15px" }}
                 >
-                  Username*
+                  Email*
                 </Typography>
                 <TextField
                   fullWidth
                   variant="filled"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   InputProps={{
                     disableUnderline: true,
                     sx: {
@@ -87,34 +122,15 @@ const Login = () => {
                       height: "40px",
                     },
                   }}
-                  inputProps={{
-                    sx: {
-                      padding: "12px 14px",
-                      fontSize: "12px",
-                    },
-                  }}
+                  inputProps={{ sx: { padding: "12px 14px", fontSize: "14px" } }}
                 />
-                <Typography
-                  sx={{
-                    marginTop:"8px",
-                    marginBottom: "8px",
-                    color: "#9b9b9bff",
-                    fontSize: "12px",
-                  }}
-                >
-                  Please Enter A Username
-                </Typography>
               </Box>
 
               {/* Password */}
               <Box>
                 <Typography
                   variant="body2"
-                  sx={{
-                    marginBottom: "8px",
-                    color: "#333333",
-                    fontSize: "15px",
-                  }}
+                  sx={{ mb: 1, color: "#333", fontSize: "15px" }}
                 >
                   Password*
                 </Typography>
@@ -122,6 +138,8 @@ const Login = () => {
                   fullWidth
                   type="password"
                   variant="filled"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   InputProps={{
                     disableUnderline: true,
                     sx: {
@@ -130,38 +148,20 @@ const Login = () => {
                       height: "40px",
                     },
                   }}
-                  inputProps={{
-                    sx: {
-                      padding: "12px 14px",
-                      fontSize: "14px",
-                    },
-                  }}
+                  inputProps={{ sx: { padding: "12px 14px", fontSize: "14px" } }}
                 />
-                <Typography
-                  sx={{
-                    marginTop: "8px",
-                    color: "#9b9b9bff",
-                    fontSize: "12px",
-                  }}
-                >
-                  Password Is Required
-                </Typography>
               </Box>
 
               {/* Forgot password */}
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                 <Link
                   component={RouterLink}
-                 to="/forgot-password"
+                  to="/forgot-password"
                   sx={{
-                    color: "#333333",
+                    color: "#333",
                     fontSize: "14px",
-                    marginBottom: "16px",
-                    marginTop: "8px",
                     textDecoration: "underline",
-                    "&:hover": {
-                      textDecoration: "none",
-                    },
+                    "&:hover": { textDecoration: "none" },
                   }}
                 >
                   Forgot Password
@@ -171,22 +171,18 @@ const Login = () => {
               {/* Login button */}
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <Button
-                  component={RouterLink}
-                 to="/dashboard"
                   fullWidth
                   variant="contained"
+                  onClick={handleLogin}
                   sx={{
                     backgroundColor: "#484848",
-                    color: "#ffffff",
+                    color: "#fff",
                     height: "48px",
                     borderRadius: "4px",
                     textTransform: "none",
                     fontSize: "16px",
-                    width: "300px",
-                    fontWeight: "normal",
-                    "&:hover": {
-                      backgroundColor: "#3a3a3a",
-                    },
+                    fontWeight: 500,
+                    "&:hover": { backgroundColor: "#3a3a3a" },
                   }}
                 >
                   Log In
