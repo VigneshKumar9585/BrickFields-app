@@ -8,6 +8,7 @@ import {
   Typography,
   Link
 } from "@mui/material";
+import logo from "../assets/logo/logo.webp";
 
 const Login = () => {
   return (
@@ -18,19 +19,37 @@ const Login = () => {
         flexDirection: { xs: "column", md: "row" }, // mobile = stacked, desktop = row
       }}
     >
-      {/* Left Side - White Background (hidden on small screens) */}
-      <Box
-        sx={{
-          flex: "0 0 62%",
-          backgroundColor: "white",
-          display: { xs: "none", md: "block" }, // ❌ hide on mobile, ✅ show on md+
-        }}
-      />
+
+        <Box
+                sx={{
+                  flex: "0 0 60%",
+                  backgroundColor: "#F0F6F6",
+                  display: { xs: "none", md: "flex" }, // hide on mobile
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    py: 2,
+                  }}
+                >
+                  <img
+                    src={logo}
+                    alt="Logo"
+                    style={{ width: "500px", height: "auto", objectFit: "contain" }}
+                  />
+                </Box>
+              </Box>
 
       {/* Right Side - Gray Background */}
       <Box
         sx={{
-          flex: { xs: "1 1 100%", md: "0 0 38%" }, // full width on mobile, 38% on desktop
+          flex: "0 0 40%" , // full width on mobile, 38% on desktop
           backgroundColor: "#d9d9d9",
           display: "flex",
           justifyContent: "center",
@@ -44,7 +63,7 @@ const Login = () => {
           sx={{
             width: { xs: "100%", sm: "380px" },
             maxWidth: "380px",
-            height: "400px",
+            height: "410px",
             padding: "32px",
             borderRadius: "24px",
             backgroundColor: "#ffffff",
@@ -142,7 +161,7 @@ const Login = () => {
                     marginTop: "8px",
                     color: "#9b9b9bff",
                     fontSize: "12px",
-                      marginBottom:"60px"
+                      marginBottom:"20px"
                   }}
                 >
                   Confrim Your New Password
