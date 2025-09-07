@@ -232,23 +232,27 @@ export default function ManageEnquiry() {
               sx={{ borderRadius: "12px", overflow: "hidden", width: "1180px" }}
             >
               <Table>
-                <TableHead sx={{ bgcolor: "#029898" }}>
-                  <TableRow>
-                    <TableCell sx={{ color: "white" }}>S.No</TableCell>
-                    <TableCell sx={{ color: "white" }}>Task Id</TableCell>
-                    <TableCell sx={{ color: "white" }}>Name</TableCell>
-                    <TableCell sx={{ color: "white" }}>Address</TableCell>
-                    <TableCell sx={{ color: "white" }}>Email</TableCell>
-                    <TableCell sx={{ color: "white" }}>Mobile</TableCell>
-                    <TableCell sx={{ color: "white" }}>District</TableCell>
-                    <TableCell sx={{ color: "white" }}>City</TableCell>
-                    <TableCell sx={{ color: "white" }}>Assign Date</TableCell>
-                    <TableCell sx={{ color: "white" }}>
-                      Total Sq.Feet
-                    </TableCell>
-                    <TableCell sx={{ color: "white" }}>Action</TableCell>
-                  </TableRow>
-                </TableHead>
+<TableHead sx={{ bgcolor: "#029898" }}>
+  <TableRow>
+    <TableCell sx={{ color: "white" }}>S.No</TableCell>
+    <TableCell sx={{ color: "white" }}>Task Id</TableCell>
+    <TableCell sx={{ color: "white" }}>Name</TableCell>
+    <TableCell sx={{ color: "white" }}>Address</TableCell>
+    <TableCell sx={{ color: "white" }}>Email</TableCell>
+    <TableCell sx={{ color: "white" }}>Mobile</TableCell>
+    <TableCell sx={{ color: "white" }}>District</TableCell>
+    <TableCell sx={{ color: "white" }}>City</TableCell>
+
+    {/* 👇 Only Assign Date column width is fixed */}
+    <TableCell sx={{ color: "white", width: "120px" }}>
+      Assign Date
+    </TableCell>
+
+    <TableCell sx={{ color: "white" }}>Total Sq.Feet</TableCell>
+    <TableCell sx={{ color: "white" }}>Action</TableCell>
+  </TableRow>
+</TableHead>
+
                 <TableBody>
                   {currentItems.map((task, idx) => (
                     <TableRow key={task.id}>
@@ -281,15 +285,18 @@ export default function ManageEnquiry() {
             maxWidth="md"
             fullWidthv
              PaperProps={{
-    sx: {
-      borderRadius: "18px",   // ✅ Rounded corners
-      width: "1500px",         // ✅ Custom width
-      // maxHeight: "80vh",      // ✅ Responsive height
-    },
-  }}
-          >
-            <DialogTitle>Task Details</DialogTitle>
-            <DialogContent >
+           sx: {
+              borderRadius: "18px", 
+              width: "1500px",         
+              },
+              }}>
+            <DialogTitle     sx={{
+      bgcolor: "#029898",
+      color: "white",
+      fontWeight: "600",
+      fontSize: "1.2rem",
+    }}>Task Details</DialogTitle>
+            <DialogContent dividers>
               {selectedTask && (
                 <Box display="grid" gridTemplateColumns="1fr 1fr" gap={2}>
                   {/* Visitor Details */}
@@ -410,7 +417,15 @@ export default function ManageEnquiry() {
               )}
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleCloseDialog}>Close</Button>
+              <Button  sx={{
+    bgcolor: "#029898",
+    color: "white",
+    borderRadius:"6px",
+    mr:"18px",
+    "&:hover": {
+      bgcolor: "#027777", // darker shade on hover
+    },
+  }} onClick={handleCloseDialog}>Verified</Button>
             </DialogActions>
           </Dialog>
 
