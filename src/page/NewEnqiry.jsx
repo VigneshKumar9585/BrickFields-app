@@ -20,12 +20,14 @@ import {
   IconButton,
   Paper,
   Dialog,
-  Divider ,
+  Divider,
   DialogTitle,
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import { Search, Eye, ChevronLeft, ChevronRight, Divide } from "lucide-react";
+import { Search, Eye, ChevronLeft, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
 
 // Sample data
 const sampleTasks = [
@@ -42,6 +44,28 @@ const sampleTasks = [
   },
   {
     id: "TSK002",
+    name: "Jane Smith",
+    address: "456 Oak Ave, Midtown",
+    email: "jane.smith@email.com",
+    mobile: "+1 234-567-8902",
+    district: "North",
+    city: "Brooklyn",
+    assignDate: "2024-01-16",
+    totalSqFeet: 2200,
+  },
+  {
+    id: "TSK006",
+    name: "Jane Smith",
+    address: "456 Oak Ave, Midtown",
+    email: "jane.smith@email.com",
+    mobile: "+1 234-567-8902",
+    district: "North",
+    city: "Brooklyn",
+    assignDate: "2024-01-16",
+    totalSqFeet: 2200,
+  },
+  {
+    id: "TSK007",
     name: "Jane Smith",
     address: "456 Oak Ave, Midtown",
     email: "jane.smith@email.com",
@@ -87,6 +111,7 @@ const sampleTasks = [
 ];
 
 export default function ManageEnquiry() {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
@@ -94,8 +119,9 @@ export default function ManageEnquiry() {
   const [selectedDate, setSelectedDate] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [extraTableOpen, setExtraTableOpen] = useState(false); 
 
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
   const totalItems = sampleTasks.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -116,6 +142,16 @@ export default function ManageEnquiry() {
   const handleCloseDialog = () => {
     setSelectedTask(null);
     setOpenDialog(false);
+  };
+
+  // NEW: handle extra table for rows > 5
+ const handleRowClick = (task) => {
+    navigate('/enquiry/new/details'); // Row click navigates to new page
+  };
+
+  const handleCloseExtraTable = () => {
+    setExtraTableOpen(false);
+    setSelectedTask(null);
   };
 
   return (
@@ -232,30 +268,31 @@ export default function ManageEnquiry() {
               sx={{ borderRadius: "12px", overflow: "hidden", width: "1180px" }}
             >
               <Table>
-<TableHead sx={{ bgcolor: "#029898" }}>
-  <TableRow>
-    <TableCell sx={{ color: "white" }}>S.No</TableCell>
-    <TableCell sx={{ color: "white" }}>Task Id</TableCell>
-    <TableCell sx={{ color: "white" }}>Name</TableCell>
-    <TableCell sx={{ color: "white" }}>Address</TableCell>
-    <TableCell sx={{ color: "white" }}>Email</TableCell>
-    <TableCell sx={{ color: "white" }}>Mobile</TableCell>
-    <TableCell sx={{ color: "white" }}>District</TableCell>
-    <TableCell sx={{ color: "white" }}>City</TableCell>
-
-    {/* 👇 Only Assign Date column width is fixed */}
-    <TableCell sx={{ color: "white", width: "120px" }}>
-      Assign Date
-    </TableCell>
-
-    <TableCell sx={{ color: "white" }}>Total Sq.Feet</TableCell>
-    <TableCell sx={{ color: "white" }}>Action</TableCell>
-  </TableRow>
-</TableHead>
+                <TableHead sx={{ bgcolor: "#029898" }}>
+                  <TableRow>
+                    <TableCell sx={{ color: "white" }}>S.No</TableCell>
+                    <TableCell sx={{ color: "white" }}>Task Id</TableCell>
+                    <TableCell sx={{ color: "white" }}>Name</TableCell>
+                    <TableCell sx={{ color: "white" }}>Address</TableCell>
+                    <TableCell sx={{ color: "white" }}>Email</TableCell>
+                    <TableCell sx={{ color: "white" }}>Mobile</TableCell>
+                    <TableCell sx={{ color: "white" }}>District</TableCell>
+                    <TableCell sx={{ color: "white" }}>City</TableCell>
+                    <TableCell sx={{ color: "white", width: "120px" }}>
+                      Assign Date
+                    </TableCell>
+                    <TableCell sx={{ color: "white" }}>Total Sq.Feet</TableCell>
+                    <TableCell sx={{ color: "white" }}>Action</TableCell>
+                  </TableRow>
+                </TableHead>
 
                 <TableBody>
                   {currentItems.map((task, idx) => (
-                    <TableRow key={task.id}>
+                    <TableRow
+                      key={task.id}
+                      sx={{ cursor: "pointer" }}
+                      onClick={() => handleRowClick(task)}
+                    >
                       <TableCell>{startIndex + idx + 1}</TableCell>
                       <TableCell>{task.id}</TableCell>
                       <TableCell>{task.name}</TableCell>
@@ -267,7 +304,12 @@ export default function ManageEnquiry() {
                       <TableCell>{task.assignDate}</TableCell>
                       <TableCell>{task.totalSqFeet.toLocaleString()}</TableCell>
                       <TableCell>
-                        <IconButton onClick={() => handleOpenDialog(task)}>
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenDialog(task);
+                          }}
+                        >
                           <Eye />
                         </IconButton>
                       </TableCell>
@@ -283,34 +325,47 @@ export default function ManageEnquiry() {
             open={openDialog}
             onClose={handleCloseDialog}
             maxWidth="md"
-            fullWidthv
-             PaperProps={{
-           sx: {
-              borderRadius: "18px", 
-              width: "1500px",         
+            fullWidth
+            PaperProps={{
+              sx: {
+                borderRadius: "18px",
+                width: "1500px",
               },
-              }}>
-            <DialogTitle     sx={{
-      bgcolor: "#029898",
-      color: "white",
-      fontWeight: "600",
-      fontSize: "1.2rem",
-    }}>Task Details</DialogTitle>
+            }}
+          >
+            <DialogTitle
+              sx={{
+                bgcolor: "#029898",
+                color: "white",
+                fontWeight: "600",
+                fontSize: "1.2rem",
+              }}
+            >
+              Task Details
+            </DialogTitle>
             <DialogContent dividers>
               {selectedTask && (
                 <Box display="grid" gridTemplateColumns="1fr 1fr" gap={2}>
                   {/* Visitor Details */}
-                  <Paper elevation={0}   sx={{ p: 1,pl:0,pr:0,width:"430px",
-                        bgcolor:"rgba(240, 238, 238, 1)"}}>
+                  <Paper
+                    elevation={0}
+                    sx={{
+                      p: 1,
+                      pl: 0,
+                      pr: 0,
+                      width: "430px",
+                      bgcolor: "rgba(240, 238, 238, 1)",
+                    }}
+                  >
                     <Typography
                       variant="subtitle1"
                       fontWeight="600"
                       gutterBottom
-                      sx={{p:0.5,pl: 2}}
-                    > 
+                      sx={{ p: 0.5, pl: 2 }}
+                    >
                       Visitor Details
                     </Typography>
-                    <Divider sx={{  color: "rgba(169, 163, 163, 1)" }} />
+                    <Divider sx={{ color: "rgba(169, 163, 163, 1)" }} />
 
                     <Box
                       component="dl"
@@ -318,7 +373,8 @@ export default function ManageEnquiry() {
                         display: "grid",
                         gridTemplateColumns: "120px 1fr",
                         rowGap: 1,
-                       p: 2,pl: 2
+                        p: 2,
+                        pl: 2,
                       }}
                     >
                       <Typography component="dt" fontWeight="500">
@@ -334,9 +390,7 @@ export default function ManageEnquiry() {
                       <Typography component="dt" fontWeight="500">
                         Address
                       </Typography>
-                      <Typography component="dd">
-                        {selectedTask.address}
-                      </Typography>
+                      <Typography component="dd">{selectedTask.address}</Typography>
 
                       <Typography component="dt" fontWeight="500">
                         Email
@@ -351,9 +405,7 @@ export default function ManageEnquiry() {
                       <Typography component="dt" fontWeight="500">
                         District
                       </Typography>
-                      <Typography component="dd">
-                        {selectedTask.district}
-                      </Typography>
+                      <Typography component="dd">{selectedTask.district}</Typography>
 
                       <Typography component="dt" fontWeight="500">
                         City
@@ -363,33 +415,37 @@ export default function ManageEnquiry() {
                       <Typography component="dt" fontWeight="500">
                         Assign Date
                       </Typography>
-                      <Typography component="dd">
-                        {selectedTask.assignDate}
-                      </Typography>
+                      <Typography component="dd">{selectedTask.assignDate}</Typography>
 
                       <Typography component="dt" fontWeight="500">
                         Total Sq. Feet
                       </Typography>
-                      <Typography component="dd">
-                        {selectedTask.totalSqFeet}
-                      </Typography>
+                      <Typography component="dd">{selectedTask.totalSqFeet}</Typography>
                     </Box>
                   </Paper>
 
                   {/* Admin Details */}
-                  <Paper elevation={0}   sx={{ p: 1,pl:0,pr:0,width:"410px",
-                        bgcolor:"rgba(240, 238, 238, 1)"}}>
-                                       <Typography
+                  <Paper
+                    elevation={0}
+                    sx={{
+                      p: 1,
+                      pl: 0,
+                      pr: 0,
+                      width: "410px",
+                      bgcolor: "rgba(240, 238, 238, 1)",
+                    }}
+                  >
+                    <Typography
                       variant="subtitle1"
                       fontWeight="600"
                       gutterBottom
-                      sx={{p:0.5,pl: 2}}
-                    > 
+                      sx={{ p: 0.5, pl: 2 }}
+                    >
                       Admin Details
                     </Typography>
-                    <Divider sx={{  color: "rgba(169, 163, 163, 1)" }} /> 
+                    <Divider sx={{ color: "rgba(169, 163, 163, 1)" }} />
 
-                                       <Box display="flex" alignItems="center" gap={2} sx={{p:2,pb:0}}>
+                    <Box display="flex" alignItems="center" gap={2} sx={{ p: 2, pb: 0 }}>
                       <Box
                         sx={{
                           width: 60,
@@ -398,44 +454,94 @@ export default function ManageEnquiry() {
                           bgcolor: "grey.300",
                         }}
                       />
-                      <Box >
-                         <Typography fontWeight="600">Admin Name</Typography>
+                      <Box>
+                        <Typography fontWeight="600">Admin Name</Typography>
                         <Typography variant="body2">+91 98765 43210</Typography>
-                        <Typography variant="body2">
-                          admin@email.com
-                        </Typography>
+                        <Typography variant="body2">admin@email.com</Typography>
                       </Box>
                     </Box>
-                    <Box sx={{p: 2,pl:"92px",pt:0  }}>
-                    <Typography sx={{ mt: 2 }} fontWeight="500">
-                      Assign Date
-                    </Typography>
-                    <Typography>{selectedTask.assignDate}</Typography>
+                    <Box sx={{ p: 2, pl: "92px", pt: 0 }}>
+                      <Typography sx={{ mt: 2 }} fontWeight="500">
+                        Assign Date
+                      </Typography>
+                      <Typography>{selectedTask.assignDate}</Typography>
                     </Box>
                   </Paper>
                 </Box>
               )}
             </DialogContent>
             <DialogActions>
-              <Button  sx={{
-    bgcolor: "#029898",
-    color: "white",
-    borderRadius:"6px",
-    mr:"18px",
-    "&:hover": {
-      bgcolor: "#027777", // darker shade on hover
-    },
-  }} onClick={handleCloseDialog}>Verified</Button>
+              <Button
+                sx={{
+                  bgcolor: "#029898",
+                  color: "white",
+                  borderRadius: "6px",
+                  mr: "18px",
+                  "&:hover": { bgcolor: "#027777" },
+                }}
+                onClick={handleCloseDialog}
+              >
+                Verified
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {/* --- Extra Table Dialog for >5 rows --- */}
+          <Dialog
+            open={extraTableOpen}
+            onClose={handleCloseExtraTable}
+            maxWidth="md"
+            fullWidth
+            PaperProps={{ sx: { borderRadius: "18px", width: "1000px" } }}
+          >
+            <DialogTitle sx={{ bgcolor: "#029898", color: "white", fontWeight: "600" }}>
+              Task Row Details
+            </DialogTitle>
+            <DialogContent dividers>
+              {selectedTask && (
+                <TableContainer component={Paper}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>S.No</TableCell>
+                        <TableCell>Task Id</TableCell>
+                        <TableCell>Name</TableCell>
+                        <TableCell>Address</TableCell>
+                        <TableCell>Email</TableCell>
+                        <TableCell>Mobile</TableCell>
+                        <TableCell>District</TableCell>
+                        <TableCell>City</TableCell>
+                        <TableCell>Assign Date</TableCell>
+                        <TableCell>Total Sq.Feet</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>1</TableCell>
+                        <TableCell>{selectedTask.id}</TableCell>
+                        <TableCell>{selectedTask.name}</TableCell>
+                        <TableCell>{selectedTask.address}</TableCell>
+                        <TableCell>{selectedTask.email}</TableCell>
+                        <TableCell>{selectedTask.mobile}</TableCell>
+                        <TableCell>{selectedTask.district}</TableCell>
+                        <TableCell>{selectedTask.city}</TableCell>
+                        <TableCell>{selectedTask.assignDate}</TableCell>
+                        <TableCell>{selectedTask.totalSqFeet}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              )}
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseExtraTable} sx={{ bgcolor: "#029898", color: "#fff" }}>
+                Close
+              </Button>
             </DialogActions>
           </Dialog>
 
           {/* --- Pagination --- */}
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mt={2}
-          >
+          <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
             <Typography variant="body2">
               Showing {startIndex + 1} to {endIndex} of {totalItems} results
             </Typography>
@@ -447,17 +553,15 @@ export default function ManageEnquiry() {
               >
                 <ChevronLeft /> Previous
               </Button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
-                  <Button
-                    key={page}
-                    variant={currentPage === page ? "contained" : "outlined"}
-                    onClick={() => setCurrentPage(page)}
-                  >
-                    {page}
-                  </Button>
-                )
-              )}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <Button
+                  key={page}
+                  variant={currentPage === page ? "contained" : "outlined"}
+                  onClick={() => setCurrentPage(page)}
+                >
+                  {page}
+                </Button>
+              ))}
               <Button
                 variant="outlined"
                 onClick={handleNextPage}
