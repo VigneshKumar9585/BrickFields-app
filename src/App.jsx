@@ -8,6 +8,7 @@ import Profile from "./page/Profile.jsx"
 import NewEnqiry from "./page/NewEnqiry.jsx"
 import ManageEnqiry from "./page/ManageEnquiry.jsx"
 import NewTask from "./page/NewTaskDetails.jsx"
+import EditProfile from "./page/ProfileEdit.jsx"
 
 
 import { Routes, Route } from "react-router-dom";
@@ -23,6 +24,7 @@ function App() {
       <Route path="/reset-password" element={<Reset />} />
       <Route path='/dashboard' element={<Dashboard/>} />
       <Route path='/profile' element={<Profile/>}/>
+      <Route path='/profile/edit' element={<EditProfile/>}/>
       <Route path='/enquiry/new' element={<NewEnqiry/>}/>
       <Route path='/enquiry/manage' element={<ManageEnqiry/>}/>
       <Route path='/enquiry/new/details' element={<NewTask/>}/>
