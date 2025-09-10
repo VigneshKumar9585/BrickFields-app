@@ -367,7 +367,7 @@ const SidebarLayout = () => {
                 Profile
               </MenuItem>
 
-              <MenuItem onClick={handleMenuClose}>
+              <MenuItem onClick={handleMenuClose} component={NavLink} to="/change/passwored">
                 <IconButton>
                   <TbLockPassword />
                 </IconButton>
