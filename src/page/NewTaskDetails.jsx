@@ -364,21 +364,23 @@ function Dashboard() {
      boxShadow: "0px 4px 12px rgba(0,0,0,0.2)", // ✅ box shadow
           overflow: "hidden", // keeps rounded corners neat
   }}>
-                  <Grid container spacing={2}>
+                  <Grid container spacing={2} sx={{pl:2,pt:2}}>
                     <Grid item xs={12} sm={4}>
-                      <TextField select label="District" fullWidth>
+                      <TextField select label="District" sx={{width:"180px"}}>
                         <MenuItem value="District">District</MenuItem>
                       </TextField>
                     </Grid>
                     <Grid item xs={12} sm={4}>
-                      <TextField label="City" fullWidth />
+                      <TextField label="City" />
                     </Grid>
                     <Grid item xs={12} sm={4}>
-                      <TextField label="Pincode" fullWidth />
+                      <TextField label="Pincode"  />
                     </Grid>
                   </Grid>
 
-                  <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+                  <Divider sx={{my:2}}/>
+
+                  <Box sx={{ display: "flex", justifyContent: "flex-end",mx:2,gap:2 }}>
                     <TextField select label="Task Assign" sx={{ width: "200px" }}>
                       <MenuItem value="TaskAssign">Task Assign</MenuItem>
                     </TextField>
@@ -427,7 +429,7 @@ function Dashboard() {
                       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                         <Typography variant="body2">Mobile No</Typography>
                         <Typography variant="body2">{p.technicians} Technicians</Typography>
-                        <Button variant="contained" color="primary">
+                        <Button variant="contained" sx={{bgcolor:"#029898"}}>
                           Assign
                         </Button>
                       </Box>

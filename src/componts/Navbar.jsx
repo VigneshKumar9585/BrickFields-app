@@ -148,7 +148,7 @@ const SidebarLayout = () => {
         </ListItemButton>
         <Collapse in={openKeys["Add User"]} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            {["Add Manager", "Add Staff", "Manage User"].map((item, idx) => (
+            {["Add LSP",  "Manage LSP"].map((item, idx) => (
               <ListItemButton
                 key={item}
                 sx={{ pl: 4, color: "black" }}
@@ -185,40 +185,7 @@ const SidebarLayout = () => {
           />
         </ListItemButton>
 
-        {/* Master */}
-        <ListItemButton onClick={() => toggleOpen("Master")} sx={{ color: "black" }}>
-          <SettingsIcon sx={{ mr: 2, color: "black" }} />
-          <ListItemText
-            primary="Master"
-            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
-          />
-        </ListItemButton>
-        <Collapse in={openKeys.Master} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            {[
-              "Setting",
-              "Country",
-              "State",
-              "Region",
-              "District",
-              "Checklist",
-              "Category",
-            ].map((item) => (
-              <ListItemButton
-                key={item}
-                sx={{ pl: 4, color: "black" }}
-                component={NavLink}
-                to={`/master/${item.toLowerCase()}`}
-                onClick={handleDrawerToggle}
-              >
-                <ListItemText
-                  primary={item}
-                  primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
-                />
-              </ListItemButton>
-            ))}
-          </List>
-        </Collapse>
+        
 
         {/* Inspection */}
         <ListItemButton

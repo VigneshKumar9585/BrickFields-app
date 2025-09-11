@@ -7,6 +7,7 @@ import {
   TextField,
   Button,
   Typography,
+  Divider,
 } from "@mui/material";
 
 const ChangePassword = () => {
@@ -32,19 +33,21 @@ const ChangePassword = () => {
         </Box>
 
         {/* Main Content */}
-        <Box sx={{ flex: 1, p: 4 ,pt: 0}}>
+        <Box sx={{ flex: 1, p: 4 ,pt: 0,}}>
           <Typography variant="h6" sx={{ mb: 3, fontWeight: "600" }}>
             Change Password
           </Typography>
 
           {/* Form Card */}
+         
           <Paper
             sx={{
-              width: { xs: "100%", sm: "420px" },
-              p: 3,
+              width: { xs: "100%", sm: "380px" },
+            
               borderRadius: "8px",
+              boxShadow:8
             }}
-          >
+          > <Box padding={3}>
             {/* Current Password */}
             <Typography sx={{ fontSize: "14px", mb: 1, color: "#333" }}>
               Current Password
@@ -99,21 +102,26 @@ const ChangePassword = () => {
                   height: "40px",
                 },
               }}
-              sx={{ mb: 4 }}
             />
+            </Box>
+
+           {/* Divider between password fields and buttons */}
+<Divider sx={{ my: 0, width: "100%", bgcolor: "grey.400" }} />
+
 
             {/* Buttons */}
+                <Box  sx={{p:2,px:3}}>
             <Button
               fullWidth
               variant="contained"
               sx={{
-                bgcolor: "#000",
+                bgcolor: "#029898",
                 color: "#fff",
                 height: "44px",
                 borderRadius: "4px",
                 textTransform: "none",
                 mb: 2,
-                "&:hover": { bgcolor: "#222" },
+                "&:hover": { bgcolor: "#09d1d1ff" },
               }}
             >
               Change Password
@@ -132,6 +140,7 @@ const ChangePassword = () => {
             >
               Cancel
             </Button>
+        </Box>
           </Paper>
         </Box>
       </Box>

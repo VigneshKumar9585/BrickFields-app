@@ -20,6 +20,12 @@ import {
   IconButton,
   Paper,
   Chip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Tabs,
+  Tab,
+  Divider,
 } from "@mui/material";
 import {
   Search,
@@ -28,6 +34,7 @@ import {
   Trash2,
   ChevronLeft,
   ChevronRight,
+  X,
 } from "lucide-react";
 
 // Sample data
@@ -67,6 +74,24 @@ export default function ManageEnquiry() {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+
+  // Popup states
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [activeTab, setActiveTab] = useState(0);
+
+  const handleOpenDialog = (task) => {
+    setSelectedTask(task);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedTask(null);
+    setActiveTab(0);
+  };
+
+  const handleTabChange = (_, newValue) => setActiveTab(newValue);
 
   const itemsPerPage = 10;
   const totalItems = sampleTasks.length;
@@ -242,39 +267,50 @@ export default function ManageEnquiry() {
                 <TableBody>
                   {currentItems.map((task, idx) => (
                     <TableRow key={task.id}>
-                      <TableCell sx={{ py: 2,px: 2  }}>
+                      <TableCell sx={{ py: 2, px: 2 }}>
                         {startIndex + idx + 1}
                       </TableCell>
-                      <TableCell sx={{ py: 2,px: 0 }}>{task.id}</TableCell>
-                      <TableCell sx={{ py: 2,px: 0  }}>{task.name}</TableCell>
-                      <TableCell sx={{ py: 2 ,px: 2 }}>{task.address}</TableCell>
+                      <TableCell sx={{ py: 2, px: 0 }}>{task.id}</TableCell>
+                      <TableCell sx={{ py: 2, px: 0 }}>{task.name}</TableCell>
+                      <TableCell sx={{ py: 2, px: 2 }}>{task.address}</TableCell>
                       <TableCell
                         sx={{
                           width: "100px",
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
-                          py: 2,px: 0 
+                          py: 2,
+                          px: 0,
                         }}
                       >
                         {task.email}
                       </TableCell>
-                      <TableCell sx={{ py: 2,px: 2 }}>{task.preferDate}</TableCell>
-                      <TableCell sx={{ py: 2,px: 0  }}>{task.preferTime}</TableCell>
-                      <TableCell sx={{ py: 2,px: 0  }}>{task.assignedLSP}</TableCell>
-                      <TableCell sx={{ py: 2 ,px: 0 }}>{task.lspAssignDate}</TableCell>
-                      <TableCell sx={{ py: 2 ,px: 2 }}>{task.city}</TableCell>
-                      <TableCell sx={{ py: 2 ,px: 0 }}>{task.technicians}</TableCell>
-                      <TableCell sx={{ py: 2 ,px: 0 }}>
+                      <TableCell sx={{ py: 2, px: 2 }}>
+                        {task.preferDate}
+                      </TableCell>
+                      <TableCell sx={{ py: 2, px: 0 }}>
+                        {task.preferTime}
+                      </TableCell>
+                      <TableCell sx={{ py: 2, px: 0 }}>
+                        {task.assignedLSP}
+                      </TableCell>
+                      <TableCell sx={{ py: 2, px: 0 }}>
+                        {task.lspAssignDate}
+                      </TableCell>
+                      <TableCell sx={{ py: 2, px: 2 }}>{task.city}</TableCell>
+                      <TableCell sx={{ py: 2, px: 0 }}>
+                        {task.technicians}
+                      </TableCell>
+                      <TableCell sx={{ py: 2, px: 0 }}>
                         <Chip
                           label={task.status}
                           color={task.status === "Open" ? "success" : "default"}
                           size="small"
                         />
                       </TableCell>
-                      <TableCell sx={{ width: "120px", py: 2 ,px: 0  }}>
+                      <TableCell sx={{ width: "120px", py: 2, px: 0 }}>
                         <Box display="flex" gap={1}>
-                          <IconButton size="small">
+                          <IconButton size="small" onClick={() => handleOpenDialog(task)}>
                             <Eye size={18} />
                           </IconButton>
                           <IconButton size="small">
@@ -332,6 +368,44 @@ export default function ManageEnquiry() {
           </Box>
         </Box>
       </Box>
+
+      {/* ===== POPUP ===== */}
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" sx={{width:"1600px"}} >
+        <DialogTitle sx={{p:1,bgcolor:"#029898" ,color:"#ffffffff" }}>
+          <Typography variant="h6">Task Details</Typography>
+        
+        </DialogTitle>
+        <Divider />
+        <Tabs value={activeTab} onChange={handleTabChange} sx={{pt: 1 }}>
+          <Tab label="Visitor Details" />
+          <Tab label="Local Service Partner Details" />
+        </Tabs>
+        <DialogContent dividers>
+          {activeTab === 0 && selectedTask && (
+            <Box border="1px solid #ddd" borderRadius="8px" p={2} sx={{width:"600px",height:"300px",bgcolor:"#f0f0f0ff"}}>
+              <Typography variant="subtitle2" fontWeight="bold">
+                Enquiry ID: {selectedTask.id}
+              </Typography>
+              <Typography>Name: {selectedTask.name}</Typography>
+              <Typography>Email: {selectedTask.email}</Typography>
+              <Typography>City: {selectedTask.city}</Typography>
+              <Typography>Address: {selectedTask.address}</Typography>
+              <Typography>Prefer Date: {selectedTask.preferDate}</Typography>
+              <Typography>Prefer Time: {selectedTask.preferTime}</Typography>
+            </Box>
+          )}
+          {activeTab === 1 && selectedTask && (
+            <Box border="1px solid #ddd" borderRadius="8px" p={2}>
+              <Typography variant="subtitle2" fontWeight="bold">
+                Assigned LSP: {selectedTask.assignedLSP}
+              </Typography>
+              <Typography>Assigned Date: {selectedTask.lspAssignDate}</Typography>
+              <Typography>Status: {selectedTask.status}</Typography>
+              <Typography>Technicians: {selectedTask.technicians}</Typography>
+            </Box>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
