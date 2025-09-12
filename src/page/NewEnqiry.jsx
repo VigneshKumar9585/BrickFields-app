@@ -553,15 +553,28 @@ export default function ManageEnquiry() {
               >
                 <ChevronLeft /> Previous
               </Button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <Button
-                  key={page}
-                  variant={currentPage === page ? "contained" : "outlined"}
-                  onClick={() => setCurrentPage(page)}
-                >
-                  {page}
-                </Button>
-              ))}
+{Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+  <Button
+    key={page}
+    variant={currentPage === page ? "contained" : "text"}
+    onClick={() => setCurrentPage(page)}
+    sx={{
+      minWidth: "36px",
+      mx: 0.5,
+      color: currentPage === page ? "white" : "#029898", // ✅ text color for inactive
+      bgcolor: currentPage === page ? "#029898" : "transparent", // ✅ background for active
+      "&:hover": {
+        bgcolor:
+          currentPage === page
+            ? "#027777" // darker shade when active
+            : "rgba(2, 152, 152, 0.1)", // light hover effect for inactive
+      },
+    }}
+  >
+    {page}
+  </Button>
+))}
+
               <Button
                 variant="outlined"
                 onClick={handleNextPage}

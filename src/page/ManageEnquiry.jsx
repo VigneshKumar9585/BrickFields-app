@@ -80,6 +80,9 @@ export default function ManageEnquiry() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [activeTab, setActiveTab] = useState(0);
 
+  // Delete popup state
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
   const handleOpenDialog = (task) => {
     setSelectedTask(task);
     setOpenDialog(true);
@@ -89,6 +92,21 @@ export default function ManageEnquiry() {
     setOpenDialog(false);
     setSelectedTask(null);
     setActiveTab(0);
+  };
+
+  const handleOpenDeleteDialog = (task) => {
+    setSelectedTask(task);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+    setSelectedTask(null);
+  };
+
+  const handleConfirmDelete = () => {
+    console.log("Deleting task:", selectedTask?.id);
+    setOpenDeleteDialog(false);
   };
 
   const handleTabChange = (_, newValue) => setActiveTab(newValue);
@@ -253,9 +271,9 @@ export default function ManageEnquiry() {
                           py: 2,
                           width:
                             head === "Email"
-                              ? "220px"
+                              ? "200px"
                               : head === "Action"
-                              ? "120px"
+                              ? "160px"
                               : "auto",
                         }}
                       >
@@ -310,13 +328,19 @@ export default function ManageEnquiry() {
                       </TableCell>
                       <TableCell sx={{ width: "120px", py: 2, px: 0 }}>
                         <Box display="flex" gap={1}>
-                          <IconButton size="small" onClick={() => handleOpenDialog(task)}>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleOpenDialog(task)}
+                          >
                             <Eye size={18} />
                           </IconButton>
                           <IconButton size="small">
                             <Pencil size={18} />
                           </IconButton>
-                          <IconButton size="small">
+                          <IconButton
+                            size="small"
+                            onClick={() => handleOpenDeleteDialog(task)}
+                          >
                             <Trash2 size={18} />
                           </IconButton>
                         </Box>
@@ -346,17 +370,28 @@ export default function ManageEnquiry() {
               >
                 <ChevronLeft size={16} /> Previous
               </Button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
-                  <Button
-                    key={page}
-                    variant={currentPage === page ? "contained" : "outlined"}
-                    onClick={() => setCurrentPage(page)}
-                  >
-                    {page}
-                  </Button>
-                )
-              )}
+             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+  <Button
+    key={page}
+    variant={currentPage === page ? "contained" : "text"}
+    onClick={() => setCurrentPage(page)}
+    sx={{
+      minWidth: "36px",
+      mx: 0.5,
+      color: currentPage === page ? "white" : "#029898", // ✅ text color for inactive
+      bgcolor: currentPage === page ? "#029898" : "transparent", // ✅ background for active
+      "&:hover": {
+        bgcolor:
+          currentPage === page
+            ? "#027777" // darker shade when active
+            : "rgba(2, 152, 152, 0.1)", // light hover effect for inactive
+      },
+    }}
+  >
+    {page}
+  </Button>
+))}
+
               <Button
                 variant="outlined"
                 onClick={handleNextPage}
@@ -369,42 +404,225 @@ export default function ManageEnquiry() {
         </Box>
       </Box>
 
-      {/* ===== POPUP ===== */}
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" sx={{width:"1600px"}} >
-        <DialogTitle sx={{p:1,bgcolor:"#029898" ,color:"#ffffffff" }}>
+      {/* ===== VIEW POPUP ===== */}
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        maxWidth="md"
+        PaperProps={{ sx: { borderRadius: "18px" } }}
+      >
+        <DialogTitle
+          sx={{
+            p: 1.5,
+            bgcolor: "#029898",
+            color: "#ffffffff",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
           <Typography variant="h6">Task Details</Typography>
-        
         </DialogTitle>
         <Divider />
-        <Tabs value={activeTab} onChange={handleTabChange} sx={{pt: 1 }}>
+        <Tabs
+          value={activeTab}
+          onChange={handleTabChange}
+          sx={{
+            pt: 1,
+            pl: 14,
+            "& .MuiTab-root": {
+              color: "#888888ff",
+            },
+            "& .Mui-selected": {
+              color: "#029898",
+              fontWeight: "bold",
+            },
+            "& .MuiTabs-indicator": {
+              backgroundColor: "#029898",
+            },
+          }}
+        >
           <Tab label="Visitor Details" />
           <Tab label="Local Service Partner Details" />
         </Tabs>
-        <DialogContent dividers>
-          {activeTab === 0 && selectedTask && (
-            <Box border="1px solid #ddd" borderRadius="8px" p={2} sx={{width:"600px",height:"300px",bgcolor:"#f0f0f0ff"}}>
-              <Typography variant="subtitle2" fontWeight="bold">
-                Enquiry ID: {selectedTask.id}
-              </Typography>
-              <Typography>Name: {selectedTask.name}</Typography>
-              <Typography>Email: {selectedTask.email}</Typography>
-              <Typography>City: {selectedTask.city}</Typography>
-              <Typography>Address: {selectedTask.address}</Typography>
-              <Typography>Prefer Date: {selectedTask.preferDate}</Typography>
-              <Typography>Prefer Time: {selectedTask.preferTime}</Typography>
-            </Box>
-          )}
-          {activeTab === 1 && selectedTask && (
-            <Box border="1px solid #ddd" borderRadius="8px" p={2}>
-              <Typography variant="subtitle2" fontWeight="bold">
-                Assigned LSP: {selectedTask.assignedLSP}
-              </Typography>
-              <Typography>Assigned Date: {selectedTask.lspAssignDate}</Typography>
-              <Typography>Status: {selectedTask.status}</Typography>
-              <Typography>Technicians: {selectedTask.technicians}</Typography>
-            </Box>
-          )}
-        </DialogContent>
+
+        <DialogContent dividers>{activeTab === 0 && selectedTask && (
+  <Box
+    border="1px solid #ddd"
+    sx={{
+      width: "570px",
+      height: "300px",
+      bgcolor: "#f0f0f0ff",
+      borderRadius: "16px",
+      display: "flex",
+      flexDirection: "column",
+    }}
+  >
+    {/* Header */}
+    <Box sx={{ display: "flex", justifyContent: "space-between", p: 1.5 }}>
+      <Typography sx={{ fontSize: "14px" }}>
+        Enquiry ID: {selectedTask.id}
+      </Typography>
+      <Typography sx={{ fontSize: "14px" }}>Enquiry Data</Typography>
+    </Box>
+
+    <Divider sx={{ width: "100%" }} />
+
+    {/* Name / Mobile / Email / Country */}
+    <Box sx={{ display: "flex", justifyContent: "space-between", p: 1.5 }}>
+      <Typography sx={{ fontSize: "14px" }}>Name:</Typography>
+      <Typography sx={{ fontSize: "14px" }}>Mobile:</Typography>
+      <Typography sx={{ fontSize: "14px" }}>Email:</Typography>
+      <Typography sx={{ fontSize: "14px" }}>Country:</Typography>
+    </Box>
+
+    <Divider sx={{ width: "100%" }} />
+
+    {/* State / District / City */}
+    <Box sx={{ display: "flex", justifyContent: "space-between", p: 1.5 }}>
+      <Typography sx={{ fontSize: "14px" }}>State:</Typography>
+      <Typography sx={{ fontSize: "14px" }}>District:</Typography>
+      <Typography sx={{ fontSize: "14px" }}>City: {selectedTask.city}</Typography>
+    </Box>
+
+    <Divider sx={{ width: "100%" }} />
+
+    {/* Address */}
+    <Box sx={{ p: 1.5 }}>
+      <Typography sx={{ fontSize: "14px" }}>Address:</Typography>
+    </Box>
+
+    <Divider sx={{ width: "100%" }} />
+
+    {/* Prefer Date / Prefer Time */}
+    <Box sx={{ display: "flex", justifyContent: "space-between", p: 1.5 }}>
+      <Typography sx={{ fontSize: "14px" }}>Prefer Date:</Typography>
+      <Typography sx={{ fontSize: "14px" }}>
+        Prefer Time: {selectedTask.preferTime}
+      </Typography>
+    </Box>
+
+    <Divider sx={{ width: "100%" }} />
+
+    {/* Remark */}
+    <Typography sx={{ fontSize: "14px", p: 1.5 }}>Remark:</Typography>
+  </Box>
+)}
+
+{activeTab === 1 && selectedTask && (
+  <Box
+    border="1px solid #ddd"
+    sx={{
+      width: "570px",
+      height: "300px",
+      bgcolor: "#f0f0f0ff",
+      borderRadius: "16px",
+      display: "flex",
+      flexDirection: "column",
+    }}
+  >
+    {/* Header */}
+    <Box sx={{ display: "flex", gap: 6, p: 1.2, pl: 2 }}>
+      <Typography sx={{ fontSize: "14px" }} fontWeight="bold">
+        Task ID
+      </Typography>
+      <Typography sx={{ fontSize: "14px" }}>Assigned Date</Typography>
+    </Box>
+
+    <Divider sx={{ width: "100%" }} />
+
+    {/* Company Box */}
+    <Box sx={{ display: "flex", p: 2, py: 1 }}>
+      <Box
+        sx={{
+          width: "100px",
+          height: "80px",
+          bgcolor: "#d0cfcfff",
+          border: "3px solid #7e7e7eff",
+          borderRadius: "10px",
+        }}
+      />
+      <Box sx={{ p: 2, py: 1 }}>
+        <Typography fontWeight="bold" sx={{ fontSize: "16px" }}>
+          Company Name
+        </Typography>
+        <Typography sx={{ fontSize: "13px" }}>Point of Contact Name</Typography>
+        <Typography sx={{ fontSize: "13px" }}>Point of Contact Mobile</Typography>
+      </Box>
+    </Box>
+
+    <Divider sx={{ width: "100%" }} />
+
+    {/* Address / Email */}
+    <Box sx={{ display: "flex", justifyContent: "space-between", p: 2, py: 1 }}>
+      <Typography sx={{ fontSize: "14px" }}>Company Address</Typography>
+      <Typography sx={{ fontSize: "14px" }}>Company Email</Typography>
+    </Box>
+
+    <Divider sx={{ width: "100%" }} />
+
+    {/* Business Type */}
+    <Box sx={{ p: 2, py: 1 }}>
+      <Typography sx={{ fontSize: "14px" }}>Business Type</Typography>
+    </Box>
+
+    <Divider sx={{ width: "100%" }} />
+
+    {/* District / City / Pincode */}
+    <Box sx={{ display: "flex", justifyContent: "space-between", p: 2, py: 1 }}>
+      <Typography sx={{ fontSize: "14px" }}>District</Typography>
+      <Typography sx={{ fontSize: "14px" }}>City</Typography>
+      <Typography sx={{ fontSize: "14px" }}>Pincode</Typography>
+    </Box>
+
+    <Divider sx={{ width: "100%" }} />
+
+    {/* Status */}
+    <Box sx={{ p: 2, py: 1 }}>
+      <Typography sx={{ fontSize: "14px" }}>Status</Typography>
+    </Box>
+  </Box>
+)}
+  </DialogContent>
+      </Dialog>
+
+      {/* ===== DELETE POPUP ===== */}
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        PaperProps={{ sx: { borderRadius: "18px" } }}
+      >
+        <Box display="flex" flexDirection="column" alignItems="center" gap={2} sx={{width:"600px"}}>
+         <Box sx={{display:"flex",flexDirection:"column", alignItems:"center",p:2}}>
+          <Trash2 size={40} style={{ color: "black"}}  />
+          <Typography variant="h6" fontWeight="bold">
+            Delete Data
+          </Typography>
+          <Typography textAlign="center">
+            Are You Sure You Want To Delete This Information
+          </Typography>
+          </Box>
+          <Divider sx={{ width: "100%", border:"2px solid #ceccccff"}} />
+          <Box display="flex" gap={2} pb={2}>
+            <Button
+              variant="outlined"
+              onClick={handleCloseDeleteDialog}
+              sx={{ width: "100px" }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleConfirmDelete}
+              sx={{
+                bgcolor: "#db0303ff",
+                "&:hover": { bgcolor: "#333" },
+                width: "100px",
+              }}
+            >
+              Delete
+            </Button>
+          </Box>
+        </Box>
       </Dialog>
     </>
   );
