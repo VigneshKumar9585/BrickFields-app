@@ -270,19 +270,19 @@ export default function ManageEnquiry() {
               <Table>
                 <TableHead sx={{ bgcolor: "#029898" }}>
                   <TableRow>
-                    <TableCell sx={{ color: "white" }}>S.No</TableCell>
-                    <TableCell sx={{ color: "white" }}>Task Id</TableCell>
-                    <TableCell sx={{ color: "white" }}>Name</TableCell>
-                    <TableCell sx={{ color: "white" }}>Address</TableCell>
-                    <TableCell sx={{ color: "white" }}>Email</TableCell>
-                    <TableCell sx={{ color: "white" }}>Mobile</TableCell>
-                    <TableCell sx={{ color: "white" }}>District</TableCell>
-                    <TableCell sx={{ color: "white" }}>City</TableCell>
-                    <TableCell sx={{ color: "white", width: "120px" }}>
+                    <TableCell sx={{ color: "white" ,textAlign:"center"}}>S.No</TableCell>
+                    <TableCell sx={{ color: "white" ,textAlign:"center" }}>Task Id</TableCell>
+                    <TableCell sx={{ color: "white" ,textAlign:"center" }}>Name</TableCell>
+                    <TableCell sx={{ color: "white" ,textAlign:"center" }}>Address</TableCell>
+                    <TableCell sx={{ color: "white" ,textAlign:"center" }}>Email</TableCell>
+                    <TableCell sx={{ color: "white" ,textAlign:"center" }}>Mobile</TableCell>
+                    <TableCell sx={{ color: "white",textAlign:"center"  }}>District</TableCell>
+                    <TableCell sx={{ color: "white" ,textAlign:"center" }}>City</TableCell>
+                    <TableCell sx={{ color: "white", width: "120px",textAlign:"center"  }}>
                       Assign Date
                     </TableCell>
-                    <TableCell sx={{ color: "white" }}>Total Sq.Feet</TableCell>
-                    <TableCell sx={{ color: "white" }}>Action</TableCell>
+                    <TableCell sx={{ color: "white",textAlign:"center"  }}>Total Sq.Feet</TableCell>
+                    <TableCell sx={{ color: "white",textAlign:"center"  }}>Action</TableCell>
                   </TableRow>
                 </TableHead>
 
@@ -293,17 +293,17 @@ export default function ManageEnquiry() {
                       sx={{ cursor: "pointer" }}
                       onClick={() => handleRowClick(task)}
                     >
-                      <TableCell>{startIndex + idx + 1}</TableCell>
-                      <TableCell>{task.id}</TableCell>
-                      <TableCell>{task.name}</TableCell>
-                      <TableCell>{task.address}</TableCell>
-                      <TableCell>{task.email}</TableCell>
-                      <TableCell>{task.mobile}</TableCell>
-                      <TableCell>{task.district}</TableCell>
-                      <TableCell>{task.city}</TableCell>
-                      <TableCell>{task.assignDate}</TableCell>
-                      <TableCell>{task.totalSqFeet.toLocaleString()}</TableCell>
-                      <TableCell>
+                      <TableCell sx={{textAlign:"center"}}>{startIndex + idx + 1}</TableCell>
+                      <TableCell sx={{textAlign:"center"}}>{task.id}</TableCell>
+                      <TableCell sx={{textAlign:"center"}}>{task.name}</TableCell>
+                      <TableCell sx={{textAlign:"center"}}>{task.address}</TableCell>
+                      <TableCell sx={{textAlign:"center"}}>{task.email}</TableCell>
+                      <TableCell sx={{textAlign:"center"}}>{task.mobile}</TableCell>
+                      <TableCell sx={{textAlign:"center"}}>{task.district}</TableCell>
+                      <TableCell sx={{textAlign:"center"}}>{task.city}</TableCell>
+                      <TableCell sx={{textAlign:"center"}}>{task.assignDate}</TableCell>
+                      <TableCell sx={{textAlign:"center"}}>{task.totalSqFeet.toLocaleString()}</TableCell>
+                      <TableCell sx={{textAlign:"center"}}>
                         <IconButton
                           onClick={(e) => {
                             e.stopPropagation();

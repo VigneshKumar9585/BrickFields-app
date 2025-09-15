@@ -62,6 +62,7 @@ const ChangePassword = () => {
                   bgcolor: "#e0e0e0",
                   borderRadius: "4px",
                   height: "40px",
+                  pb:1.5
                 },
               }}
               sx={{ mb: 3 }}
@@ -81,6 +82,7 @@ const ChangePassword = () => {
                   bgcolor: "#e0e0e0",
                   borderRadius: "4px",
                   height: "40px",
+                  pb:1.5
                 },
               }}
               sx={{ mb: 3 }}
@@ -100,6 +102,7 @@ const ChangePassword = () => {
                   bgcolor: "#e0e0e0",
                   borderRadius: "4px",
                   height: "40px",
+                  pb:1.5
                 },
               }}
             />

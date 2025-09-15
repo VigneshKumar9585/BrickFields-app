@@ -155,9 +155,9 @@ const SidebarLayout = () => {
                 component={NavLink}
                 to={
                   idx === 0
-                    ? "/user/manager"
+                    ? "/user/addLSP"
                     : idx === 1
-                    ? "/user/staff"
+                    ? "/user/manageLSP"
                     : "/user/manage"
                 }
                 onClick={handleDrawerToggle}
