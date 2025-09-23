@@ -1,6 +1,7 @@
-// src/pages/Dashboard.js
-import React from "react";
+// src/pages/addLsp.js
+import React, { useState, useEffect } from "react";
 import Navbar from "../componts/Navbar.jsx";
+import Swal from "sweetalert2";
 import {
   Box,
   Card,
@@ -9,30 +10,151 @@ import {
   Grid,
   TextField,
   Button,
-  Divider
+  Divider,
 } from "@mui/material";
 import { Edit } from "@mui/icons-material";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 import logo from "../assets/logo/logo.webp";
 
-function Dashboard() {
+const API_BASE = "http://localhost:2444";
+
+function AddLsp() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // ✅ Read task data if we came from edit
+  const taskData = location.state?.task || null;
+
+  // ✅ Manage form state
+  const [formData, setFormData] = useState({
+    companyName: "",
+    businessType: "",
+    phone: "",
+    email: "",
+    pointOfContact: "",
+    pointOfContactMobile: "",
+    district: "",
+    city: "",
+    address: "",
+    serviceableCities: "",
+    adhaarCard: "",
+    gstDocument: "",
+    companyDocument: "",
+  });
+
+  // ✅ Prefill if edit mode
+  useEffect(() => {
+    if (taskData) {
+      setFormData({
+        companyName: taskData.companyName || "",
+        businessType: taskData.businessType || "",
+        phone: taskData.phone || "",
+        email: taskData.email || "",
+        pointOfContact: taskData.pointOfContact || "",
+        pointOfContactMobile: taskData.pointOfContactMobile || "",
+        district: taskData.district || "",
+        city: taskData.city || "",
+        address: taskData.address || "",
+        serviceableCities: taskData.serviceableCities || "",
+        adhaarCard: taskData.adhaarCard || "",
+        gstDocument: taskData.gstDocument || "",
+        companyDocument: taskData.companyDocument || "",
+      });
+    }
+  }, [taskData]);
+
+  // ✅ Manage errors
+  const [errors, setErrors] = useState({});
+
+  // ✅ Handle input change
+  const handleChange = (field, value) => {
+    if (field === "phone" || field === "pointOfContactMobile") {
+      if (!/^\d{0,10}$/.test(value)) return; // allow only numbers, max 10
+    }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => ({ ...prev, [field]: "" })); // clear error on change
+  };
+
+  // ✅ Handle submit with validation
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const newErrors = {};
+    Object.keys(formData).forEach((key) => {
+      if (!formData[key]) {
+        newErrors[key] = "This field is required";
+      }
+    });
+
+    if (formData.phone && formData.phone.length !== 10) {
+      newErrors.phone = "Must be exactly 10 digits";
+    }
+    if (
+      formData.pointOfContactMobile &&
+      formData.pointOfContactMobile.length !== 10
+    ) {
+      newErrors.pointOfContactMobile = "Must be exactly 10 digits";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    try {
+      if (taskData) {
+        // ✅ UPDATE
+        await axios.put(`${API_BASE}/lsp-update/${taskData._id}`, formData);
+        Swal.fire({
+          title: "LSP Updated",
+          text: "Your LSP has been successfully updated.",
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      } else {
+        // ✅ CREATE
+        await axios.post(`${API_BASE}/lsp-form`, formData);
+        Swal.fire({
+          title: "LSP Added",
+          text: "Your LSP has been successfully saved.",
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      }
+      navigate("/user/manageLSP");
+    } catch (err) {
+      console.error("❌ Error saving LSP", err);
+      Swal.fire("Error", "Something went wrong!", "error");
+    }
+  };
+
   const personalFields = [
-    "Company Name",
-    "Business Type",
-    "Company Phone No",
-    "Company Email",
-    "Point of Contact Name",
-    "Point of Contact Mobile",
-    "District",
-    "City",
-    "Address",
-    "Serviceable Cities",
+    { label: "Company Name", key: "companyName" },
+    { label: "Business Type", key: "businessType" },
+    { label: "Company Phone No", key: "phone" },
+    { label: "Company Email", key: "email" },
+    { label: "Point of Contact Name", key: "pointOfContact" },
+    { label: "Point of Contact Mobile", key: "pointOfContactMobile" },
+    { label: "District", key: "district" },
+    { label: "City", key: "city" },
+    { label: "Address", key: "address" },
+    { label: "Serviceable Cities", key: "serviceableCities" },
   ];
 
-
-  const socialFields = ["Adhaar Card", "GST Document", "Compeny Document"];
+  const documentFields = [
+    { label: "Adhaar Card", key: "adhaarCard" },
+    { label: "GST Document", key: "gstDocument" },
+    { label: "Company Document", key: "companyDocument" },
+  ];
 
   const getTextFieldSx = (field, width = "200px") => ({
-    width: field === "Address"|| field === "Serviceable Cities" ? "416px" : width,
+    width:
+      field === "Address" || field === "Serviceable Cities"
+        ? "416px"
+        : width,
     "& .MuiOutlinedInput-root": {
       height: "30px",
       bgcolor: "#e0e0e0",
@@ -55,12 +177,8 @@ function Dashboard() {
           minHeight: "100%",
         }}
       >
-        {/* Sidebar spacing */}
         <Box sx={{ width: "280px" }} />
-
-        {/* Main Content */}
         <Box sx={{ flexGrow: 1 }}>
-          {/* Page Title */}
           <Typography
             color="rgb(0,0,0)"
             sx={{
@@ -70,32 +188,21 @@ function Dashboard() {
               mb: 2,
             }}
           >
-            Add LSP
+            {taskData ? "Edit LSP" : "Add LSP"}
           </Typography>
 
-          {/* Container */}
           <Box sx={{ width: "100%", maxWidth: "1190px" }}>
             {/* Personal Data Section */}
             <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none" }}>
               <CardContent sx={{ p: 3 }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    mb: 2,
-                  }}
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: 600, fontSize: "14px", color: "gray", mb: 2 }}
                 >
-                  <Typography
-                    variant="h6"
-                    sx={{ fontWeight: 600, fontSize: "14px", color: "gray" }}
-                  >
-                    Personal Data
-                  </Typography>
-                </Box>
+                  Personal Data
+                </Typography>
 
                 <Box sx={{ display: "flex", alignItems: "flex-start", gap: 4 }}>
-                  {/* Left side - Fields */}
                   <Grid container spacing={2} sx={{ flex: 1 }}>
                     {personalFields.map((field, i) => (
                       <Grid item xs={12} sm={6} md={3} key={i}>
@@ -109,18 +216,28 @@ function Dashboard() {
                             fontWeight: 500,
                           }}
                         >
-                          {field}
+                          {field.label}
                         </Typography>
                         <TextField
+                          value={formData[field.key]}
+                          onChange={(e) => handleChange(field.key, e.target.value)}
                           variant="outlined"
                           size="small"
-                          sx={getTextFieldSx(field)}
+                          error={!!errors[field.key]}
+                          helperText={errors[field.key] || ""}
+                          sx={getTextFieldSx(field.label)}
+                          inputProps={
+                            field.key === "phone" ||
+                            field.key === "pointOfContactMobile"
+                              ? { maxLength: 10, inputMode: "numeric" }
+                              : {}
+                          }
                         />
                       </Grid>
                     ))}
                   </Grid>
 
-                  {/* Right side - Profile image & Edit */}
+                  {/* Profile Image */}
                   <Box
                     display="flex"
                     flexDirection="column"
@@ -144,29 +261,17 @@ function Dashboard() {
             </Card>
 
             {/* Document Data Section */}
-          
-
-            {/* Social Media Section */}
             <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none" }}>
-              <CardContent sx={{ p: 3,pt:0 }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    mb: 2,
-                  }}
+              <CardContent sx={{ p: 3, pt: 0 }}>
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: 600, fontSize: "14px", color: "gray", mb: 2 }}
                 >
-                  <Typography
-                    variant="h6"
-                    sx={{ fontWeight: 600, fontSize: "14px", color: "gray" }}
-                  >
-                   Documant Data
-                  </Typography>
-                </Box>
+                  Document Data
+                </Typography>
 
                 <Grid container spacing={2}>
-                  {socialFields.map((field, i) => (
+                  {documentFields.map((field, i) => (
                     <Grid item xs={12} sm={6} md={4} key={i}>
                       <Typography
                         variant="body2"
@@ -178,12 +283,16 @@ function Dashboard() {
                           fontWeight: 500,
                         }}
                       >
-                        {field}
+                        {field.label}
                       </Typography>
                       <TextField
+                        value={formData[field.key]}
+                        onChange={(e) => handleChange(field.key, e.target.value)}
                         fullWidth
                         variant="outlined"
                         size="small"
+                        error={!!errors[field.key]}
+                        helperText={errors[field.key] || ""}
                         sx={{
                           "& .MuiOutlinedInput-root": {
                             height: "30px",
@@ -204,18 +313,36 @@ function Dashboard() {
             </Card>
 
             {/* Bottom Buttons */}
-            <Divider></Divider>
+            <Divider />
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "flex-end",
                 gap: 2,
-              p:2,
-                bgcolor: "#f5f5f5", boxShadow: "none" 
+                p: 2,
+                bgcolor: "#f5f5f5",
+                boxShadow: "none",
               }}
             >
               <Button
                 variant="outlined"
+                onClick={() =>
+                  setFormData({
+                    companyName: "",
+                    businessType: "",
+                    phone: "",
+                    email: "",
+                    pointOfContact: "",
+                    pointOfContactMobile: "",
+                    district: "",
+                    city: "",
+                    address: "",
+                    serviceableCities: "",
+                    adhaarCard: "",
+                    gstDocument: "",
+                    companyDocument: "",
+                  })
+                }
                 sx={{
                   textTransform: "none",
                   fontSize: "14px",
@@ -230,6 +357,7 @@ function Dashboard() {
               </Button>
               <Button
                 variant="contained"
+                onClick={handleSubmit}
                 sx={{
                   textTransform: "none",
                   fontSize: "14px",
@@ -239,7 +367,7 @@ function Dashboard() {
                   width: "170px",
                 }}
               >
-                Add
+                {taskData ? "Update" : "Add"}
               </Button>
             </Box>
           </Box>
@@ -249,4 +377,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default AddLsp;

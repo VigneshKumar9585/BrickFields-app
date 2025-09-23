@@ -275,7 +275,7 @@ function Dashboard() {
               <Card
                 sx={{
                   p: 2,
-                  height: 255,
+                  height: 285,
                   width: 430,
                   bgcolor: "rgba(237, 235, 235, 1)",
                   borderRadius:"16px"
@@ -294,7 +294,7 @@ function Dashboard() {
                   display: "grid",
                   justifyContent: "flex-start",
                   alignItems: "flex-start",
-                  pl: 0,
+                  ml:0,
                 }}
               >
                 <Typography
