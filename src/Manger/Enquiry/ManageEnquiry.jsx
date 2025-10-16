@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Navbar from "../componts/Navbar.jsx";
+import Navbar from "../../componts/Navbar.jsx";
 import {
   Box,
   Card,

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Navbar from "../componts/Navbar.jsx";
+import Navbar from "../../componts/Navbar.jsx";
 import {
   Box,
   Card,
@@ -208,7 +208,7 @@ export default function ManageEnquiry() {
               <Table>
                 <TableHead sx={{ bgcolor: "#029898" }}>
                   <TableRow>
-                    <TableCell sx={{ color: "white", textAlign: "center" }}>S.No</TableCell>
+                    <TableCell sx={{ color: "white", textAlign: "center",pr:0 }}>S.No</TableCell>
                     <TableCell sx={{ color: "white", textAlign: "center" }}>Company Name</TableCell>
                     <TableCell sx={{ color: "white", textAlign: "center" }}>Business Type</TableCell>
                     <TableCell sx={{ color: "white", textAlign: "center" }}>Company Phone No.</TableCell>
@@ -218,7 +218,7 @@ export default function ManageEnquiry() {
                     <TableCell sx={{ color: "white", textAlign: "center" }}>District</TableCell>
                     <TableCell sx={{ color: "white", textAlign: "center" }}>City</TableCell>
                     <TableCell sx={{ color: "white", textAlign: "center" }}>Serviceable Cities</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center" }}>Action</TableCell>
+                    <TableCell sx={{ color: "white", textAlign: "center",pl:0 }}>Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -233,8 +233,8 @@ export default function ManageEnquiry() {
                       <TableCell sx={{ textAlign: "center" }}>{task.pointOfContactMobile}</TableCell>
                       <TableCell sx={{ textAlign: "center" }}>{task.district}</TableCell>
                       <TableCell sx={{ textAlign: "center" }}>{task.city}</TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{task.serviceableCities}</TableCell>
-                      <TableCell>
+                      <TableCell sx={{ textAlign: "center"}}>{task.serviceableCities}</TableCell>
+                      <TableCell sx={{pl:0}}>
                         <Box display="flex" gap={1}>
                           {/* 👁 View button */}
                           <IconButton size="small" onClick={() => handleOpenViewDialog(task)}>
@@ -349,6 +349,6 @@ export default function ManageEnquiry() {
           </Box>
         )}
       </Dialog>
-    </>
+    </  >
   );
 }

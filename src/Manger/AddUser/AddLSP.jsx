@@ -1,6 +1,6 @@
 // src/pages/addLsp.js
 import React, { useState, useEffect } from "react";
-import Navbar from "../componts/Navbar.jsx";
+import Navbar from "../../componts/Navbar.jsx";
 import Swal from "sweetalert2";
 import {
   Box,
@@ -15,7 +15,7 @@ import {
 import { Edit } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import logo from "../assets/logo/logo.webp";
+import logo from "../../assets/logo/logo.webp";
 
 const API_BASE = "http://localhost:2444";
 
