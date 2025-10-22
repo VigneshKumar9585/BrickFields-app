@@ -31,7 +31,7 @@ import {
 } from "@mui/icons-material";
 
 import { useNavigate } from "react-router-dom";
-import pdf from "../../assets/icons/pdf.png"
+import pdf from "../../assets/icons/pdf.png";
 import excel from "../../assets/icons/excel.png";
 
 // Sample data
@@ -69,9 +69,7 @@ export default function ManageEnquiry() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedLSP, setSelectedLSP] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
-  const [selectedExport, setSelectedExport] = useState("pdf");
 
   const navigate = useNavigate();
 
@@ -88,7 +86,6 @@ export default function ManageEnquiry() {
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
   const currentItems = sampleTasks.slice(startIndex, endIndex);
 
-  // ✅ Navigate function for Complete chip & Eye icon
   const handleNavigateToDetails = () => {
     navigate("/inspection-Details");
   };
@@ -107,7 +104,7 @@ export default function ManageEnquiry() {
               fontWeight: "500",
             }}
           >
-           Inspection Details
+            Inspection Details
           </Typography>
 
           {/* Filter Bar */}
@@ -126,13 +123,12 @@ export default function ManageEnquiry() {
               }}
             >
               <Box display="flex" gap={2} alignItems="center">
-                {/* Task */}
                 <FormControl sx={{ width: "120px" }} size="small">
                   <InputLabel>Manager</InputLabel>
                   <Select
                     value={selectedLSP}
                     onChange={(e) => setSelectedLSP(e.target.value)}
-                    label="Task"
+                    label="Manager"
                   >
                     <MenuItem value="">All</MenuItem>
                     <MenuItem value="LSP-101">LSP-101</MenuItem>
@@ -140,7 +136,6 @@ export default function ManageEnquiry() {
                   </Select>
                 </FormControl>
 
-                {/* Status */}
                 <FormControl sx={{ width: "120px" }} size="small">
                   <InputLabel>Status</InputLabel>
                   <Select
@@ -154,8 +149,6 @@ export default function ManageEnquiry() {
                   </Select>
                 </FormControl>
 
-
-                {/* Date */}
                 <FormControl sx={{ width: "120px" }} size="small">
                   <InputLabel>Date</InputLabel>
                   <Select
@@ -170,7 +163,6 @@ export default function ManageEnquiry() {
                   </Select>
                 </FormControl>
 
-                {/* Search */}
                 <TextField
                   sx={{ width: "200px" }}
                   size="small"
@@ -187,7 +179,7 @@ export default function ManageEnquiry() {
             </CardContent>
           </Card>
 
-          {/* Export Table */}
+          {/* Table with horizontal scroll */}
           <Card
             sx={{
               boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
@@ -200,9 +192,13 @@ export default function ManageEnquiry() {
           >
             <TableContainer
               component={Paper}
-              sx={{ borderRadius: "12px", overflow: "hidden" }}
+              sx={{
+                borderRadius: "12px",
+                overflowX: "auto", // ✅ enable horizontal scroll
+                whiteSpace: "nowrap", // ✅ keep headers in one line
+              }}
             >
-              <Table>
+              <Table sx={{ minWidth: "1500px" }}>
                 <TableHead sx={{ bgcolor: "#029898" }}>
                   <TableRow>
                     {[
@@ -211,10 +207,10 @@ export default function ManageEnquiry() {
                       "Name",
                       "Address",
                       "Service",
-                      "Assigned Manger",
+                      "Assigned Manager",
                       "Assigned LSP",
-                      "Assigned Technician 1",
-                      "Assigned Technician 2",
+                      "Technician 1",
+                      "Technician 2",
                       "Start Date",
                       "End Date",
                       "Status",
@@ -224,14 +220,12 @@ export default function ManageEnquiry() {
                         key={head}
                         sx={{
                           color: "white",
+                          fontSize: "14px",
                           textAlign: "center",
-                          py: 2,
-                          width:
-                            head === "Actions"
-                              ? "160px"
-                              : head === "Email"
-                              ? "200px"
-                              : "auto",
+                          fontWeight: "bold",
+                          py: 1.5,
+                          px: 2,
+                          whiteSpace: "nowrap", // ✅ single line header
                         }}
                       >
                         {head}
@@ -239,63 +233,35 @@ export default function ManageEnquiry() {
                     ))}
                   </TableRow>
                 </TableHead>
+
                 <TableBody>
                   {currentItems.map((task, idx) => (
                     <TableRow key={task.id}>
-                      <TableCell sx={{ py: 2, px: 2, textAlign: "center" }}>
-                        {startIndex + idx + 1}
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 0 }}>{task.id}</TableCell>
-                      <TableCell sx={{ py: 2, px: 0, textAlign: "center" }}>
-                        {task.name}
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 2 }}>{task.address}</TableCell>
-                      <TableCell sx={{ py: 2, px: 0, textAlign: "center" }}>
-                        {task.email}
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 2, textAlign: "center" }}>
-                        {task.preferDate}
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 0, textAlign: "center" }}>
-                        {task.preferTime}
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 0, textAlign: "center" }}>
-                        {task.assignedLSP}
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 2 }}>
-                        {task.lspAssignDate}
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 0, textAlign: "center" }}>
-                        {task.city}
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 0, textAlign: "center" }}>
-                        {task.technicians}
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 0, textAlign: "center" }}>
-                        {/* ✅ Click Complete chip to navigate */}
+                      <TableCell align="center">{startIndex + idx + 1}</TableCell>
+                      <TableCell align="center">{task.id}</TableCell>
+                      <TableCell align="center">{task.name}</TableCell>
+                      <TableCell align="center">{task.address}</TableCell>
+                      <TableCell align="center">{task.email}</TableCell>
+                      <TableCell align="center">{task.preferDate}</TableCell>
+                      <TableCell align="center">{task.preferTime}</TableCell>
+                      <TableCell align="center">{task.assignedLSP}</TableCell>
+                      <TableCell align="center">{task.lspAssignDate}</TableCell>
+                      <TableCell align="center">{task.city}</TableCell>
+                      <TableCell align="center">{task.technicians}</TableCell>
+                      <TableCell align="center">
                         <Chip
                           label={task.status}
-                          color={
-                            task.status === "Complete" ? "success" : "default"
-                          }
+                          color={task.status === "Complete" ? "success" : "default"}
                           size="small"
                           onClick={handleNavigateToDetails}
                           sx={{ cursor: "pointer" }}
                         />
                       </TableCell>
-
-                      {/* ✅ Action Buttons */}
-                      <TableCell sx={{ px: 3 }}>
-                        <Box display="flex" gap={1}>
-                          {/* 👁 View button → go to /inspection-Details */}
-                          <IconButton
-                            size="small"
-                            onClick={handleNavigateToDetails}
-                          >
+                      <TableCell align="center">
+                        <Box display="flex" justifyContent="center" gap={1}>
+                          <IconButton size="small" onClick={handleNavigateToDetails}>
                             <ViewIcon fontSize="small" />
                           </IconButton>
-
-                          {/* 🗑 Delete button */}
                           <IconButton size="small">
                             <DeleteIcon fontSize="small" />
                           </IconButton>
@@ -327,30 +293,27 @@ export default function ManageEnquiry() {
               >
                 Previous
               </Button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
-                  <Button
-                    key={page}
-                    variant={currentPage === page ? "contained" : "text"}
-                    onClick={() => setCurrentPage(page)}
-                    sx={{
-                      minWidth: "36px",
-                      mx: 0.5,
-                      color: currentPage === page ? "white" : "#029898",
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <Button
+                  key={page}
+                  variant={currentPage === page ? "contained" : "text"}
+                  onClick={() => setCurrentPage(page)}
+                  sx={{
+                    minWidth: "36px",
+                    mx: 0.5,
+                    color: currentPage === page ? "white" : "#029898",
+                    bgcolor: currentPage === page ? "#029898" : "transparent",
+                    "&:hover": {
                       bgcolor:
-                        currentPage === page ? "#029898" : "transparent",
-                      "&:hover": {
-                        bgcolor:
-                          currentPage === page
-                            ? "#027777"
-                            : "rgba(2, 152, 152, 0.1)",
-                      },
-                    }}
-                  >
-                    {page}
-                  </Button>
-                )
-              )}
+                        currentPage === page
+                          ? "#027777"
+                          : "rgba(2, 152, 152, 0.1)",
+                    },
+                  }}
+                >
+                  {page}
+                </Button>
+              ))}
               <Button
                 variant="outlined"
                 onClick={handleNextPage}

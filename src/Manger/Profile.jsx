@@ -7,11 +7,11 @@ import {
   CardContent,
   Typography,
   Grid,
-  TextField
+  TextField,
+  Button,
 } from "@mui/material";
 import { Edit } from "@mui/icons-material";
 import logo from "../assets/logo/logo.webp";
-import { NavLink, useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const personalFields = [
@@ -75,16 +75,10 @@ function Dashboard() {
             Profile
           </Typography>
 
-          <Box display="flex" component={NavLink} to="/profile/edit" justifyContent="flex-end" alignItems="flex-end" sx={{mr:"70px",mb:"15px"}} gap={1}>
-                      <Edit sx={{ fontSize: 20 }} />
-                      <Typography sx={{ fontSize: 16 }}>Edit</Typography>
-                    </Box>
-
           {/* Container */}
           <Box sx={{ width: "100%", maxWidth: "1190px" }}>
-            
             {/* Personal Data Section */}
-            <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none",  }}>
+            <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none" }}>
               <CardContent sx={{ p: 3 }}>
                 <Box
                   sx={{
@@ -134,7 +128,7 @@ function Dashboard() {
                     flexDirection="column"
                     alignItems="center"
                     gap={1}
-                    sx={{pr:"100px"}}
+                    sx={{ pr: "100px" }}
                   >
                     <Box
                       component="img"
@@ -152,7 +146,7 @@ function Dashboard() {
             </Card>
 
             {/* Document Data Section */}
-            <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none", }}>
+            <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none" }}>
               <CardContent sx={{ p: 3 }}>
                 <Box
                   sx={{
@@ -265,6 +259,44 @@ function Dashboard() {
               </CardContent>
             </Card>
 
+            {/* Bottom Buttons */}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: 2,
+                mt: 3,
+                mb: 2,
+              }}
+            >
+              <Button
+                variant="outlined"
+                sx={{
+                  textTransform: "none",
+                  fontSize: "14px",
+                  borderColor: "#bdbdbd",
+                  color: "#424242",
+                  bgcolor: "#f5f5f5",
+                  "&:hover": { bgcolor: "#e0e0e0" },
+                  width: "120px",
+                }}
+              >
+                Clear
+              </Button>
+              <Button
+                variant="contained"
+                sx={{
+                  textTransform: "none",
+                  fontSize: "14px",
+                  bgcolor: "#029898",
+                  color: "white",
+                  "&:hover": { bgcolor: "#333" },
+                  width: "120px",
+                }}
+              >
+                Update
+              </Button>
+            </Box>
           </Box>
         </Box>
       </Box>

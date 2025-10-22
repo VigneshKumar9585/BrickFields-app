@@ -193,7 +193,7 @@ export default function ManageEnquiry() {
             </CardContent>
           </Card>
 
-          {/* Table */}
+          {/* Table with horizontal scroll & single-line headers */}
           <Card
             sx={{
               boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
@@ -204,21 +204,21 @@ export default function ManageEnquiry() {
               borderRadius: "12px",
             }}
           >
-            <TableContainer component={Paper} sx={{ borderRadius: "12px", overflow: "hidden" }}>
-              <Table>
+            <TableContainer component={Paper} sx={{ borderRadius: "12px", overflowX: "auto", whiteSpace: "nowrap" }}>
+              <Table sx={{ minWidth: "1200px" }}>
                 <TableHead sx={{ bgcolor: "#029898" }}>
                   <TableRow>
-                    <TableCell sx={{ color: "white", textAlign: "center",pr:0 }}>S.No</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center" }}>Company Name</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center" }}>Business Type</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center" }}>Company Phone No.</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center" }}>Company Email</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center" }}>Point Of Contact Name</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center" }}>Point Of Contact Mobile</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center" }}>District</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center" }}>City</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center" }}>Serviceable Cities</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center",pl:0 }}>Action</TableCell>
+                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap", pr: 0 }}>S.No</TableCell>
+                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap" }}>Company Name</TableCell>
+                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap" }}>Business Type</TableCell>
+                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap" }}>Company Phone No.</TableCell>
+                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap" }}>Company Email</TableCell>
+                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap" }}>Point Of Contact Name</TableCell>
+                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap" }}>Point Of Contact Mobile</TableCell>
+                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap" }}>District</TableCell>
+                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap" }}>City</TableCell>
+                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap" }}>Serviceable Cities</TableCell>
+                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap", pl: 0 }}>Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -236,17 +236,12 @@ export default function ManageEnquiry() {
                       <TableCell sx={{ textAlign: "center"}}>{task.serviceableCities}</TableCell>
                       <TableCell sx={{pl:0}}>
                         <Box display="flex" gap={1}>
-                          {/* 👁 View button */}
                           <IconButton size="small" onClick={() => handleOpenViewDialog(task)}>
                             <Eye size={18} />
                           </IconButton>
-
-                          {/* ✏ Edit button */}
                           <IconButton size="small" onClick={() => handleEditClick(task)}>
                             <Pencil size={18} />
                           </IconButton>
-
-                          {/* 🗑 Delete button */}
                           <IconButton size="small" onClick={() => handleOpenDeleteDialog(task)}>
                             <Trash2 size={18} />
                           </IconButton>
@@ -349,6 +344,6 @@ export default function ManageEnquiry() {
           </Box>
         )}
       </Dialog>
-    </  >
+    </>
   );
 }

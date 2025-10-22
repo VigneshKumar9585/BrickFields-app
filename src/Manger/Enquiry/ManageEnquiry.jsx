@@ -34,7 +34,6 @@ import {
   Trash2,
   ChevronLeft,
   ChevronRight,
-  X,
 } from "lucide-react";
 
 // Sample data
@@ -68,7 +67,6 @@ const sampleTasks = [
 ];
 import { useNavigate } from "react-router-dom";
 
-
 export default function ManageEnquiry() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -87,10 +85,9 @@ export default function ManageEnquiry() {
 
   const navigate = useNavigate();
 
-const handleEditClick = (task) => {
-  navigate(`/edit/assign`, { state: { task } }); // pass task data
-};
-
+  const handleEditClick = (task) => {
+    navigate(`/edit/assign`, { state: { task } }); // pass task data
+  };
 
   const handleOpenDialog = (task) => {
     setSelectedTask(task);
@@ -253,9 +250,13 @@ const handleEditClick = (task) => {
           >
             <TableContainer
               component={Paper}
-              sx={{ borderRadius: "12px", overflow: "hidden" }}
+              sx={{
+                borderRadius: "12px",
+                overflowX: "auto", // ✅ horizontal scroll
+                whiteSpace: "nowrap", // ✅ prevent wrapping
+              }}
             >
-              <Table>
+              <Table sx={{ minWidth: "1200px" }}>
                 <TableHead sx={{ bgcolor: "#029898" }}>
                   <TableRow>
                     {[
@@ -272,13 +273,15 @@ const handleEditClick = (task) => {
                       "Technicians",
                       "Status",
                       "Action",
-                    ].map((head, idx) => (
+                    ].map((head) => (
                       <TableCell
                         key={head}
                         sx={{
                           color: "white",
-                          textAlign:"center",
+                          textAlign: "center",
                           py: 2,
+                          px: 1,
+                          whiteSpace: "nowrap",
                           width:
                             head === "Email"
                               ? "200px"
@@ -295,64 +298,61 @@ const handleEditClick = (task) => {
                 <TableBody>
                   {currentItems.map((task, idx) => (
                     <TableRow key={task.id}>
-                      <TableCell sx={{ py: 2, px: 2,textAlign:"center"}}>
+                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
                         {startIndex + idx + 1}
                       </TableCell>
-                      <TableCell sx={{ py: 2, px: 0 }}>{task.id}</TableCell>
-                      <TableCell sx={{ py: 2, px: 0,textAlign:"center" }}>{task.name}</TableCell>
+                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
+                        {task.id}
+                      </TableCell>
+                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
+                        {task.name}
+                      </TableCell>
                       <TableCell sx={{ py: 2, px: 2 }}>{task.address}</TableCell>
                       <TableCell
                         sx={{
-                          width: "100px",
+                          width: "150px",
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           py: 2,
-                          textAlign:"center",
-                          px: 0,
+                          textAlign: "center",
+                          px: 1,
                         }}
                       >
                         {task.email}
                       </TableCell>
-                      <TableCell sx={{ py: 2, px: 2 ,textAlign:"center"}}>
+                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
                         {task.preferDate}
                       </TableCell>
-                      <TableCell sx={{ py: 2, px: 0 ,textAlign:"center"}}>
+                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
                         {task.preferTime}
                       </TableCell>
-                      <TableCell sx={{ py: 2, px: 0,textAlign:"center" }}>
+                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
                         {task.assignedLSP}
                       </TableCell>
-                      <TableCell sx={{ py: 2, px: 2 }}>
-                        {task.lspAssignDate}
+                      <TableCell sx={{ py: 2, px: 2 }}>{task.lspAssignDate}</TableCell>
+                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
+                        {task.city}
                       </TableCell>
-                      <TableCell sx={{ py: 2, px: 0,textAlign:"center" }}>{task.city}</TableCell>
-                      <TableCell sx={{ py: 2, px: 0,textAlign:"center" }}>
+                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
                         {task.technicians}
                       </TableCell>
-                      <TableCell sx={{ py: 2, px: 0,textAlign:"center" }}>
+                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
                         <Chip
                           label={task.status}
                           color={task.status === "Open" ? "success" : "default"}
                           size="small"
                         />
                       </TableCell>
-                      <TableCell sx={{ width: "120px", py: 2, px: 0 }}>
+                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
                         <Box display="flex" gap={1}>
-                          <IconButton
-                            size="small"
-                            onClick={() => handleOpenDialog(task)}
-                          >
+                          <IconButton size="small" onClick={() => handleOpenDialog(task)}>
                             <Eye size={18} />
                           </IconButton>
-                         <IconButton size="small" onClick={() => handleEditClick(task)}>
-  <Pencil size={18} />
-</IconButton>
-
-                          <IconButton
-                            size="small"
-                            onClick={() => handleOpenDeleteDialog(task)}
-                          >
+                          <IconButton size="small" onClick={() => handleEditClick(task)}>
+                            <Pencil size={18} />
+                          </IconButton>
+                          <IconButton size="small" onClick={() => handleOpenDeleteDialog(task)}>
                             <Trash2 size={18} />
                           </IconButton>
                         </Box>
@@ -365,12 +365,7 @@ const handleEditClick = (task) => {
           </Card>
 
           {/* Pagination */}
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mt={2}
-          >
+          <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
             <Typography variant="body2">
               Showing {startIndex + 1} to {endIndex} of {totalItems} results
             </Typography>
@@ -382,28 +377,25 @@ const handleEditClick = (task) => {
               >
                 <ChevronLeft size={16} /> Previous
               </Button>
-             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-  <Button
-    key={page}
-    variant={currentPage === page ? "contained" : "text"}
-    onClick={() => setCurrentPage(page)}
-    sx={{
-      minWidth: "36px",
-      mx: 0.5,
-      color: currentPage === page ? "white" : "#029898", // ✅ text color for inactive
-      bgcolor: currentPage === page ? "#029898" : "transparent", // ✅ background for active
-      "&:hover": {
-        bgcolor:
-          currentPage === page
-            ? "#027777" // darker shade when active
-            : "rgba(2, 152, 152, 0.1)", // light hover effect for inactive
-      },
-    }}
-  >
-    {page}
-  </Button>
-))}
-
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <Button
+                  key={page}
+                  variant={currentPage === page ? "contained" : "text"}
+                  onClick={() => setCurrentPage(page)}
+                  sx={{
+                    minWidth: "36px",
+                    mx: 0.5,
+                    color: currentPage === page ? "white" : "#029898",
+                    bgcolor: currentPage === page ? "#029898" : "transparent",
+                    "&:hover": {
+                      bgcolor:
+                        currentPage === page ? "#027777" : "rgba(2, 152, 152, 0.1)",
+                    },
+                  }}
+                >
+                  {page}
+                </Button>
+              ))}
               <Button
                 variant="outlined"
                 onClick={handleNextPage}
@@ -596,40 +588,31 @@ const handleEditClick = (task) => {
 )}
   </DialogContent>
       </Dialog>
-
       {/* ===== DELETE POPUP ===== */}
       <Dialog
         open={openDeleteDialog}
         onClose={handleCloseDeleteDialog}
         PaperProps={{ sx: { borderRadius: "18px" } }}
       >
-        <Box display="flex" flexDirection="column" alignItems="center" gap={2} sx={{width:"600px"}}>
-         <Box sx={{display:"flex",flexDirection:"column", alignItems:"center",p:2}}>
-          <Trash2 size={40} style={{ color: "black"}}  />
-          <Typography variant="h6" fontWeight="bold">
-            Delete Data
-          </Typography>
-          <Typography textAlign="center">
-            Are You Sure You Want To Delete This Information
-          </Typography>
+        <Box display="flex" flexDirection="column" alignItems="center" gap={2} sx={{ width: "600px" }}>
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", p: 2 }}>
+            <Trash2 size={40} style={{ color: "black" }} />
+            <Typography variant="h6" fontWeight="bold">
+              Delete Data
+            </Typography>
+            <Typography textAlign="center">
+              Are You Sure You Want To Delete This Information
+            </Typography>
           </Box>
-          <Divider sx={{ width: "100%", border:"2px solid #ceccccff"}} />
+          <Divider sx={{ width: "100%", border: "2px solid #ceccccff" }} />
           <Box display="flex" gap={2} pb={2}>
-            <Button
-              variant="outlined"
-              onClick={handleCloseDeleteDialog}
-              sx={{ width: "100px" }}
-            >
+            <Button variant="outlined" onClick={handleCloseDeleteDialog} sx={{ width: "100px" }}>
               Cancel
             </Button>
             <Button
               variant="contained"
               onClick={handleConfirmDelete}
-              sx={{
-                bgcolor: "#db0303ff",
-                "&:hover": { bgcolor: "#333" },
-                width: "100px",
-              }}
+              sx={{ bgcolor: "#db0303ff", "&:hover": { bgcolor: "#333" }, width: "100px" }}
             >
               Delete
             </Button>

@@ -21,11 +21,7 @@ import {
   Chip,
   Divider,
 } from "@mui/material";
-import {
-  Search,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
 import pdf from "../../assets/icons/pdf.png";
@@ -270,6 +266,7 @@ export default function ManageEnquiry() {
             </Button>
           </Box>
 
+          {/* ✅ Table with single-line headers + horizontal scroll */}
           <Card
             sx={{
               boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
@@ -282,9 +279,13 @@ export default function ManageEnquiry() {
           >
             <TableContainer
               component={Paper}
-              sx={{ borderRadius: "12px", overflow: "hidden" }}
+              sx={{
+                borderRadius: "12px",
+                overflowX: "auto", // ✅ enable horizontal scroll
+                whiteSpace: "nowrap", // ✅ prevent wrapping
+              }}
             >
-              <Table>
+              <Table sx={{ minWidth: "1500px" }}>
                 <TableHead sx={{ bgcolor: "#029898" }}>
                   <TableRow>
                     {[
@@ -293,7 +294,7 @@ export default function ManageEnquiry() {
                       "Name",
                       "Address",
                       "Service",
-                      "Assigned Manger",
+                      "Assigned Manager",
                       "Assigned LSP",
                       "Assigned Technician 1",
                       "Assigned Technician 2",
@@ -307,12 +308,9 @@ export default function ManageEnquiry() {
                           color: "white",
                           textAlign: "center",
                           py: 2,
-                          width:
-                            head === "Email"
-                              ? "200px"
-                              : head === "Action"
-                              ? "160px"
-                              : "auto",
+                          px: 2,
+                          whiteSpace: "nowrap", // ✅ keep header text on one line
+                          fontWeight: "bold",
                         }}
                       >
                         {head}
@@ -320,6 +318,7 @@ export default function ManageEnquiry() {
                     ))}
                   </TableRow>
                 </TableHead>
+
                 <TableBody>
                   {currentItems.map((task, idx) => (
                     <TableRow key={task.id}>
@@ -353,7 +352,7 @@ export default function ManageEnquiry() {
                       <TableCell sx={{ py: 2, px: 0, textAlign: "center" }}>
                         {task.assignedLSP}
                       </TableCell>
-                      <TableCell sx={{ py: 2, px: 2 }}>
+                      <TableCell sx={{ py: 2, pr: 2 }}>
                         {task.lspAssignDate}
                       </TableCell>
                       <TableCell sx={{ py: 2, px: 0, textAlign: "center" }}>
@@ -362,7 +361,7 @@ export default function ManageEnquiry() {
                       <TableCell sx={{ py: 2, px: 0, textAlign: "center" }}>
                         {task.technicians}
                       </TableCell>
-                      <TableCell sx={{ py: 2, px: 0, textAlign: "center" }}>
+                      <TableCell sx={{ py: 2, px: 2, textAlign: "center" }}>
                         <Chip
                           label={task.status}
                           color={task.status === "Complete" ? "success" : "default"}
@@ -404,16 +403,16 @@ export default function ManageEnquiry() {
                       minWidth: "36px",
                       mx: 0.5,
                       color:
-                        currentPage === page ? "white" : "#029898", // ✅ text color for inactive
+                        currentPage === page ? "white" : "#029898",
                       bgcolor:
                         currentPage === page
                           ? "#029898"
-                          : "transparent", // ✅ background for active
+                          : "transparent",
                       "&:hover": {
                         bgcolor:
                           currentPage === page
-                            ? "#027777" // darker shade when active
-                            : "rgba(2, 152, 152, 0.1)", // light hover effect for inactive
+                            ? "#027777"
+                            : "rgba(2, 152, 152, 0.1)",
                       },
                     }}
                   >
