@@ -285,7 +285,25 @@ export default function ManageEnquiry() {
                 whiteSpace: "nowrap", // ✅ prevent wrapping
               }}
             >
-              <Table sx={{ minWidth: "1500px" }}>
+              <Table  sx={{
+         "td": {
+          whiteSpace: "nowrap", // ✅ single line only
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          fontSize: "0.88rem",
+          padding: "8px 12px", // compact padding
+          textAlign: "center",
+        },
+        "th":{
+            whiteSpace: "nowrap", // ✅ single line only
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          fontSize: "0.88rem",
+          padding: "12px 12px", // compact padding
+          textAlign: "center",
+          color:"#fff"
+        }
+      }}>
                 <TableHead sx={{ bgcolor: "#029898" }}>
                   <TableRow>
                     {[
@@ -304,14 +322,7 @@ export default function ManageEnquiry() {
                     ].map((head) => (
                       <TableCell
                         key={head}
-                        sx={{
-                          color: "white",
-                          textAlign: "center",
-                          py: 2,
-                          px: 2,
-                          whiteSpace: "nowrap", // ✅ keep header text on one line
-                          fontWeight: "bold",
-                        }}
+                        
                       >
                         {head}
                       </TableCell>
@@ -322,11 +333,11 @@ export default function ManageEnquiry() {
                 <TableBody>
                   {currentItems.map((task, idx) => (
                     <TableRow key={task.id}>
-                      <TableCell sx={{ py: 2, px: 2, textAlign: "center" }}>
+                      <TableCell>
                         {startIndex + idx + 1}
                       </TableCell>
-                      <TableCell sx={{ py: 2, px: 0 }}>{task.id}</TableCell>
-                      <TableCell sx={{ py: 2, px: 0, textAlign: "center" }}>
+                      <TableCell >{task.id}</TableCell>
+                      <TableCell >
                         {task.name}
                       </TableCell>
                       <TableCell sx={{ py: 2, px: 2 }}>{task.address}</TableCell>
@@ -343,25 +354,25 @@ export default function ManageEnquiry() {
                       >
                         {task.email}
                       </TableCell>
-                      <TableCell sx={{ py: 2, px: 2, textAlign: "center" }}>
+                      <TableCell >
                         {task.preferDate}
                       </TableCell>
-                      <TableCell sx={{ py: 2, px: 0, textAlign: "center" }}>
+                      <TableCell >
                         {task.preferTime}
                       </TableCell>
-                      <TableCell sx={{ py: 2, px: 0, textAlign: "center" }}>
+                      <TableCell >
                         {task.assignedLSP}
                       </TableCell>
-                      <TableCell sx={{ py: 2, pr: 2 }}>
+                      <TableCell >
                         {task.lspAssignDate}
                       </TableCell>
-                      <TableCell sx={{ py: 2, px: 0, textAlign: "center" }}>
+                      <TableCell >
                         {task.city}
                       </TableCell>
-                      <TableCell sx={{ py: 2, px: 0, textAlign: "center" }}>
+                      <TableCell >
                         {task.technicians}
                       </TableCell>
-                      <TableCell sx={{ py: 2, px: 2, textAlign: "center" }}>
+                      <TableCell >
                         <Chip
                           label={task.status}
                           color={task.status === "Complete" ? "success" : "default"}

@@ -238,7 +238,26 @@ export default function ManageEnquiry() {
       boxShadow: "none",
     }}
   >
-    <Table sx={{ minWidth: "1200px" }}>
+    <Table 
+    sx={{
+         "td": {
+          whiteSpace: "nowrap", // ✅ single line only
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          fontSize: "0.88rem",
+          padding: "8px 12px", // compact padding
+          textAlign: "center",
+        },
+        "th":{
+            whiteSpace: "nowrap", // ✅ single line only
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          fontSize: "0.88rem",
+          padding: "12px 12px", // compact padding
+          textAlign: "center",
+          color:"#fff"
+        }
+      }}>
       <TableHead>
         <TableRow sx={{ bgcolor: "#029898" }}>
           {[
@@ -257,14 +276,7 @@ export default function ManageEnquiry() {
           ].map((head) => (
             <TableCell
               key={head}
-              sx={{
-                color: "#fff",
-                textAlign: "center",
-                py: 1.5,
-                px: 1.5,
-                fontSize: "0.85rem",
-                whiteSpace: "nowrap",
-              }}
+             
             >
               {head}
             </TableCell>
@@ -293,7 +305,7 @@ export default function ManageEnquiry() {
             <TableCell align="center">{task.serviceableCities}</TableCell>
 
             {/* ✅ Added static status for style */}
-            <TableCell align="center">
+            {/* <TableCell align="center">
               <Pen
                 label={task.status || "Active"}
                 size="small"
@@ -313,7 +325,7 @@ export default function ManageEnquiry() {
                       : "#D1ECF1",
                 }}
               />
-            </TableCell>
+            </TableCell> */}
 
             <TableCell align="center">
               <Box display="flex" justifyContent="center" gap={0.5}>

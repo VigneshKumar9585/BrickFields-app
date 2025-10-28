@@ -198,7 +198,26 @@ export default function ManageEnquiry() {
                 whiteSpace: "nowrap", // ✅ keep headers in one line
               }}
             >
-              <Table sx={{ minWidth: "1500px" }}>
+              <Table 
+                  sx={{
+                       "td": {
+                        whiteSpace: "nowrap", // ✅ single line only
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        fontSize: "0.88rem",
+                        padding: "8px 12px", // compact padding
+                        textAlign: "center",
+                      },
+                      "th":{
+                          whiteSpace: "nowrap", // ✅ single line only
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        fontSize: "0.88rem",
+                        padding: "12px 12px", // compact padding
+                        textAlign: "center",
+                        color:"#fff"
+                      }
+                    }}>
                 <TableHead sx={{ bgcolor: "#029898" }}>
                   <TableRow>
                     {[
@@ -218,15 +237,7 @@ export default function ManageEnquiry() {
                     ].map((head) => (
                       <TableCell
                         key={head}
-                        sx={{
-                          color: "white",
-                          fontSize: "14px",
-                          textAlign: "center",
-                          fontWeight: "bold",
-                          py: 1.5,
-                          px: 2,
-                          whiteSpace: "nowrap", // ✅ single line header
-                        }}
+                       
                       >
                         {head}
                       </TableCell>

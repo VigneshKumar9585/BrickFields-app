@@ -273,14 +273,22 @@ export default function ManageEnquiry() {
   >
     <Table
       sx={{
-        "& th, & td": {
+         "td": {
           whiteSpace: "nowrap", // ✅ single line only
           overflow: "hidden",
           textOverflow: "ellipsis",
           fontSize: "0.88rem",
-          padding: "10px 12px", // compact padding
+          padding: "8px 12px", // compact padding
           textAlign: "center",
         },
+        "th":{
+            whiteSpace: "nowrap", // ✅ single line only
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          fontSize: "0.88rem",
+          padding: "12px 12px", // compact padding
+          textAlign: "center",
+        }
       }}
     >
       <TableHead sx={{ bgcolor: "#029898" }}>

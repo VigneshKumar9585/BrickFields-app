@@ -322,7 +322,26 @@ export default function ManageEnquiry() {
       boxShadow: "none",
     }}
   >
-    <Table sx={{ minWidth: "1200px" }}> {/* ✅ allows right scroll */}
+    <Table 
+    sx={{
+         "td": {
+          whiteSpace: "nowrap", // ✅ single line only
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          fontSize: "0.88rem",
+          padding: "8px 12px", // compact padding
+          textAlign: "center",
+        },
+        "th":{
+            whiteSpace: "nowrap", // ✅ single line only
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          fontSize: "0.88rem",
+          padding: "12px 12px", // compact padding
+          textAlign: "center",
+          color:"#fff"
+        }
+      }}> {/* ✅ allows right scroll */}
       <TableHead>
         <TableRow sx={{bgcolor: "#029898"}}>
           {[
@@ -341,16 +360,7 @@ export default function ManageEnquiry() {
             "Action",
           ].map((head) => (
             <TableCell
-              key={head}
-              sx={{
-                color: "#fff",
-                textAlign: "center",
-                py: 1.5,
-                px: 1.5,
-                fontSize: "0.85rem",
-                // fontWeight: 600,
-                whiteSpace: "nowrap", // ✅ no line breaks
-              }}
+             
             >
               {head}
             </TableCell>
@@ -369,67 +379,50 @@ export default function ManageEnquiry() {
               transition: "background 0.2s ease",
             }}
           >
-            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+            <TableCell align="center" >
               {startIndex + idx + 1}
             </TableCell>
-            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+            <TableCell align="center" >
               {task.id}
             </TableCell>
             <TableCell
               align="center"
-              sx={{
-                py: 1.5,
-                px: 1.5,
-                // fontWeight: 500,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
+              
             >
               {task.name}
             </TableCell>
             <TableCell
               align="left"
-              sx={{
-                py: 1.5,
-                px: 2,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
+            
             >
               {task.address}
             </TableCell>
             <TableCell
               align="center"
-              sx={{
-                width: "180px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                py: 1.5,
-                px: 1.5,
-              }}
+           
             >
               {task.email}
             </TableCell>
-            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+            <TableCell align="center" >
               {task.preferDate}
             </TableCell>
-            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+            <TableCell align="center" >
               {task.preferTime}
             </TableCell>
-            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+            <TableCell align="center" >
               {task.assignedLSP}
             </TableCell>
-            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+            <TableCell align="center" >
               {task.lspAssignDate}
             </TableCell>
-            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+            <TableCell align="center" >
               {task.city}
             </TableCell>
-            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+            <TableCell align="center" >
               {task.technicians}
             </TableCell>
 
-            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+            <TableCell align="center" >
               <Chip
                 label={task.status}
                 size="small"
@@ -451,7 +444,7 @@ export default function ManageEnquiry() {
               />
             </TableCell>
 
-            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+            <TableCell align="center" >
               <Box display="flex" justifyContent="center" gap={0.5}>
                 <IconButton
                   size="small"
