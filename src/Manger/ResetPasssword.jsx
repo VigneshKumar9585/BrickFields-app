@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import logo from "../assets/logo/logo.webp";
 
-const LoginCard = () => {
+const Login = () => {
   return (
     <Box
       sx={{
@@ -19,32 +19,32 @@ const LoginCard = () => {
         flexDirection: { xs: "column", md: "row" }, // mobile = stacked, desktop = row
       }}
     >
-      {/* Left Side - White Background (hidden on small screens) */}
-     <Box
-             sx={{
-               flex: "0 0 60%",
-               backgroundColor: "#F0F6F6",
-               display: { xs: "none", md: "flex" }, // hide on mobile
-               alignItems: "center",
-               justifyContent: "center",
-               flexDirection: "column",
-             }}
-           >
-             <Box
-               sx={{
-                 display: "flex",
-                 alignItems: "center",
-                 justifyContent: "center",
-                 py: 2,
-               }}
-             >
-               <img
-                 src={logo}
-                 alt="Logo"
-                 style={{ width: "500px", height: "auto", objectFit: "contain" }}
-               />
-             </Box>
-           </Box>
+
+        <Box
+                sx={{
+                  flex: "0 0 60%",
+                  backgroundColor: "#F0F6F6",
+                  display: { xs: "none", md: "flex" }, // hide on mobile
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    py: 2,
+                  }}
+                >
+                  <img
+                    src={logo}
+                    alt="Logo"
+                    style={{ width: "500px", height: "auto", objectFit: "contain" }}
+                  />
+                </Box>
+              </Box>
 
       {/* Right Side - Gray Background */}
       <Box
@@ -61,11 +61,11 @@ const LoginCard = () => {
         {/* Login Card */}
         <Paper
           sx={{
-            width:  "100%" ,
+            width: { xs: "100%", sm: "380px" },
             maxWidth: "380px",
-            height: "320px",
+            height: "410px",
             padding: "32px",
-            borderRadius: "30px",
+            borderRadius: "24px",
             backgroundColor: "#ffffff",
           }}
         >
@@ -79,7 +79,7 @@ const LoginCard = () => {
                 fontSize: "24px",
               }}
             >
-                Forgot Password
+              Reset Password
             </Typography>
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -93,7 +93,7 @@ const LoginCard = () => {
                     fontSize: "15px",
                   }}
                 >
-                  Email*
+                  New password*
                 </Typography>
                 <TextField
                   fullWidth
@@ -115,28 +115,71 @@ const LoginCard = () => {
                 />
                 <Typography
                   sx={{
-                    
-                    marginTop: "8px",
-                    marginBottom: "50px",
+                    marginTop:"8px",
+                    marginBottom: "8px",
                     color: "#9b9b9bff",
                     fontSize: "12px",
                   }}
                 >
-                  Please Enter A Email
+                    Enter New Password
                 </Typography>
               </Box>
 
+              {/* Password */}
+              <Box>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    marginBottom: "8px",
+                    color: "#333333",
+                    fontSize: "15px",
+                  }}
+                >
+                  Confirm Password*
+                </Typography>
+                <TextField
+                  fullWidth
+                  type="password"
+                  variant="filled"
+                  InputProps={{
+                    disableUnderline: true,
+                    sx: {
+                      backgroundColor: "#ebebeb",
+                      borderRadius: "4px",
+                      height: "40px",
+                    },
+                  }}
+                  inputProps={{
+                    sx: {
+                      padding: "12px 14px",
+                      fontSize: "14px",
+                    },
+                  }}
+                />
+                <Typography
+                  sx={{
+                    marginTop: "8px",
+                    color: "#9b9b9bff",
+                    fontSize: "12px",
+                      marginBottom:"20px"
+                  }}
+                >
+                  Confrim Your New Password
+                </Typography>
+              </Box>
+
+             
 
               {/* Login button */}
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <Button
-                  component={RouterLink}
-                   to="/reset-password"
                 
+                                  component={RouterLink}
+                                   to="/  "
                   fullWidth
                   variant="contained"
                   sx={{
-                    backgroundColor: "#484848",
+                    backgroundColor: "#029898",
                     color: "#ffffff",
                     height: "48px",
                     borderRadius: "4px",
@@ -145,11 +188,11 @@ const LoginCard = () => {
                     width: "300px",
                     fontWeight: "normal",
                     "&:hover": {
-                      backgroundColor: "#3a3a3a",
+                      backgroundColor: "#038080ff",
                     },
                   }}
                 >
-                  Send
+                  Change Password
                 </Button>
               </Box>
             </Box>
@@ -160,4 +203,4 @@ const LoginCard = () => {
   );
 };
 
-export default LoginCard;
+export default Login;

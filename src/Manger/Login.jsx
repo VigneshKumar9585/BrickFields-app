@@ -175,14 +175,14 @@ const Login = () => {
                   variant="contained"
                   onClick={handleLogin}
                   sx={{
-                    backgroundColor: "#484848",
+                    backgroundColor: "#029898",
                     color: "#fff",
                     height: "48px",
                     borderRadius: "4px",
                     textTransform: "none",
                     fontSize: "16px",
                     fontWeight: 500,
-                    "&:hover": { backgroundColor: "#3a3a3a" },
+                    "&:hover": { backgroundColor: "#038080ff" },
                   }}
                 >
                   Log In

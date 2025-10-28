@@ -6,22 +6,23 @@ import {
   ListItemText,
   Collapse,
   IconButton,
-  Toolbar,
   Box,
   Typography,
   Menu,
   MenuItem,
-  Divider,
 } from "@mui/material";
 import { NavLink, useNavigate } from "react-router-dom";
+
+// MUI Icons
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import ReportIcon from "@mui/icons-material/Assessment";
-import SettingsIcon from "@mui/icons-material/Settings";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import GroupIcon from "@mui/icons-material/Group";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
+import UpdateIcon from "@mui/icons-material/Update";
+import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 
+// Assets
 import Notifications from "../assets/icons/Group 139.png";
 import logo from "../assets/logo/logo.webp";
 import { TbLockPassword, TbLogout } from "react-icons/tb";
@@ -30,8 +31,8 @@ const SidebarLayout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openKeys, setOpenKeys] = useState({
     Enquiry: false,
-    "Add User": false,
-    Master: false,
+    Tasks: false,
+    Inspection: false,
   });
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -43,10 +44,9 @@ const SidebarLayout = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  // ✅ Only toggle main menu, do not close when submenu is clicked
   const toggleOpen = (key) => {
     setOpenKeys((prev) => {
-      let newKeys = { Enquiry: false, "Add User": false, Master: false };
+      let newKeys = { Enquiry: false, Tasks: false, Inspection: false };
       if (!prev[key]) {
         newKeys[key] = true;
       }
@@ -86,26 +86,59 @@ const SidebarLayout = () => {
         />
       </Box>
 
-      {/* <Divider sx={{ bgcolor: "rgba(0, 0, 0, 1)" }} /> */}
-
-      <List >
+      <List>
         {/* Dashboard */}
         <ListItemButton
           component={NavLink}
-          to="/dashboard"
+          to="/technician-dashboard"
           onClick={handleDrawerToggle}
-          sx={{color:"rgba(0, 0, 0, 1)"}}
+          sx={{ color: "rgba(0, 0, 0, 1)" }}
         >
           <DashboardIcon sx={{ mr: 2, color: "black" }} />
           <ListItemText
             primary="Dashboard"
-            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400  }}
+            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
           />
         </ListItemButton>
 
+        {/* Tasks */}
+        <ListItemButton onClick={() => toggleOpen("Tasks")} sx={{ color: "black" }}>
+          <AssignmentTurnedInIcon sx={{ mr: 2, color: "black" }} />
+          <ListItemText
+            primary="Tasks"
+            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
+          />
+        </ListItemButton>
+        <Collapse in={openKeys.Tasks} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItemButton
+              sx={{ pl: 4, color: "black" }}
+              component={NavLink}
+              to="/technician-new-task"
+              onClick={handleDrawerToggle}
+            >
+              <ListItemText
+                primary="New Task"
+                primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
+              />
+            </ListItemButton>
+            <ListItemButton
+              sx={{ pl: 4, color: "black" }}
+              component={NavLink}
+              to="/technician-current-task"
+              onClick={handleDrawerToggle}
+            >
+              <ListItemText
+                primary="Current Task"
+                primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
+              />
+            </ListItemButton>
+          </List>
+        </Collapse>
+
         {/* Enquiry */}
-        <ListItemButton onClick={() => toggleOpen("Enquiry")} sx={{ color: " black" }}>
-          <AssignmentIcon sx={{ mr: 2, color: "black" }} />
+        <ListItemButton onClick={() => toggleOpen("Enquiry")} sx={{ color: "black" }}>
+          <QuestionAnswerIcon sx={{ mr: 2, color: "black" }} />
           <ListItemText
             primary="Enquiry"
             primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
@@ -116,7 +149,7 @@ const SidebarLayout = () => {
             <ListItemButton
               sx={{ pl: 4, color: "black" }}
               component={NavLink}
-              to="/enquiry/new"
+              to="/technician-new-enquiry"
               onClick={handleDrawerToggle}
             >
               <ListItemText
@@ -127,79 +160,65 @@ const SidebarLayout = () => {
             <ListItemButton
               sx={{ pl: 4, color: "black" }}
               component={NavLink}
-              to="/enquiry/manage"
+              to="/technician-current-enquiry"
               onClick={handleDrawerToggle}
             >
               <ListItemText
-                primary="Manage Enquiry"
+                primary="Current Enquiry"
                 primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
               />
             </ListItemButton>
           </List>
         </Collapse>
 
-        {/* Add User */}
-        <ListItemButton onClick={() => toggleOpen("Add User")} sx={{ color: "black" }}>
-          <GroupIcon sx={{ mr: 2, color: "black" }} />
-          <ListItemText
-            primary="Add User"
-            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
-          />
-        </ListItemButton>
-        <Collapse in={openKeys["Add User"]} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            {["Add LSP",  "Manage LSP"].map((item, idx) => (
-              <ListItemButton
-                key={item}
-                sx={{ pl: 4, color: "black" }}
-                component={NavLink}
-                to={
-                  idx === 0
-                    ? "/user/addLSP"
-                    : idx === 1
-                    ? "/user/manageLSP"
-                    : "/user/manage"
-                }
-                onClick={handleDrawerToggle}
-              >
-                <ListItemText
-                  primary={item}
-                  primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
-                />
-              </ListItemButton>
-            ))}
-          </List>
-        </Collapse>
-
-        {/* Report */}
+        {/* Live Update */}
         <ListItemButton
           component={NavLink}
-          to="/report"
+          to="/technician-live-update"
           onClick={handleDrawerToggle}
           sx={{ color: "black" }}
         >
-          <ReportIcon sx={{ mr: 2, color: "black" }} />
+          <UpdateIcon sx={{ mr: 2, color: "black" }} />
           <ListItemText
-            primary="Report"
+            primary="Live Update"
             primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
           />
         </ListItemButton>
-
-        
 
         {/* Inspection */}
-        <ListItemButton
-          component={NavLink}
-          to="/inspection"
-          onClick={handleDrawerToggle}
-          sx={{ color: "black" }}
-        >
-          <AssignmentIcon sx={{ mr: 2, color: "black" }} />
+        <ListItemButton onClick={() => toggleOpen("Inspection")} sx={{ color: "black" }}>
+          <SearchIcon sx={{ mr: 2, color: "black" }} />
           <ListItemText
             primary="Inspection"
             primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
           />
         </ListItemButton>
+        <Collapse in={openKeys.Inspection} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItemButton
+              sx={{ pl: 4, color: "black" }}
+              component={NavLink}
+              to="/technician-inspection-general"
+              onClick={handleDrawerToggle}
+            >
+              <ListItemText
+                primary="General"
+                primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
+              />
+            </ListItemButton>
+            <ListItemButton
+              sx={{ pl: 4, color: "black" }}
+              component={NavLink}
+              to="/inspection-checklist"
+              onClick={handleDrawerToggle}
+            >
+              <ListItemText
+                primary="Checklist"
+                primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
+              />
+            </ListItemButton>
+          </List>
+        </Collapse>
       </List>
     </div>
   );
@@ -334,7 +353,11 @@ const SidebarLayout = () => {
                 Profile
               </MenuItem>
 
-              <MenuItem onClick={handleMenuClose} component={NavLink} to="/change/passwored">
+              <MenuItem
+                onClick={handleMenuClose}
+                component={NavLink}
+                to="/change/passwored"
+              >
                 <IconButton>
                   <TbLockPassword />
                 </IconButton>
