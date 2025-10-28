@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react"; // Import useRef
 import {
   Drawer,
   List,
@@ -6,14 +6,13 @@ import {
   ListItemText,
   Collapse,
   IconButton,
-  Toolbar,
   Box,
   Typography,
   Menu,
   MenuItem,
   Divider,
 } from "@mui/material";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ReportIcon from "@mui/icons-material/Assessment";
@@ -21,10 +20,14 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import GroupIcon from "@mui/icons-material/Group";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-
+import NewReleasesIcon from "@mui/icons-material/NewReleases";
 import Notifications from "../assets/icons/Group 139.png";
 import logo from "../assets/logo/logo.webp";
 import { TbLockPassword, TbLogout } from "react-icons/tb";
+import LaunchIcon from "@mui/icons-material/Launch";
+import ManageHistoryIcon from "@mui/icons-material/ManageHistory";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const SidebarLayout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -38,21 +41,55 @@ const SidebarLayout = () => {
   const open = Boolean(anchorEl);
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Use a ref to track if it's the initial render, to avoid closing on first mount
+  const isInitialMount = useRef(true);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  // ✅ Only toggle main menu, do not close when submenu is clicked
-  const toggleOpen = (key) => {
-    setOpenKeys((prev) => {
-      let newKeys = { Enquiry: false, "Add User": false, Master: false };
-      if (!prev[key]) {
-        newKeys[key] = true;
-      }
-      return newKeys;
-    });
+  const activeLinkStyles = ({ isActive }) => ({
+    backgroundColor: isActive ? "#e0f7fa" : "transparent",
+    color: isActive ? "#00796b" : "rgba(0, 0, 0, 1)",
+    fontWeight: isActive ? 600 : 400,
+    borderRadius: "8px",
+    margin: "0 8px",
+    width: "calc(100% - 16px)",
+    "& .MuiListItemIcon-root": {
+      color: isActive ? "#00796b" : "black",
+    },
+    "& .MuiListItemText-primary": {
+      color: isActive ? "#00796b" : "rgba(0, 0, 0, 1)",
+    },
+  });
+
+  const isSubmenuActive = (paths) => {
+    return paths.some((path) => location.pathname.startsWith(path));
   };
+
+
+
+  // Strictly toggles the state when parent is clicked
+// ✅ Keep parent menu open when any of its subroutes are active
+const toggleOpen = (key) => {
+  setOpenKeys((prev) => ({
+    ...prev,
+    [key]: !prev[key], // Toggle only when clicking parent
+  }));
+};
+
+// ✅ Keep submenu open if route matches any of its children
+useEffect(() => {
+  if (location.pathname.startsWith("/enquiry/")) {
+    setOpenKeys((prev) => ({ ...prev, Enquiry: true }));
+  }
+  if (location.pathname.startsWith("/user/")) {
+    setOpenKeys((prev) => ({ ...prev, "Add User": true }));
+  }
+}, [location.pathname]);
+
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -70,7 +107,6 @@ const SidebarLayout = () => {
         color: "rgba(0, 0, 0, 1)",
       }}
     >
-      {/* ✅ Logo Section */}
       <Box
         sx={{
           display: "flex",
@@ -86,30 +122,46 @@ const SidebarLayout = () => {
         />
       </Box>
 
-      {/* <Divider sx={{ bgcolor: "rgba(0, 0, 0, 1)" }} /> */}
-
-      <List >
+      <List>
         {/* Dashboard */}
         <ListItemButton
           component={NavLink}
           to="/dashboard"
           onClick={handleDrawerToggle}
-          sx={{color:"rgba(0, 0, 0, 1)"}}
+          style={activeLinkStyles}
+          sx={{ color: "rgba(0, 0, 0, 1)" }}
         >
           <DashboardIcon sx={{ mr: 2, color: "black" }} />
           <ListItemText
             primary="Dashboard"
-            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400  }}
+            primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
           />
         </ListItemButton>
+        <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
 
         {/* Enquiry */}
-        <ListItemButton onClick={() => toggleOpen("Enquiry")} sx={{ color: " black" }}>
-          <AssignmentIcon sx={{ mr: 2, color: "black" }} />
+        <ListItemButton
+          onClick={() => toggleOpen("Enquiry")}
+          sx={{
+            color: "black",
+            margin: "0 8px",
+            width: "calc(100% - 16px)",
+            backgroundColor: (openKeys.Enquiry || isSubmenuActive(["/enquiry/new", "/enquiry/manage"])) ? "#e0f7fa" : "transparent",
+            fontWeight: (openKeys.Enquiry || isSubmenuActive(["/enquiry/new", "/enquiry/manage"])) ? 600 : 400,
+            "& .MuiListItemIcon-root": {
+              color: (openKeys.Enquiry || isSubmenuActive(["/enquiry/new", "/enquiry/manage"])) ? "#00796b" : "black",
+            },
+            "& .MuiListItemText-primary": {
+              color: (openKeys.Enquiry || isSubmenuActive(["/enquiry/new", "/enquiry/manage"])) ? "#00796b" : "rgba(0, 0, 0, 1)",
+            },
+          }}
+        >
+          <LaunchIcon sx={{ mr: 2, color: "black" }} />
           <ListItemText
             primary="Enquiry"
-            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
+            primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
           />
+          {openKeys.Enquiry ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </ListItemButton>
         <Collapse in={openKeys.Enquiry} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
@@ -118,7 +170,9 @@ const SidebarLayout = () => {
               component={NavLink}
               to="/enquiry/new"
               onClick={handleDrawerToggle}
+              style={activeLinkStyles}
             >
+              <NewReleasesIcon sx={{ mr: 2, color: "black" }} />
               <ListItemText
                 primary="New Enquiry"
                 primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
@@ -129,7 +183,9 @@ const SidebarLayout = () => {
               component={NavLink}
               to="/enquiry/manage"
               onClick={handleDrawerToggle}
+              style={activeLinkStyles}
             >
+              <ManageHistoryIcon sx={{ mr: 2, color: "black" }} />
               <ListItemText
                 primary="Manage Enquiry"
                 primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
@@ -137,18 +193,35 @@ const SidebarLayout = () => {
             </ListItemButton>
           </List>
         </Collapse>
+        <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
 
         {/* Add User */}
-        <ListItemButton onClick={() => toggleOpen("Add User")} sx={{ color: "black" }}>
+        <ListItemButton
+          onClick={() => toggleOpen("Add User")}
+          sx={{
+            color: "black",
+            margin: "0 8px",
+            width: "calc(100% - 16px)",
+            backgroundColor: (openKeys["Add User"] || isSubmenuActive(["/user/addLSP", "/user/manageLSP"])) ? "#e0f7fa" : "transparent",
+            fontWeight: (openKeys["Add User"] || isSubmenuActive(["/user/addLSP", "/user/manageLSP"])) ? 600 : 400,
+            "& .MuiListItemIcon-root": {
+              color: (openKeys["Add User"] || isSubmenuActive(["/user/addLSP", "/user/manageLSP"])) ? "#00796b" : "black",
+            },
+            "& .MuiListItemText-primary": {
+              color: (openKeys["Add User"] || isSubmenuActive(["/user/addLSP", "/user/manageLSP"])) ? "#00796b" : "rgba(0, 0, 0, 1)",
+            },
+          }}
+        >
           <GroupIcon sx={{ mr: 2, color: "black" }} />
           <ListItemText
             primary="Add User"
-            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
+            primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
           />
+          {openKeys["Add User"] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </ListItemButton>
         <Collapse in={openKeys["Add User"]} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            {["Add LSP",  "Manage LSP"].map((item, idx) => (
+            {["Add LSP", "Manage LSP"].map((item, idx) => (
               <ListItemButton
                 key={item}
                 sx={{ pl: 4, color: "black" }}
@@ -161,6 +234,7 @@ const SidebarLayout = () => {
                     : "/user/manage"
                 }
                 onClick={handleDrawerToggle}
+                style={activeLinkStyles}
               >
                 <ListItemText
                   primary={item}
@@ -170,36 +244,39 @@ const SidebarLayout = () => {
             ))}
           </List>
         </Collapse>
+        <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
 
         {/* Report */}
         <ListItemButton
           component={NavLink}
           to="/report"
           onClick={handleDrawerToggle}
+          style={activeLinkStyles}
           sx={{ color: "black" }}
         >
           <ReportIcon sx={{ mr: 2, color: "black" }} />
           <ListItemText
             primary="Report"
-            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
+            primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
           />
         </ListItemButton>
-
-        
+        <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
 
         {/* Inspection */}
         <ListItemButton
           component={NavLink}
           to="/inspection"
           onClick={handleDrawerToggle}
+          style={activeLinkStyles}
           sx={{ color: "black" }}
         >
           <AssignmentIcon sx={{ mr: 2, color: "black" }} />
           <ListItemText
             primary="Inspection"
-            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
+            primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
           />
         </ListItemButton>
+        <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
       </List>
     </div>
   );
@@ -213,7 +290,6 @@ const SidebarLayout = () => {
         alignItems: "flex-start",
       }}
     >
-      {/* Mobile toggle button */}
       <Box>
         <IconButton
           color="inherit"
@@ -225,7 +301,6 @@ const SidebarLayout = () => {
           <MenuIcon />
         </IconButton>
 
-        {/* Mobile Drawer */}
         <Drawer
           variant="temporary"
           open={mobileOpen}
@@ -243,7 +318,6 @@ const SidebarLayout = () => {
           {drawer}
         </Drawer>
 
-        {/* Permanent Drawer */}
         <Drawer
           variant="permanent"
           sx={{
@@ -251,7 +325,6 @@ const SidebarLayout = () => {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: 260,
-              backgroundColor: "#1e1e2f",
             },
           }}
           open
@@ -260,9 +333,7 @@ const SidebarLayout = () => {
         </Drawer>
       </Box>
 
-      {/* Main Content with Top Header */}
       <Box component="main" sx={{ flexGrow: 1, p: 3, pb: 0, pt: "9px" }}>
-        {/* Header Section */}
         <Box
           sx={{
             display: "flex",
@@ -280,7 +351,6 @@ const SidebarLayout = () => {
               />
             </IconButton>
 
-            {/* Profile Menu */}
             <IconButton onClick={handleMenuOpen}>
               <AccountCircle
                 sx={{ width: "55px", height: "55px", color: "black" }}
@@ -324,25 +394,36 @@ const SidebarLayout = () => {
                   </Typography>
                 </Box>
               </Box>
+              <Divider sx={{ my: 1, borderColor: "#e0e0e0" }} />
 
-              <MenuItem onClick={handleMenuClose} component={NavLink} to="/profile">
-                <IconButton>
+              <MenuItem
+                onClick={handleMenuClose}
+                component={NavLink}
+                to="/profile"
+              >
+                <IconButton size="small" sx={{ mr: 1 }}>
                   <AccountCircle
                     sx={{ width: "20px", height: "20px", color: "black" }}
                   />
                 </IconButton>
                 Profile
               </MenuItem>
+              <Divider sx={{ my: 1, borderColor: "#e0e0e0" }} />
 
-              <MenuItem onClick={handleMenuClose} component={NavLink} to="/change/passwored">
-                <IconButton>
+              <MenuItem
+                onClick={handleMenuClose}
+                component={NavLink}
+                to="/change/passwored"
+              >
+                <IconButton size="small" sx={{ mr: 1 }}>
                   <TbLockPassword />
                 </IconButton>
                 Change Password
               </MenuItem>
+              <Divider sx={{ my: 1, borderColor: "#e0e0e0" }} />
 
               <MenuItem onClick={handleMenuClose}>
-                <IconButton>
+                <IconButton size="small" sx={{ mr: 1 }}>
                   <TbLogout />
                 </IconButton>
                 Logout

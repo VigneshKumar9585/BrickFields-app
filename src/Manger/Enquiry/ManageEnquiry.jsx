@@ -64,6 +64,71 @@ const sampleTasks = [
     technicians: "Anna",
     status: "Open",
   },
+   {
+    id: "TSK002",
+    name: "Jane Smith",
+    address: "456 Oak Ave, Midtown",
+    email: "jane.smith@email.com",
+    preferDate: "2024-01-16",
+    preferTime: "2:00 PM",
+    assignedLSP: "LSP-102",
+    lspAssignDate: "2024-01-15",
+    city: "Brooklyn",
+    technicians: "Anna",
+    status: "Open",
+  },
+   {
+    id: "TSK002",
+    name: "Jane Smith",
+    address: "456 Oak Ave, Midtown",
+    email: "jane.smith@email.com",
+    preferDate: "2024-01-16",
+    preferTime: "2:00 PM",
+    assignedLSP: "LSP-102",
+    lspAssignDate: "2024-01-15",
+    city: "Brooklyn",
+    technicians: "Anna",
+    status: "Open",
+  },
+   {
+    id: "TSK002",
+    name: "Jane Smith",
+    address: "456 Oak Ave, Midtown",
+    email: "jane.smith@email.com",
+    preferDate: "2024-01-16",
+    preferTime: "2:00 PM",
+    assignedLSP: "LSP-102",
+    lspAssignDate: "2024-01-15",
+    city: "Brooklyn",
+    technicians: "Anna",
+    status: "Open",
+  },
+   {
+    id: "TSK002",
+    name: "Jane Smith",
+    address: "456 Oak Ave, Midtown",
+    email: "jane.smith@email.com",
+    preferDate: "2024-01-16",
+    preferTime: "2:00 PM",
+    assignedLSP: "LSP-102",
+    lspAssignDate: "2024-01-15",
+    city: "Brooklyn",
+    technicians: "Anna",
+    status: "Open",
+  },
+   {
+    id: "TSK002",
+    name: "Jane Smith",
+    address: "456 Oak Ave, Midtown",
+    email: "jane.smith@email.com",
+    preferDate: "2024-01-16",
+    preferTime: "2:00 PM",
+    assignedLSP: "LSP-102",
+    lspAssignDate: "2024-01-15",
+    city: "Brooklyn",
+    technicians: "Anna",
+    status: "Open",
+  },
 ];
 import { useNavigate } from "react-router-dom";
 
@@ -238,131 +303,195 @@ export default function ManageEnquiry() {
           </Card>
 
           {/* Table */}
-          <Card
-            sx={{
-              boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
-              mt: 2,
-              ml: "20px",
-              bgcolor: "rgb(0,0,0)",
-              width: "1180px",
-              borderRadius: "12px",
-            }}
-          >
-            <TableContainer
-              component={Paper}
+         <Card
+  sx={{
+    boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.08)",
+    bgcolor: "#fff",
+    borderRadius: "10px",
+    overflow: "hidden",
+    width: "1180px", // ✅ same fixed width
+  }}
+>
+  <TableContainer
+    component={Paper}
+    sx={{
+      borderRadius: "10px",
+      overflowX: "auto", // ✅ horizontal scroll
+      whiteSpace: "nowrap", // ✅ prevent wrapping
+      bgcolor: "#fafafa",
+      boxShadow: "none",
+    }}
+  >
+    <Table sx={{ minWidth: "1200px" }}> {/* ✅ allows right scroll */}
+      <TableHead>
+        <TableRow sx={{bgcolor: "#029898"}}>
+          {[
+            "S.No",
+            "Task Id",
+            "Name",
+            "Address",
+            "Email",
+            "Prefer Date",
+            "Prefer Time",
+            "Assigned LSP",
+            "LSP Assign Date",
+            "City",
+            "Technicians",
+            "Status",
+            "Action",
+          ].map((head) => (
+            <TableCell
+              key={head}
               sx={{
-                borderRadius: "12px",
-                overflowX: "auto", // ✅ horizontal scroll
-                whiteSpace: "nowrap", // ✅ prevent wrapping
+                color: "#fff",
+                textAlign: "center",
+                py: 1.5,
+                px: 1.5,
+                fontSize: "0.85rem",
+                // fontWeight: 600,
+                whiteSpace: "nowrap", // ✅ no line breaks
               }}
             >
-              <Table sx={{ minWidth: "1200px" }}>
-                <TableHead sx={{ bgcolor: "#029898" }}>
-                  <TableRow>
-                    {[
-                      "S.No",
-                      "Task Id",
-                      "Name",
-                      "Address",
-                      "Email",
-                      "Prefer Date",
-                      "Prefer Time",
-                      "Assigned LSP",
-                      "LSP Assign Date",
-                      "City",
-                      "Technicians",
-                      "Status",
-                      "Action",
-                    ].map((head) => (
-                      <TableCell
-                        key={head}
-                        sx={{
-                          color: "white",
-                          textAlign: "center",
-                          py: 2,
-                          px: 1,
-                          whiteSpace: "nowrap",
-                          width:
-                            head === "Email"
-                              ? "200px"
-                              : head === "Action"
-                              ? "160px"
-                              : "auto",
-                        }}
-                      >
-                        {head}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {currentItems.map((task, idx) => (
-                    <TableRow key={task.id}>
-                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
-                        {startIndex + idx + 1}
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
-                        {task.id}
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
-                        {task.name}
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 2 }}>{task.address}</TableCell>
-                      <TableCell
-                        sx={{
-                          width: "150px",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          py: 2,
-                          textAlign: "center",
-                          px: 1,
-                        }}
-                      >
-                        {task.email}
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
-                        {task.preferDate}
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
-                        {task.preferTime}
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
-                        {task.assignedLSP}
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 2 }}>{task.lspAssignDate}</TableCell>
-                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
-                        {task.city}
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
-                        {task.technicians}
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
-                        <Chip
-                          label={task.status}
-                          color={task.status === "Open" ? "success" : "default"}
-                          size="small"
-                        />
-                      </TableCell>
-                      <TableCell sx={{ py: 2, px: 1, textAlign: "center" }}>
-                        <Box display="flex" gap={1}>
-                          <IconButton size="small" onClick={() => handleOpenDialog(task)}>
-                            <Eye size={18} />
-                          </IconButton>
-                          <IconButton size="small" onClick={() => handleEditClick(task)}>
-                            <Pencil size={18} />
-                          </IconButton>
-                          <IconButton size="small" onClick={() => handleOpenDeleteDialog(task)}>
-                            <Trash2 size={18} />
-                          </IconButton>
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Card>
+              {head}
+            </TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+
+      <TableBody>
+        {currentItems.map((task, idx) => (
+          <TableRow
+            key={task.id}
+            sx={{
+              "&:hover": {
+                backgroundColor: "#f5f5f5",
+              },
+              transition: "background 0.2s ease",
+            }}
+          >
+            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+              {startIndex + idx + 1}
+            </TableCell>
+            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+              {task.id}
+            </TableCell>
+            <TableCell
+              align="center"
+              sx={{
+                py: 1.5,
+                px: 1.5,
+                // fontWeight: 500,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {task.name}
+            </TableCell>
+            <TableCell
+              align="left"
+              sx={{
+                py: 1.5,
+                px: 2,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {task.address}
+            </TableCell>
+            <TableCell
+              align="center"
+              sx={{
+                width: "180px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                py: 1.5,
+                px: 1.5,
+              }}
+            >
+              {task.email}
+            </TableCell>
+            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+              {task.preferDate}
+            </TableCell>
+            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+              {task.preferTime}
+            </TableCell>
+            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+              {task.assignedLSP}
+            </TableCell>
+            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+              {task.lspAssignDate}
+            </TableCell>
+            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+              {task.city}
+            </TableCell>
+            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+              {task.technicians}
+            </TableCell>
+
+            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+              <Chip
+                label={task.status}
+                size="small"
+                sx={{
+                  fontWeight: 500,
+                  color:
+                    task.status === "Open"
+                      ? "#0F5132"
+                      : task.status === "In Progress"
+                      ? "#664d03"
+                      : "#0C5460",
+                  bgcolor:
+                    task.status === "Open"
+                      ? "#D1E7DD"
+                      : task.status === "In Progress"
+                      ? "#FFF3CD"
+                      : "#D1ECF1",
+                }}
+              />
+            </TableCell>
+
+            <TableCell align="center" sx={{ py: 1.5, px: 1.5 }}>
+              <Box display="flex" justifyContent="center" gap={0.5}>
+                <IconButton
+                  size="small"
+                  sx={{
+                    color: "#00796B",
+                    "&:hover": { bgcolor: "rgba(0,121,107,0.08)" },
+                  }}
+                  onClick={() => handleOpenDialog(task)}
+                >
+                  <Eye size={18} />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  sx={{
+                    color: "#0288d1",
+                    "&:hover": { bgcolor: "rgba(2,136,209,0.08)" },
+                  }}
+                  onClick={() => handleEditClick(task)}
+                >
+                  <Pencil size={18} />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  sx={{
+                    color: "#d32f2f",
+                    "&:hover": { bgcolor: "rgba(211,47,47,0.08)" },
+                  }}
+                  onClick={() => handleOpenDeleteDialog(task)}
+                >
+                  <Trash2 size={18} />
+                </IconButton>
+              </Box>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
+</Card>
+
 
           {/* Pagination */}
           <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>

@@ -28,6 +28,9 @@ import { Search, Eye, Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-r
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import {
+  Pen
+} from "lucide-react";
 
 export default function ManageEnquiry() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,26 +46,54 @@ export default function ManageEnquiry() {
   const [openViewDialog, setOpenViewDialog] = useState(false); // 👁 view popup state
 
   // API Data
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
+ const [tasks] = useState([
+  {
+    _id: "1",
+    companyName: "TechVision Pvt Ltd",
+    businessType: "Software",
+    phone: "9876543210",
+    email: "info@techvision.com",
+    pointOfContact: "Rahul Mehta",
+    pointOfContactMobile: "9988776655",
+    district: "Bangalore Urban",
+    city: "Bangalore",
+    serviceableCities: "Mysore, Mangalore",
+    status: "Open",
+  },
+  {
+    _id: "2",
+    companyName: "BuildPro Solutions",
+    businessType: "Construction",
+    phone: "9876543211",
+    email: "support@buildpro.com",
+    pointOfContact: "Priya Nair",
+    pointOfContactMobile: "9988776644",
+    district: "Ernakulam",
+    city: "Kochi",
+    serviceableCities: "Kollam, Thrissur",
+    status: "Closed",
+  },
+]);
+
+  // const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
   // Fetch LSPs
-  useEffect(() => {
-    const fetchLSPs = async () => {
-      try {
-        setLoading(true);
-        const res = await axios.get("http://localhost:2444/lsp-get");
-        setTasks(res.data.data || []);
-      } catch (err) {
-        console.error("Failed to fetch LSP data", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchLSPs();
-  }, []);
+  // useEffect(() => {
+  //   const fetchLSPs = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const res = await axios.get("http://localhost:2444/lsp-get");
+  //       setTasks(res.data.data || []);
+  //     } catch (err) {
+  //       console.error("Failed to fetch LSP data", err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchLSPs();
+  // }, []);
 
   const handleEditClick = (task) => {
     navigate(`/user/addLSP`, { state: { task } });
@@ -129,16 +160,7 @@ export default function ManageEnquiry() {
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
   const currentItems = tasks.slice(startIndex, endIndex);
 
-  if (loading) {
-    return (
-      <>
-        <Navbar />
-        <Box minHeight="100vh" display="flex" justifyContent="center" alignItems="center">
-          <CircularProgress />
-        </Box>
-      </>
-    );
-  }
+
 
   return (
     <>
@@ -195,65 +217,144 @@ export default function ManageEnquiry() {
           </Card>
 
           {/* Table with horizontal scroll & single-line headers */}
-          <Card
+        {/* Table Section */}
+<Card
+  sx={{
+    boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.08)",
+    bgcolor: "#fff",
+    borderRadius: "10px",
+    overflow: "hidden",
+    width: "1180px",
+    mt: 2,
+  }}
+>
+  <TableContainer
+    component={Paper}
+    sx={{
+      borderRadius: "10px",
+      overflowX: "auto",
+      whiteSpace: "nowrap",
+      bgcolor: "#fafafa",
+      boxShadow: "none",
+    }}
+  >
+    <Table sx={{ minWidth: "1200px" }}>
+      <TableHead>
+        <TableRow sx={{ bgcolor: "#029898" }}>
+          {[
+            "S.No",
+            "Company Name",
+            "Business Type",
+            "Phone",
+            "Email",
+            "Point of Contact",
+            "Contact Mobile",
+            "District",
+            "City",
+            "Serviceable Cities",
+            "Status",
+            "Action",
+          ].map((head) => (
+            <TableCell
+              key={head}
+              sx={{
+                color: "#fff",
+                textAlign: "center",
+                py: 1.5,
+                px: 1.5,
+                fontSize: "0.85rem",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {head}
+            </TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+
+      <TableBody>
+        {currentItems.map((task, idx) => (
+          <TableRow
+            key={task._id}
             sx={{
-              boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
-              mt: 2,
-              ml: "20px",
-              bgcolor: "rgb(0,0,0)",
-              width: "1180px",
-              borderRadius: "12px",
+              "&:hover": { backgroundColor: "#f5f5f5" },
+              transition: "background 0.2s ease",
             }}
           >
-            <TableContainer component={Paper} sx={{ borderRadius: "12px", overflowX: "auto", whiteSpace: "nowrap" }}>
-              <Table sx={{ minWidth: "1200px" }}>
-                <TableHead sx={{ bgcolor: "#029898" }}>
-                  <TableRow>
-                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap", pr: 0 }}>S.No</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap" }}>Company Name</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap" }}>Business Type</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap" }}>Company Phone No.</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap" }}>Company Email</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap" }}>Point Of Contact Name</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap" }}>Point Of Contact Mobile</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap" }}>District</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap" }}>City</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap" }}>Serviceable Cities</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "center", whiteSpace: "nowrap", pl: 0 }}>Action</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {currentItems.map((task, idx) => (
-                    <TableRow key={task._id}>
-                      <TableCell sx={{ textAlign: "center" }}>{startIndex + idx + 1}</TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{task.companyName}</TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{task.businessType}</TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{task.phone}</TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{task.email}</TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{task.pointOfContact}</TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{task.pointOfContactMobile}</TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{task.district}</TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{task.city}</TableCell>
-                      <TableCell sx={{ textAlign: "center"}}>{task.serviceableCities}</TableCell>
-                      <TableCell sx={{pl:0}}>
-                        <Box display="flex" gap={1}>
-                          <IconButton size="small" onClick={() => handleOpenViewDialog(task)}>
-                            <Eye size={18} />
-                          </IconButton>
-                          <IconButton size="small" onClick={() => handleEditClick(task)}>
-                            <Pencil size={18} />
-                          </IconButton>
-                          <IconButton size="small" onClick={() => handleOpenDeleteDialog(task)}>
-                            <Trash2 size={18} />
-                          </IconButton>
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Card>
+            <TableCell align="center">{startIndex + idx + 1}</TableCell>
+            <TableCell align="center">{task.companyName}</TableCell>
+            <TableCell align="center">{task.businessType}</TableCell>
+            <TableCell align="center">{task.phone}</TableCell>
+            <TableCell align="center">{task.email}</TableCell>
+            <TableCell align="center">{task.pointOfContact}</TableCell>
+            <TableCell align="center">{task.pointOfContactMobile}</TableCell>
+            <TableCell align="center">{task.district}</TableCell>
+            <TableCell align="center">{task.city}</TableCell>
+            <TableCell align="center">{task.serviceableCities}</TableCell>
+
+            {/* ✅ Added static status for style */}
+            <TableCell align="center">
+              <Pen
+                label={task.status || "Active"}
+                size="small"
+                sx={{
+                  fontWeight: 500,
+                  color:
+                    task.status === "Open"
+                      ? "#0F5132"
+                      : task.status === "Closed"
+                      ? "#842029"
+                      : "#055160",
+                  bgcolor:
+                    task.status === "Open"
+                      ? "#D1E7DD"
+                      : task.status === "Closed"
+                      ? "#F8D7DA"
+                      : "#D1ECF1",
+                }}
+              />
+            </TableCell>
+
+            <TableCell align="center">
+              <Box display="flex" justifyContent="center" gap={0.5}>
+                <IconButton
+                  size="small"
+                  sx={{
+                    color: "#00796B",
+                    "&:hover": { bgcolor: "rgba(0,121,107,0.08)" },
+                  }}
+                  onClick={() => handleOpenViewDialog(task)}
+                >
+                  <Eye size={18} />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  sx={{
+                    color: "#0288d1",
+                    "&:hover": { bgcolor: "rgba(2,136,209,0.08)" },
+                  }}
+                  onClick={() => handleEditClick(task)}
+                >
+                  <Pencil size={18} />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  sx={{
+                    color: "#d32f2f",
+                    "&:hover": { bgcolor: "rgba(211,47,47,0.08)" },
+                  }}
+                  onClick={() => handleOpenDeleteDialog(task)}
+                >
+                  <Trash2 size={18} />
+                </IconButton>
+              </Box>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
+</Card>
 
           {/* Pagination */}
           <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
