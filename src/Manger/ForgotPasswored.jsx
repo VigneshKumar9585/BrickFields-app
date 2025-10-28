@@ -136,7 +136,7 @@ const LoginCard = () => {
                   fullWidth
                   variant="contained"
                   sx={{
-                    backgroundColor: "#484848",
+                    backgroundColor: "#029898",
                     color: "#ffffff",
                     height: "48px",
                     borderRadius: "4px",
@@ -145,7 +145,7 @@ const LoginCard = () => {
                     width: "300px",
                     fontWeight: "normal",
                     "&:hover": {
-                      backgroundColor: "#3a3a3a",
+                      backgroundColor: "#038080ff",
                     },
                   }}
                 >

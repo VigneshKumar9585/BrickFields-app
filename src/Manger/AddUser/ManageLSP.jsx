@@ -3,6 +3,7 @@ import Navbar from "../../componts/Navbar.jsx";
 import {
   Box,
   Card,
+  Avatar,
   CardContent,
   Typography,
   FormControl,
@@ -318,28 +319,80 @@ export default function ManageEnquiry() {
       </Dialog>
 
       {/* VIEW POPUP */}
-      <Dialog open={openViewDialog} onClose={handleCloseViewDialog} PaperProps={{ sx: { borderRadius: "18px", p: 2, width: "600px" } }}>
+      <Dialog open={openViewDialog} onClose={handleCloseViewDialog} PaperProps={{ sx: { borderRadius: "18px",  width: "600px" } }}>
         {selectedTask && (
-          <Box display="flex" flexDirection="column" gap={2}>
-            <Typography variant="h6" fontWeight="bold" textAlign="center">
+          <Box display="flex" flexDirection="column"   >
+            <Typography variant="h6" fontWeight="bold" sx={{p:2,bgcolor:"#029898",color:"white"}} >
               LSP Details
             </Typography>
             <Divider />
-            <Box display="flex" flexDirection="column" gap={1}>
-              <Typography><b>Company Name:</b> {selectedTask.companyName}</Typography>
-              <Typography><b>Business Type:</b> {selectedTask.businessType}</Typography>
-              <Typography><b>Phone:</b> {selectedTask.phone}</Typography>
-              <Typography><b>Email:</b> {selectedTask.email}</Typography>
-              <Typography><b>Point Of Contact:</b> {selectedTask.pointOfContact}</Typography>
-              <Typography><b>Contact Mobile:</b> {selectedTask.pointOfContactMobile}</Typography>
-              <Typography><b>District:</b> {selectedTask.district}</Typography>
-              <Typography><b>City:</b> {selectedTask.city}</Typography>
-              <Typography><b>Serviceable Cities:</b> {selectedTask.serviceableCities}</Typography>
-            </Box>
+            <Box display="flex"  >
+                                        <Box
+                                          sx={{
+                                            m:3,
+                                            mr:0,
+                                            bgcolor: "rgba(240, 238, 238, 1)",
+                                            borderRadius: 2.5,
+                                            width: "180px",
+                                            height:"300px",
+                                            display:"grid",
+                                              justifyContent: "center",
+
+
+                                          }}
+                                        >
+                                          <Box
+                                            sx={{
+                                              gap: 2,
+                                            }}
+                                          >
+
+                                            <Avatar sx={{ width: 90, height: 90 ,ml:2,mt:4,mb:1}} />
+                                            <Box sx={{textAlign:"center"}}>
+                                              <Typography sx={{ fontWeight: 600 }}>
+                                                Company Name
+                                              </Typography>
+                                              <Typography variant="body2" color="text.secondary">
+                                                District
+                                              </Typography>
+                                            </Box>
+                                          </Box>
+                                        </Box>
+
+                                        <Box
+                                          sx={{
+                                            m:3,
+                                            bgcolor: "rgba(240, 238, 238, 1)",
+                                            borderRadius: 2.5,
+                                            width: "700px",
+                                            height:"300px",
+                                            display:"grid",
+                                              justifyContent: "center",
+
+
+                                          }}
+                                        >
+                                          <Box
+                                            sx={{
+                                              gap: 2,
+                                            }}
+                                          >
+
+                                            <Box sx={{textAlign:"center"}}>
+                                              <Typography sx={{ fontWeight: 600 }}>
+                                                Company Name
+                                              </Typography>
+                                              <Typography variant="body2" color="text.secondary">
+                                                District
+                                              </Typography>
+                                            </Box>
+                                          </Box>
+                                        </Box>
+              
+
+             </Box>
             <Box display="flex" justifyContent="center" mt={2}>
-              <Button variant="contained" onClick={handleCloseViewDialog}>
-                Close
-              </Button>
+              
             </Box>
           </Box>
         )}

@@ -124,7 +124,7 @@ const ChangePassword = () => {
                 borderRadius: "4px",
                 textTransform: "none",
                 mb: 2,
-                "&:hover": { bgcolor: "#09d1d1ff" },
+                "&:hover": { bgcolor: "#038080ff" },
               }}
             >
               Change Password
