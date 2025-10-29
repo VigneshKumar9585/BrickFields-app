@@ -54,7 +54,7 @@ function ChecklistGeneral() {
     handleClear();
   };
 
-  const handleClear = () => {
+  const handleClear = () => { 
     setFloor("");
     setSiteArea("");
     setAdditional("");
@@ -70,6 +70,7 @@ function ChecklistGeneral() {
 
   // Common input style
   const inputSx = {
+    mt:2,
     "& .MuiOutlinedInput-root": {
       height: "30px",
       bgcolor: "#e0e0e0",
@@ -84,6 +85,7 @@ function ChecklistGeneral() {
 
   // Common select style
   const selectSx = {
+    mt:2,
     height: "30px",
     width: "180px",
     bgcolor: "#e0e0e0",
@@ -136,20 +138,21 @@ function ChecklistGeneral() {
               boxShadow: "0px 4px 12px rgba(0,0,0,0.2)",
             }}
           >
-            <Card
+            <Box
               variant="outlined"
               sx={{
                 borderRadius: 2,
                 borderColor: "#e0e0e0",
                 boxShadow: "0px 0px 6px rgba(0,0,0,0.08)",
                 mb: 3,
-                p: 2,
+                m:4,
                 width: "1100px",
               }}
             >
-              <CardContent>
+              <CardContent sx={{p:0,bgcolor:"#f5f2f2ff"}}>
                 <Grid container spacing={2} alignItems="center" display="grid">
-                  <Box sx={{ display: "flex", gap: 5 }}>
+                  <Box sx={{p:3}}>
+                  <Box sx={{ display: "flex", gap: 5 ,mb:3}}>
                     <Grid item xs={12} sm={3}>
                       <Typography fontWeight={500}>Floor</Typography>
                       <Select
@@ -203,16 +206,18 @@ function ChecklistGeneral() {
                       </Select>
                     </Grid>
 
-                    <Grid item xs={12} sm={3} display="flex" alignItems="center">
+                    <Grid item xs={16} sm={3} display="flex" alignItems="center">
                       <FormControlLabel
+                      sx={{width:70}}
                         control={
                           <Checkbox
                             checked={editName}
                             onChange={(e) => setEditName(e.target.checked)}
                           />
                         }
-                        label="Edit Name"
+                        // label="Edit Name"
                       />
+                       <Typography fontWeight={500}>EditName</Typography>
                       <TextField
                         disabled={!editName}
                         value={renamedArea}
@@ -221,7 +226,7 @@ function ChecklistGeneral() {
                         fullWidth
                         variant="outlined"
                         size="small"
-                        sx={{ ml: 2, ...inputSx }}
+                        sx={{ ml: 6, ...inputSx }}
                       />
                     </Grid>
                   </Box>
@@ -266,6 +271,7 @@ function ChecklistGeneral() {
                       />
                     </Grid>
                   </Box>
+                  </Box>
 
                   <Divider sx={{ my: 2 }} />
 
@@ -277,6 +283,7 @@ function ChecklistGeneral() {
                     display="flex"
                     justifyContent="flex-end"
                     alignItems="center"
+                    paddingRight="20px"
                     gap={2}
                   >
                     <Button variant="outlined" color="inherit" onClick={handleClear}>
@@ -287,8 +294,8 @@ function ChecklistGeneral() {
                       color="primary"
                       onClick={handleAdd}
                       sx={{
-                        bgcolor: "#000",
-                        "&:hover": { bgcolor: "#333" },
+                        bgcolor: "#029898",
+                        "&:hover": { bgcolor: "#029898" },
                       }}
                     >
                       Add
@@ -296,10 +303,10 @@ function ChecklistGeneral() {
                   </Grid>
                 </Grid>
               </CardContent>
-            </Card>
+            </Box>
 
             {/* Table */}
-            <Typography variant="h6" fontWeight={600} sx={{ mb: 1 }}>
+            <Typography variant="h6" fontWeight={600} sx={{ mb: 2 ,ml:3}}>
               Table
             </Typography>
             <TableContainer
@@ -309,10 +316,12 @@ function ChecklistGeneral() {
                 borderRadius: 2,
                 overflow: "hidden",
                 boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
+                ml:3,
+                mb:4
               }}
             >
               <Table>
-                <TableHead sx={{ backgroundColor: "#2f2f2f" }}>
+                <TableHead sx={{ backgroundColor: "#029898" }}>
                   <TableRow>
                     <TableCell sx={{ color: "white" }}>Sl No</TableCell>
                     <TableCell sx={{ color: "white" }}>Floor</TableCell>

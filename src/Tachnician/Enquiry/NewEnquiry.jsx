@@ -247,7 +247,7 @@ function Dashboard() {
             </Grid>
 
             {/* Right Section */}
-            <Grid sx={{ width: "700px" }} item xs={12} md={6}>
+            <Grid sx={{ width: "750px" }} item xs={12} md={6}>
                 <Box sx={{display:"flex",justifyContent:"flex-end",mt:3}}>
               <Button variant="contained" sx={{ borderRadius:"20px",textTransform: "none",fontSize:"16px",fontWeight:600, bgcolor: "#d1d6d6ff",color:"#5f5f5fff" , width:"180px",height:"42px"}}>
                     Start Work

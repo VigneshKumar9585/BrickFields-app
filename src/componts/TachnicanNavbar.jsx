@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Drawer,
   List,
@@ -10,8 +10,9 @@ import {
   Typography,
   Menu,
   MenuItem,
+  Divider,
 } from "@mui/material";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 
 // MUI Icons
 import MenuIcon from "@mui/icons-material/Menu";
@@ -21,6 +22,8 @@ import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import UpdateIcon from "@mui/icons-material/Update";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 // Assets
 import Notifications from "../assets/icons/Group 139.png";
@@ -30,8 +33,8 @@ import { TbLockPassword, TbLogout } from "react-icons/tb";
 const SidebarLayout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openKeys, setOpenKeys] = useState({
-    Enquiry: false,
     Tasks: false,
+    Enquiry: false,
     Inspection: false,
   });
 
@@ -39,28 +42,52 @@ const SidebarLayout = () => {
   const open = Boolean(anchorEl);
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const isInitialMount = useRef(true);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const toggleOpen = (key) => {
-    setOpenKeys((prev) => {
-      let newKeys = { Enquiry: false, Tasks: false, Inspection: false };
-      if (!prev[key]) {
-        newKeys[key] = true;
-      }
-      return newKeys;
-    });
-  };
-
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
+  const toggleOpen = (key) => {
+    setOpenKeys((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
+  // Keep submenu open when route matches
+  useEffect(() => {
+    if (location.pathname.startsWith("/technician-new-task") || location.pathname.startsWith("/technician-current-task")) {
+      setOpenKeys((prev) => ({ ...prev, Tasks: true }));
+    }
+    if (location.pathname.startsWith("/technician-new-enquiry") || location.pathname.startsWith("/technician-current-enquiry")) {
+      setOpenKeys((prev) => ({ ...prev, Enquiry: true }));
+    }
+    if (location.pathname.startsWith("/technician-inspection")) {
+      setOpenKeys((prev) => ({ ...prev, Inspection: true }));
+    }
+  }, [location.pathname]);
+
+  const isSubmenuActive = (paths) => {
+    return paths.some((path) => location.pathname.startsWith(path));
+  };
+
+  const activeLinkStyles = ({ isActive }) => ({
+    backgroundColor: isActive ? "#e0f7fa" : "transparent",
+    color: isActive ? "#00796b" : "rgba(0, 0, 0, 1)",
+    fontWeight: isActive ? 600 : 400,
+    borderRadius: "8px",
+    margin: "0 8px",
+    width: "calc(100% - 16px)",
+  });
 
   const drawer = (
     <div
@@ -92,131 +119,174 @@ const SidebarLayout = () => {
           component={NavLink}
           to="/technician-dashboard"
           onClick={handleDrawerToggle}
-          sx={{ color: "rgba(0, 0, 0, 1)" }}
+          style={activeLinkStyles}
         >
           <DashboardIcon sx={{ mr: 2, color: "black" }} />
           <ListItemText
             primary="Dashboard"
-            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
+            primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
           />
         </ListItemButton>
+        <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
 
         {/* Tasks */}
-        <ListItemButton onClick={() => toggleOpen("Tasks")} sx={{ color: "black" }}>
+        <ListItemButton
+          onClick={() => toggleOpen("Tasks")}
+          sx={{
+            color: "black",
+            margin: "0 8px",
+            width: "calc(100% - 16px)",
+            backgroundColor: (openKeys.Tasks ||
+              isSubmenuActive(["/technician-new-task", "/technician-current-task"]))
+              ? "#e0f7fa"
+              : "transparent",
+            fontWeight: (openKeys.Tasks ||
+              isSubmenuActive(["/technician-new-task", "/technician-current-task"]))
+              ? 600
+              : 400,
+          }}
+        >
           <AssignmentTurnedInIcon sx={{ mr: 2, color: "black" }} />
-          <ListItemText
-            primary="Tasks"
-            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
-          />
+          <ListItemText primary="Tasks" />
+          {openKeys.Tasks ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </ListItemButton>
+
         <Collapse in={openKeys.Tasks} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItemButton
-              sx={{ pl: 4, color: "black" }}
+              sx={{ pl: 4 }}
               component={NavLink}
               to="/technician-new-task"
               onClick={handleDrawerToggle}
+              style={activeLinkStyles}
             >
               <ListItemText
                 primary="New Task"
-                primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
+                primaryTypographyProps={{ fontSize: "14px" }}
               />
             </ListItemButton>
             <ListItemButton
-              sx={{ pl: 4, color: "black" }}
+              sx={{ pl: 4 }}
               component={NavLink}
               to="/technician-current-task"
               onClick={handleDrawerToggle}
+              style={activeLinkStyles}
             >
               <ListItemText
                 primary="Current Task"
-                primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
+                primaryTypographyProps={{ fontSize: "14px" }}
               />
             </ListItemButton>
           </List>
         </Collapse>
+        <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
 
         {/* Enquiry */}
-        <ListItemButton onClick={() => toggleOpen("Enquiry")} sx={{ color: "black" }}>
+        <ListItemButton
+          onClick={() => toggleOpen("Enquiry")}
+          sx={{
+            color: "black",
+            margin: "0 8px",
+            width: "calc(100% - 16px)",
+            backgroundColor: (openKeys.Enquiry ||
+              isSubmenuActive(["/technician-new-enquiry", "/technician-current-enquiry"]))
+              ? "#e0f7fa"
+              : "transparent",
+            fontWeight: (openKeys.Enquiry ||
+              isSubmenuActive(["/technician-new-enquiry", "/technician-current-enquiry"]))
+              ? 600
+              : 400,
+          }}
+        >
           <QuestionAnswerIcon sx={{ mr: 2, color: "black" }} />
-          <ListItemText
-            primary="Enquiry"
-            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
-          />
+          <ListItemText primary="Enquiry" />
+          {openKeys.Enquiry ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </ListItemButton>
+
         <Collapse in={openKeys.Enquiry} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItemButton
-              sx={{ pl: 4, color: "black" }}
+              sx={{ pl: 4 }}
               component={NavLink}
               to="/technician-new-enquiry"
               onClick={handleDrawerToggle}
+              style={activeLinkStyles}
             >
               <ListItemText
                 primary="New Enquiry"
-                primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
+                primaryTypographyProps={{ fontSize: "14px" }}
               />
             </ListItemButton>
             <ListItemButton
-              sx={{ pl: 4, color: "black" }}
+              sx={{ pl: 4 }}
               component={NavLink}
               to="/technician-current-enquiry"
               onClick={handleDrawerToggle}
+              style={activeLinkStyles}
             >
               <ListItemText
                 primary="Current Enquiry"
-                primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
+                primaryTypographyProps={{ fontSize: "14px" }}
               />
             </ListItemButton>
           </List>
         </Collapse>
+        <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
 
         {/* Live Update */}
         <ListItemButton
           component={NavLink}
           to="/technician-live-update"
           onClick={handleDrawerToggle}
-          sx={{ color: "black" }}
+          style={activeLinkStyles}
         >
           <UpdateIcon sx={{ mr: 2, color: "black" }} />
           <ListItemText
             primary="Live Update"
-            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
+            primaryTypographyProps={{ fontSize: "14px" }}
           />
         </ListItemButton>
+        <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
 
-        {/* Inspection */}
-        <ListItemButton onClick={() => toggleOpen("Inspection")} sx={{ color: "black" }}>
+         <ListItemButton
+          component={NavLink}
+          to="/technician-inspection-general"
+          onClick={handleDrawerToggle}
+          style={activeLinkStyles}
+        >
           <SearchIcon sx={{ mr: 2, color: "black" }} />
           <ListItemText
             primary="Inspection"
-            primaryTypographyProps={{ fontSize: "16px", fontWeight: 400 }}
+            primaryTypographyProps={{ fontSize: "14px" }}
           />
         </ListItemButton>
+{/* 
+
+        Inspection
+        <ListItemButton
+          onClick={() => toggleOpen("Inspection")}
+          sx={{
+            color: "black",
+            margin: "0 8px",
+            width: "calc(100% - 16px)",
+            backgroundColor: (openKeys.Inspection ||
+              isSubmenuActive(["/technician-inspection-general"]))
+              ? "#e0f7fa"
+              : "transparent",
+            fontWeight: (openKeys.Inspection ||
+              isSubmenuActive(["/technician-inspection-general"]))
+              ? 600
+              : 400,
+          }}
+        >
+          <SearchIcon sx={{ mr: 2, color: "black" }} />
+          <ListItemText primary="Inspection" />
+          {openKeys.Inspection ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        </ListItemButton> */}
+
         <Collapse in={openKeys.Inspection} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <ListItemButton
-              sx={{ pl: 4, color: "black" }}
-              component={NavLink}
-              to="/technician-inspection-general"
-              onClick={handleDrawerToggle}
-            >
-              <ListItemText
-                primary="General"
-                primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
-              />
-            </ListItemButton>
-            <ListItemButton
-              sx={{ pl: 4, color: "black" }}
-              component={NavLink}
-              to="/inspection-checklist"
-              onClick={handleDrawerToggle}
-            >
-              <ListItemText
-                primary="Checklist"
-                primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
-              />
-            </ListItemButton>
+            {/* future submenus can go here */}
           </List>
         </Collapse>
       </List>
@@ -232,7 +302,6 @@ const SidebarLayout = () => {
         alignItems: "flex-start",
       }}
     >
-      {/* Mobile toggle button */}
       <Box>
         <IconButton
           color="inherit"
@@ -270,7 +339,6 @@ const SidebarLayout = () => {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: 260,
-              backgroundColor: "#1e1e2f",
             },
           }}
           open
@@ -279,9 +347,8 @@ const SidebarLayout = () => {
         </Drawer>
       </Box>
 
-      {/* Main Content with Top Header */}
+      {/* Header Section */}
       <Box component="main" sx={{ flexGrow: 1, p: 3, pb: 0, pt: "9px" }}>
-        {/* Header Section */}
         <Box
           sx={{
             display: "flex",
@@ -299,7 +366,6 @@ const SidebarLayout = () => {
               />
             </IconButton>
 
-            {/* Profile Menu */}
             <IconButton onClick={handleMenuOpen}>
               <AccountCircle
                 sx={{ width: "55px", height: "55px", color: "black" }}
@@ -343,29 +409,34 @@ const SidebarLayout = () => {
                   </Typography>
                 </Box>
               </Box>
+              <Divider sx={{ my: 1, borderColor: "#e0e0e0" }} />
 
-              <MenuItem onClick={handleMenuClose} component={NavLink} to="/profile">
-                <IconButton>
-                  <AccountCircle
-                    sx={{ width: "20px", height: "20px", color: "black" }}
-                  />
+              <MenuItem
+                onClick={handleMenuClose}
+                component={NavLink}
+                to="/profile"
+              >
+                <IconButton size="small" sx={{ mr: 1 }}>
+                  <AccountCircle sx={{ width: 20, height: 20, color: "black" }} />
                 </IconButton>
                 Profile
               </MenuItem>
+              <Divider sx={{ my: 1, borderColor: "#e0e0e0" }} />
 
               <MenuItem
                 onClick={handleMenuClose}
                 component={NavLink}
                 to="/change/passwored"
               >
-                <IconButton>
+                <IconButton size="small" sx={{ mr: 1 }}>
                   <TbLockPassword />
                 </IconButton>
                 Change Password
               </MenuItem>
+              <Divider sx={{ my: 1, borderColor: "#e0e0e0" }} />
 
               <MenuItem onClick={handleMenuClose}>
-                <IconButton>
+                <IconButton size="small" sx={{ mr: 1 }}>
                   <TbLogout />
                 </IconButton>
                 Logout

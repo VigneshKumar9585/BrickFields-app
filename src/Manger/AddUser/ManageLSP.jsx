@@ -434,8 +434,8 @@ export default function ManageEnquiry() {
       {/* VIEW POPUP */}
       <Dialog open={openViewDialog} onClose={handleCloseViewDialog} PaperProps={{ sx: { borderRadius: "18px",  width: "600px" } }}>
         {selectedTask && (
-          <Box display="flex" flexDirection="column"   >
-            <Typography variant="h6" fontWeight="bold" sx={{p:2,bgcolor:"#029898",color:"white"}} >
+          <Box display="flex" flexDirection="column" sx={{width:"1000px"}}  >
+            <Typography  fontWeight="bold" sx={{p:2,bgcolor:"#029898",color:"white"}} >
               LSP Details
             </Typography>
             <Divider />
@@ -446,7 +446,7 @@ export default function ManageEnquiry() {
                                             mr:0,
                                             bgcolor: "rgba(240, 238, 238, 1)",
                                             borderRadius: 2.5,
-                                            width: "180px",
+                                            width: "300px",
                                             height:"300px",
                                             display:"grid",
                                               justifyContent: "center",

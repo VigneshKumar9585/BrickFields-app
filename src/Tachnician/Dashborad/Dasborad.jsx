@@ -7,8 +7,6 @@ import {
   Typography,
   Grid,
   Button,
-} from "@mui/material";
-import {
   List,
   ListItem,
   ListItemText,
@@ -16,18 +14,24 @@ import {
   Avatar,
 } from "@mui/material";
 import {
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
+  AssignmentTurnedIn,
+  PendingActions,
+  PeopleAlt,
+  SupervisorAccount,
+  Handshake,
+  CheckCircle,
+  Assignment,
+  Group,
+  Business,
+} from "@mui/icons-material";
+import { ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 // ✅ Pie Chart Data
 const pieChartData = [
-  { name: "Closed", value: 60, color: "#b2acacff" },
-  { name: "Pending", value: 90, color: "#797775ff" },
-  { name: "Denied", value: 20, color: "#545151ff" },
-  { name: "Steve", value: 40, color: "#191919ff" },
+  { name: "Closed", value: 60, color: "#556ee6" },
+  { name: "Pending", value: 90, color: "#74788d" },
+  { name: "Denied", value: 20, color: "#f1b44c" },
+  { name: "Steve", value: 40, color: "#34c38f" },
 ];
 
 const recentActivities = [
@@ -58,13 +62,22 @@ const recentActivities = [
 ];
 
 const unAcceptTasks = [
-  { id: "Task ID", date:"Assgin Date",name: "Name", address: "Address", mobile: "Mobile No" },
-   { id: "Task ID", date:"Assgin Date",name: "Name", address: "Address", mobile: "Mobile No" },
-    { id: "Task ID", date:"Assgin Date",name: "Name", address: "Address", mobile: "Mobile No" },
-   { id: "Task ID", date:"Assgin Date",name: "Name", address: "Address", mobile: "Mobile No" },
-    { id: "Task ID", date:"Assgin Date",name: "Name", address: "Address", mobile: "Mobile No" },
-   { id: "Task ID", date:"Assgin Date",name: "Name", address: "Address", mobile: "Mobile No" },    
-]
+  { id: "Task ID", date: "Assign Date", name: "Name", address: "Address", mobile: "Mobile No" },
+  { id: "Task ID", date: "Assign Date", name: "Name", address: "Address", mobile: "Mobile No" },
+  { id: "Task ID", date: "Assign Date", name: "Name", address: "Address", mobile: "Mobile No" },
+  { id: "Task ID", date: "Assign Date", name: "Name", address: "Address", mobile: "Mobile No" },
+  { id: "Task ID", date: "Assign Date", name: "Name", address: "Address", mobile: "Mobile No" },
+  { id: "Task ID", date: "Assign Date", name: "Name", address: "Address", mobile: "Mobile No" },
+];
+
+// ✅ New top card style (from your second code)
+const topCards = [
+  { title: "No Of Enquiry", value: 150, icon: <Handshake fontSize="large" sx={{ color: "#556ee6" }} /> },
+  { title: "Enquiry Closed", value: 60, icon: <AssignmentTurnedIn fontSize="large" sx={{ color: "#34c38f" }} /> },
+  { title: "Enquiry Pending", value: 90, icon: <PendingActions fontSize="large" sx={{ color: "#f1b44c" }} /> },
+  { title: "Total Manager", value: 42, icon: <SupervisorAccount fontSize="large" sx={{ color: "#74788d" }} /> },
+  { title: "Total LSP", value: 180, icon: <PeopleAlt fontSize="large" sx={{ color: "#556ee6" }} /> },
+];
 
 function Dashboard() {
   return (
@@ -75,10 +88,11 @@ function Dashboard() {
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
           minHeight: "100%",
+          pb: 4,
         }}
       >
         {/* Sidebar */}
-        <Box sx={{ width: "400px" }} />
+        <Box sx={{ width: "470px" }} />
 
         {/* Main Content */}
         <Box sx={{ flexGrow: 1 }}>
@@ -89,28 +103,22 @@ function Dashboard() {
               alignItems: "flex-start",
             }}
           >
-            <Typography
-              color="rgb(0,0,0)"
+            {/* <Typography
+              color="#495057"
               sx={{
                 fontSize: { xs: "20px", md: "24px" },
                 pl: 5,
-                fontWeight: "500",
+                fontWeight: "600",
                 textAlign: "center",
               }}
             >
               Dashboard
-            </Typography>
+            </Typography> */}
           </Box>
 
           <Grid container spacing={3} sx={{ pl: 5 }}>
-            {/* Top Stats Cards */}
-            {[
-              { title: "No Of Enquiry", value: 150 },
-              { title: "Enquiry Closed", value: 60 },
-              { title: "Enquiry Pending", value: 90 },
-              { title: "Total Manager", value: 42 },
-              { title: "Total LSP", value: 180 },
-            ].map((item, index) => (
+            {/* ✅ Top State Cards (Updated Only This Section) */}
+            {topCards.map((item, index) => (
               <Grid
                 item
                 xs={12}
@@ -126,31 +134,33 @@ function Dashboard() {
               >
                 <Card
                   sx={{
-                    bgcolor: "rgba(237, 235, 235, 1)",
-                    boxShadow: "0 1px 3px hsl(var(--dashboard-card-shadow))",
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "flex-start",
+                    background: "#fff",
+                    border: "1px solid #e5e7eb",
                     borderRadius: "16px",
+                    transition: "0.3s",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                    "&:hover": {
+                      transform: "translateY(-4px)",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                    },
                   }}
                 >
-                  <CardContent sx={{ textAlign: "center", py: 3 }}>
+                  <CardContent
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      py: 3,
+                    }}
+                  >
+                    {item.icon}
                     <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      gutterBottom
-                      sx={{ fontSize: "16px", fontWeight: "400" }}
+                      sx={{ fontSize: "16px", fontWeight: "500", color: "#495057", mt: 1 }}
                     >
                       {item.title}
                     </Typography>
                     <Typography
-                      variant="h3"
-                      sx={{
-                        fontWeight: 700,
-                        color: "hsl(var(--foreground))",
-                        fontSize: "40px",
-                        fontStyle: "Bold",
-                      }}
+                      sx={{ fontWeight: 700, fontSize: "34px", mt: 0.5, color: "#000" }}
                     >
                       {item.value}
                     </Typography>
@@ -159,46 +169,34 @@ function Dashboard() {
               </Grid>
             ))}
 
-            {/* ✅ Replace Line Chart with Un Accept Task */}
+            {/* ✅ Un Accept Task */}
             <Grid item sx={{ ml: 1 }}>
-              <Box
+              <Typography
+                color="#495057"
                 sx={{
-                  display: "grid",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                  pl: 0,
+                  fontSize: { xs: "20px", md: "24px" },
+                  pt: 2,
+                  pb: 2,
+                  fontWeight: "600",
+                  textAlign: "center",
                 }}
               >
-                <Typography
-                  color="rgb(0,0,0)"
-                  sx={{
-                    fontSize: { xs: "20px", md: "24px" },
-                    pt: 2,
-                    pb: 2,
-                    fontWeight: "500",
-                    textAlign: "center",
-                  }}
-                >
-                  Un Accept Task
-                </Typography>
-              </Box>
+                Un Accept Task
+              </Typography>
               <Card
                 sx={{
                   p: 2,
                   height: 285,
                   width: 430,
-                  bgcolor: "rgba(237, 235, 235, 1)",
+                  background: "#fff",
                   borderRadius: "16px",
+                  border: "1px solid #e5e7eb",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
                   overflowY: "auto",
-                  "&::-webkit-scrollbar": {
-                    width: "6px",
-                  },
+                  "&::-webkit-scrollbar": { width: "6px" },
                   "&::-webkit-scrollbar-thumb": {
-                    backgroundColor: "#888",
+                    backgroundColor: "#adb5bd",
                     borderRadius: "10px",
-                  },
-                  "&::-webkit-scrollbar-thumb:hover": {
-                    backgroundColor: "#555",
                   },
                 }}
               >
@@ -209,41 +207,32 @@ function Dashboard() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
-                      borderBottom: "1px solid #ccc",
+                      borderBottom: "1px solid #e9ecef",
                       py: 1.2,
                     }}
                   >
                     <Box>
-                        <Box sx={{display:"flex", gap:4}}>
-                            <Typography sx={{ fontSize: "13px", fontWeight: 600 }}>
-                        {task.id}
-                      </Typography>
-                       <Typography sx={{ fontSize: "12px", fontWeight: 400 }}>
-                        {task.date}
-                      </Typography>
-                        </Box>
-                        <Box sx={{display:"flex", gap:5}}>
-                             <Typography sx={{ fontSize: "12px" }}>
-                        {task.name}
-                      </Typography>
-                      <Typography sx={{ fontSize: "12px" }}>
-                        {task.address}
-                      </Typography>
-                      <Typography sx={{ fontSize: "12px" }}>
-                        {task.mobile}
-                      </Typography>
-
-                        </Box>
-                      
-                     
+                      <Box sx={{ display: "flex", gap: 4 }}>
+                        <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "#495057" }}>
+                          {task.id}
+                        </Typography>
+                        <Typography sx={{ fontSize: "12px", fontWeight: 400, color: "#6c757d" }}>
+                          {task.date}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ display: "flex", gap: 5 }}>
+                        <Typography sx={{ fontSize: "12px", color: "#495057" }}>{task.name}</Typography>
+                        <Typography sx={{ fontSize: "12px", color: "#495057" }}>{task.address}</Typography>
+                        <Typography sx={{ fontSize: "12px", color: "#495057" }}>{task.mobile}</Typography>
+                      </Box>
                     </Box>
                     <Box>
                       <Button
                         variant="outlined"
                         size="small"
                         sx={{
-                          color: "#000",
-                          borderColor: "#ccc",
+                          color: "#495057",
+                          borderColor: "#adb5bd",
                           borderRadius: "30px",
                           mr: 1,
                           textTransform: "none",
@@ -257,11 +246,12 @@ function Dashboard() {
                         variant="contained"
                         size="small"
                         sx={{
-                          bgcolor: "#000",
+                          bgcolor: "#556ee6",
                           borderRadius: "30px",
                           textTransform: "none",
                           fontSize: "12px",
                           width: "70px",
+                          "&:hover": { bgcolor: "#4455cc" },
                         }}
                       >
                         Accept
@@ -274,47 +264,33 @@ function Dashboard() {
 
             {/* Pie Chart */}
             <Grid item xs={12} md={3} sx={{ ml: "12px", mr: "14px" }}>
-              <Box
+              <Typography
+                color="#495057"
                 sx={{
-                  display: "grid",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                  ml: 0,
+                  fontSize: { xs: "20px", md: "24px" },
+                  pt: 2,
+                  pb: 2,
+                  fontWeight: "600",
+                  textAlign: "center",
                 }}
               >
-                <Typography
-                  color="rgb(0,0,0)"
-                  sx={{
-                    fontSize: { xs: "20px", md: "24px" },
-                    pt: 2,
-                    pb: 2,
-                    fontWeight: "500",
-                    textAlign: "center",
-                  }}
-                >
-                  Enquiry Status
-                </Typography>
-              </Box>
+                Enquiry Status
+              </Typography>
               <Card
                 sx={{
-                  boxShadow: "0 1px 3px hsl(var(--dashboard-card-shadow))",
                   height: "290px",
                   width: "200px",
-                  bgcolor: "rgba(237, 235, 235, 1)",
                   borderRadius: "16px",
+                  border: "1px solid #e5e7eb",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                  background: "#fff",
                 }}
               >
                 <CardContent>
                   <Box sx={{ height: "150px" }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
-                        <Pie
-                          data={pieChartData}
-                          cx="50%"
-                          cy="50%"
-                          outerRadius={75}
-                          dataKey="value"
-                        >
+                        <Pie data={pieChartData} cx="50%" cy="50%" outerRadius={75} dataKey="value">
                           {pieChartData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />
                           ))}
@@ -324,10 +300,7 @@ function Dashboard() {
                   </Box>
                   <Box sx={{ mt: "12px" }}>
                     {pieChartData.map((item, index) => (
-                      <Box
-                        key={index}
-                        sx={{ display: "flex", alignItems: "center", mb: 1 }}
-                      >
+                      <Box key={index} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                         <Box
                           sx={{
                             width: 14,
@@ -338,10 +311,7 @@ function Dashboard() {
                             borderRadius: "3px",
                           }}
                         />
-                        <Typography
-                          variant="body2"
-                          sx={{ color: "#000", fontWeight: 400 }}
-                        >
+                        <Typography sx={{ color: "#495057", fontWeight: 500 }}>
                           {item.name}: {item.value}
                         </Typography>
                       </Box>
@@ -353,32 +323,24 @@ function Dashboard() {
 
             {/* Recent Activity */}
             <Grid item xs={12} md={3}>
-              <Box
+              <Typography
+                color="#495057"
                 sx={{
-                  display: "grid",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                  pl: 0,
+                  fontSize: { xs: "20px", md: "24px" },
+                  pt: 2,
+                  pb: 2,
+                  fontWeight: "600",
+                  textAlign: "center",
                 }}
               >
-                <Typography
-                  color="rgb(0,0,0)"
-                  sx={{
-                    fontSize: { xs: "20px", md: "24px" },
-                    pt: 2,
-                    pb: 2,
-                    fontWeight: "500",
-                    textAlign: "center",
-                  }}
-                >
-                  Recent Activity
-                </Typography>
-              </Box>
+                Recent Activity
+              </Typography>
               <Card
                 sx={{
                   borderRadius: "16px",
-                  bgcolor: "rgba(237, 235, 235, 1)",
-                  boxShadow: "0 1px 3px hsl(var(--dashboard-card-shadow))",
+                  background: "#fff",
+                  border: "1px solid #e5e7eb",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
                   height: "290px",
                   width: "460px",
                   display: "flex",
@@ -390,15 +352,10 @@ function Dashboard() {
                     flex: 1,
                     overflowY: "auto",
                     p: 2,
-                    "&::-webkit-scrollbar": {
-                      width: "6px",
-                    },
+                    "&::-webkit-scrollbar": { width: "6px" },
                     "&::-webkit-scrollbar-thumb": {
-                      backgroundColor: "#888",
+                      backgroundColor: "#adb5bd",
                       borderRadius: "10px",
-                    },
-                    "&::-webkit-scrollbar-thumb:hover": {
-                      backgroundColor: "#555",
                     },
                   }}
                 >
@@ -408,36 +365,28 @@ function Dashboard() {
                         <ListItemAvatar>
                           <Avatar
                             sx={{
-                              bgcolor: "rgba(0, 0, 0, 1)",
+                              bgcolor: "#556ee6",
                               width: 42,
                               height: 42,
+                              boxShadow: "0 2px 5px rgba(85,110,230,0.4)",
                             }}
-                          />
+                          >
+                            <CheckCircle sx={{ color: "white" }} />
+                          </Avatar>
                         </ListItemAvatar>
                         <ListItemText
                           primary={
-                            <Typography
-                              variant="body2"
-                              sx={{ fontWeight: 600, mb: 0.5 }}
-                            >
+                            <Typography sx={{ fontWeight: 600, mb: 0.5, color: "#495057" }}>
                               {activity.manager}
                             </Typography>
                           }
                           secondary={
-                            <Typography
-                              variant="body2"
-                              color="textSecondary"
-                              sx={{ fontSize: "0.75rem" }}
-                            >
+                            <Typography sx={{ fontSize: "0.8rem", color: "#6c757d" }}>
                               {activity.task}
                             </Typography>
                           }
                         />
-                        <Typography
-                          variant="caption"
-                          color="textSecondary"
-                          sx={{ ml: 1 }}
-                        >
+                        <Typography variant="caption" sx={{ color: "#6c757d" }}>
                           {activity.date}
                         </Typography>
                       </ListItem>

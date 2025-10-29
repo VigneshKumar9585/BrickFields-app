@@ -247,7 +247,7 @@ function Dashboard() {
             </Grid>
 
             {/* Right Section */}
-            <Grid sx={{ width: "700px" }} item xs={12} md={6}>
+            <Grid sx={{ width: "750px" }} item xs={12} md={6}>
                 <Box sx={{display:"flex",justifyContent:"flex-end",mt:3}}>
               <Button variant="contained" sx={{ borderRadius:"20px",textTransform: "none",fontSize:"16px",fontWeight:600, bgcolor: "#029898",color:"#ffffffff" , width:"180px",height:"42px"}}>
                     Start Work
@@ -263,7 +263,9 @@ function Dashboard() {
                   p: 0,
                   boxShadow: "0px 4px 12px rgba(0,0,0,0.2)",
                   overflow: "hidden",
-                  height:"435px"
+                  height:"435px",
+                  // width:"100px"
+
                 }}
               >
                 <Box
@@ -282,7 +284,7 @@ function Dashboard() {
                  
                 </Box>
 
-                <Box sx={{ display: "grid", gap: 2, my: 2, mx: 2 ,bgcolor:"#f0ededff",width:"full",height:"full",borderRadius:"14px"}}>
+                <Box sx={{ display: "grid", gap: 2, my: 2, mx: 1 ,bgcolor:"#f0ededff",width:"full",height:"full",borderRadius:"14px"}}>
                   <Box sx={{display:"flex",gap:35,pt:1.5,px:2}}>
                   <Typography>Add Equipment Images ( Before State )</Typography>
                   <Typography
