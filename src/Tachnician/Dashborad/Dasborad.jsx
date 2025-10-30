@@ -72,9 +72,9 @@ const unAcceptTasks = [
 
 // ✅ New top card style (from your second code)
 const topCards = [
-  { title: "No Of Enquiry", value: 150, icon: <Handshake fontSize="large" sx={{ color: "#556ee6" }} /> },
-  { title: "Enquiry Closed", value: 60, icon: <AssignmentTurnedIn fontSize="large" sx={{ color: "#34c38f" }} /> },
-  { title: "Enquiry Pending", value: 90, icon: <PendingActions fontSize="large" sx={{ color: "#f1b44c" }} /> },
+  { title: "Ongoing Tasks", value: 150, icon: <Handshake fontSize="large" sx={{ color: "#556ee6" }} /> },
+  { title: "Completed Tasks", value: 60, icon: <AssignmentTurnedIn fontSize="large" sx={{ color: "#34c38f" }} /> },
+  { title: "Pending Tasks", value: 90, icon: <PendingActions fontSize="large" sx={{ color: "#f1b44c" }} /> },
   { title: "Total Manager", value: 42, icon: <SupervisorAccount fontSize="large" sx={{ color: "#74788d" }} /> },
   { title: "Total LSP", value: 180, icon: <PeopleAlt fontSize="large" sx={{ color: "#556ee6" }} /> },
 ];

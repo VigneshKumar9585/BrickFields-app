@@ -187,10 +187,10 @@ const SidebarLayout = () => {
             </ListItemButton>
           </List>
         </Collapse>
-        <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
+        {/* <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} /> */}
 
         {/* ✅ Enquiry (single link, no child menu) */}
-        <ListItemButton
+        {/* <ListItemButton
           component={NavLink}
           to="/technician-new-enquiry"
           onClick={handleDrawerToggle}
@@ -201,7 +201,7 @@ const SidebarLayout = () => {
             primary="Enquiry"
             primaryTypographyProps={{ fontSize: "14px" }}
           />
-        </ListItemButton>
+        </ListItemButton> */}
         <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
 
         {/* Live Update */}
