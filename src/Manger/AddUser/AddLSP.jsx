@@ -197,7 +197,7 @@ function AddLsp() {
               <CardContent sx={{ p: 3 }}>
                 <Typography
                   variant="h6"
-                  sx={{ fontWeight: 600, fontSize: "14px", color: "gray", mb: 2 }}
+                  sx={{ fontWeight: 600, fontSize: "14px", color: "#000000ff", mb: 2 }}
                 >
                   Personal Data
                 </Typography>
@@ -211,7 +211,7 @@ function AddLsp() {
                           sx={{
                             mb: 1,
                             pr: 3,
-                            color: "gray",
+                            color: "#000",
                             fontSize: "12px",
                             fontWeight: 500,
                           }}
@@ -265,7 +265,7 @@ function AddLsp() {
               <CardContent sx={{ p: 3, pt: 0 }}>
                 <Typography
                   variant="h6"
-                  sx={{ fontWeight: 600, fontSize: "14px", color: "gray", mb: 2 }}
+                  sx={{ fontWeight: 600, fontSize: "14px", color: "#000", mb: 2 }}
                 >
                   Document Data
                 </Typography>
@@ -278,7 +278,7 @@ function AddLsp() {
                         sx={{
                           mb: 1,
                           pr: 3,
-                          color: "gray",
+                          color: "#000",
                           fontSize: "12px",
                           fontWeight: 500,
                         }}

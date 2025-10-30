@@ -65,11 +65,11 @@ const SidebarLayout = () => {
 
   // Keep submenu open when route matches
   useEffect(() => {
-    if (location.pathname.startsWith("/technician-new-task") || location.pathname.startsWith("/technician-current-task")) {
+    if (
+      location.pathname.startsWith("/technician-new-task") ||
+      location.pathname.startsWith("/technician-current-task")
+    ) {
       setOpenKeys((prev) => ({ ...prev, Tasks: true }));
-    }
-    if (location.pathname.startsWith("/technician-new-enquiry") || location.pathname.startsWith("/technician-current-enquiry")) {
-      setOpenKeys((prev) => ({ ...prev, Enquiry: true }));
     }
     if (location.pathname.startsWith("/technician-inspection")) {
       setOpenKeys((prev) => ({ ...prev, Inspection: true }));
@@ -136,14 +136,22 @@ const SidebarLayout = () => {
             color: "black",
             margin: "0 8px",
             width: "calc(100% - 16px)",
-            backgroundColor: (openKeys.Tasks ||
-              isSubmenuActive(["/technician-new-task", "/technician-current-task"]))
-              ? "#e0f7fa"
-              : "transparent",
-            fontWeight: (openKeys.Tasks ||
-              isSubmenuActive(["/technician-new-task", "/technician-current-task"]))
-              ? 600
-              : 400,
+            backgroundColor:
+              openKeys.Tasks ||
+              isSubmenuActive([
+                "/technician-new-task",
+                "/technician-current-task",
+              ])
+                ? "#e0f7fa"
+                : "transparent",
+            fontWeight:
+              openKeys.Tasks ||
+              isSubmenuActive([
+                "/technician-new-task",
+                "/technician-current-task",
+              ])
+                ? 600
+                : 400,
           }}
         >
           <AssignmentTurnedInIcon sx={{ mr: 2, color: "black" }} />
@@ -181,56 +189,19 @@ const SidebarLayout = () => {
         </Collapse>
         <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
 
-        {/* Enquiry */}
+        {/* ✅ Enquiry (single link, no child menu) */}
         <ListItemButton
-          onClick={() => toggleOpen("Enquiry")}
-          sx={{
-            color: "black",
-            margin: "0 8px",
-            width: "calc(100% - 16px)",
-            backgroundColor: (openKeys.Enquiry ||
-              isSubmenuActive(["/technician-new-enquiry", "/technician-current-enquiry"]))
-              ? "#e0f7fa"
-              : "transparent",
-            fontWeight: (openKeys.Enquiry ||
-              isSubmenuActive(["/technician-new-enquiry", "/technician-current-enquiry"]))
-              ? 600
-              : 400,
-          }}
+          component={NavLink}
+          to="/technician-new-enquiry"
+          onClick={handleDrawerToggle}
+          style={activeLinkStyles}
         >
           <QuestionAnswerIcon sx={{ mr: 2, color: "black" }} />
-          <ListItemText primary="Enquiry" />
-          {openKeys.Enquiry ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          <ListItemText
+            primary="Enquiry"
+            primaryTypographyProps={{ fontSize: "14px" }}
+          />
         </ListItemButton>
-
-        <Collapse in={openKeys.Enquiry} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItemButton
-              sx={{ pl: 4 }}
-              component={NavLink}
-              to="/technician-new-enquiry"
-              onClick={handleDrawerToggle}
-              style={activeLinkStyles}
-            >
-              <ListItemText
-                primary="New Enquiry"
-                primaryTypographyProps={{ fontSize: "14px" }}
-              />
-            </ListItemButton>
-            <ListItemButton
-              sx={{ pl: 4 }}
-              component={NavLink}
-              to="/technician-current-enquiry"
-              onClick={handleDrawerToggle}
-              style={activeLinkStyles}
-            >
-              <ListItemText
-                primary="Current Enquiry"
-                primaryTypographyProps={{ fontSize: "14px" }}
-              />
-            </ListItemButton>
-          </List>
-        </Collapse>
         <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
 
         {/* Live Update */}
@@ -248,7 +219,8 @@ const SidebarLayout = () => {
         </ListItemButton>
         <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
 
-         <ListItemButton
+        {/* Inspection */}
+        <ListItemButton
           component={NavLink}
           to="/technician-inspection-general"
           onClick={handleDrawerToggle}
@@ -260,35 +232,6 @@ const SidebarLayout = () => {
             primaryTypographyProps={{ fontSize: "14px" }}
           />
         </ListItemButton>
-{/* 
-
-        Inspection
-        <ListItemButton
-          onClick={() => toggleOpen("Inspection")}
-          sx={{
-            color: "black",
-            margin: "0 8px",
-            width: "calc(100% - 16px)",
-            backgroundColor: (openKeys.Inspection ||
-              isSubmenuActive(["/technician-inspection-general"]))
-              ? "#e0f7fa"
-              : "transparent",
-            fontWeight: (openKeys.Inspection ||
-              isSubmenuActive(["/technician-inspection-general"]))
-              ? 600
-              : 400,
-          }}
-        >
-          <SearchIcon sx={{ mr: 2, color: "black" }} />
-          <ListItemText primary="Inspection" />
-          {openKeys.Inspection ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-        </ListItemButton> */}
-
-        <Collapse in={openKeys.Inspection} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            {/* future submenus can go here */}
-          </List>
-        </Collapse>
       </List>
     </div>
   );

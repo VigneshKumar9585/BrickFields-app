@@ -11,34 +11,60 @@ import {
   MenuItem,
   TextField,
   Grid,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Button,
-  IconButton,
-  Paper,
-  Dialog,
   Divider,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
+  IconButton,
 } from "@mui/material";
-import { Search, Eye, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-
-// Sample data
-
 export default function ManageEnquiry() {
-  
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const navigate = useNavigate();
 
-
+  // ✅ Task Data (for mapping)
+  const tasks = [
+    {
+      id: "T001",
+      assignDate: "2025-10-29",
+      timeLeft: "10 Hr 30 mints left",
+      name: "John Doe",
+      address: "123 Main St",
+      city: "New York",
+      email: "john@example.com",
+      mobile: "9876543210",
+      sqft: "1200",
+      preferDate: "2025-10-31",
+      preferTime: "10:00 AM",
+    },
+    {
+      id: "T002",
+      assignDate: "2025-10-28",
+      timeLeft: "1 Hr 44 mints left",
+      name: "Jane Smith",
+      address: "456 Park Ave",
+      city: "Brooklyn",
+      email: "jane@example.com",
+      mobile: "9123456780",
+      sqft: "900",
+      preferDate: "2025-10-30",
+      preferTime: "02:30 PM",
+    },
+    {
+      id: "T003",
+      assignDate: "2025-10-27",
+      timeLeft: "2 Days left",
+      name: "Alex Johnson",
+      address: "789 Queens Blvd",
+      city: "Queens",
+      email: "alex@example.com",
+      mobile: "9988776655",
+      sqft: "1500",
+      preferDate: "2025-11-01",
+      preferTime: "09:15 AM",
+    },
+  ];
 
   return (
     <>
@@ -70,8 +96,6 @@ export default function ManageEnquiry() {
               }}
             >
               <Box display="flex" gap={2} alignItems="center">
-                
-
                 {/* City */}
                 <FormControl sx={{ width: "100px" }} size="small">
                   <InputLabel>City</InputLabel>
@@ -123,323 +147,153 @@ export default function ManageEnquiry() {
             </CardContent>
           </Card>
 
-          <Box display='flex' gap="40px" sx={{m:2,ml:5}}>
-          {/* card 1 */}
-
-          <Grid sx={{ width: "350px" }} item xs={12} md={6}>
-                       
-          
-                        <CardContent
-                          sx={{
-                            border: "1px solid #abababff",
-                            borderRadius: "14px",
-                            p: 0,
-                            boxShadow: "0px 4px 12px rgba(0,0,0,0.2)",
-                            overflow: "hidden",
-                          }}
-                        >
-                          {/* Visitor Details */}
-                          <Box
-                            sx={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              bgcolor: "#029898",
-                              color: "#fff",
-                              px: 2,
-                              py: 1,
-                              borderRadius: "8px 8px 0 0",
-                              boxShadow: 3,
-                            }}
-                          >
-                            <Box >
-                            <Typography sx={{fontSize:"18px",fontWeight:600}}>Task Id</Typography>
-                            <Typography sx={{fontSize:"14px"}}>Assign Date</Typography>
-                            </Box>
-
-                              <Box sx={{ borderRadius:"18px",p:2,mt:1,bgcolor:"white",color:"#029898",display:"flex",alignItems:"center",justifyContent:"center",width:"150px",height:"20px"  }}>
-                                                <Typography sx={{fontSize:"12px"}}>10 Hr 30 mints left</Typography>
-                                              </Box>
-                            </Box>
-          
-                          <Box sx={{ p: 2, pb: 0 }}>
-                            
-          
-                            <Box sx={{ height: "100px" ,mb:1}}>
-                              {/* Row 1 */}
-                              <Box sx={{ display: "flex", pb: 1,justifyContent:"space-between" }}>
-                                <Typography fontSize="14px">Name</Typography>
-                               
-                               <IconButton size="small" >
-                            <Eye size={22} />
-                          </IconButton>
-                                
-                              </Box>
-          
-                              {/* Row 2 */}
-                              <Box sx={{ display: "flex", pb: 2 }}>
-                                <Typography fontSize="14px">Address</Typography>
-                              
-                                
-                              </Box>
-          
-                              {/* Row 3 */}
-                              <Box sx={{ display: "flex" }}>
-                                <Typography fontSize="14px">Ctiy</Typography>
-                               
-                              </Box>
-                            </Box>
-                          </Box>
-                          <Divider />
-          
-                          {/* Contact Details */}
-                          <Box >
-                          
-                            <Box sx={{ display: "flex", pl: 2, py: 1.5, gap:18 }}>
-                              <Typography fontSize="14px">Email</Typography>
-                              <Typography fontSize="14px">Mobile</Typography>
-                            
-                           
-                            </Box>
-                          </Box>
-          
-                          {/* Service Details */}
-                          <Divider />
-                          <Typography
-                            variant="subtitle1"
-                            sx={{ fontSize:"14px", pl: 2, py: 1.5, borderRadius: 1 }}
-                          >
-                           Total Square Feet
-                          </Typography>
-          
-                          
-                          <Divider />
-          
-                          <Box display="flex" sx={{ p: 2, pt: 1, pb: 0 }}>
-                            <Typography sx={{ fontWeight: 600, pr: 11.5 ,fontSize:"13px"}}>Prefer Date</Typography>
-                            <Typography sx={{ fontWeight: 600, pr: 2,fontSize:"13px" }}>Prefer Time</Typography>
-                          </Box>
-          
-                         
-          
-          
-                          {/* Action Buttons */}
-                         
-                        </CardContent>
-                      </Grid>
-
-                      {/* card 2 */}
-
-<Grid sx={{ width: "350px" }} item xs={12} md={6}>
-                       
-          
-                        <CardContent
-                          sx={{
-                            border: "1px solid #abababff",
-                            borderRadius: "14px",
-                            p: 0,
-                            boxShadow: "0px 4px 12px rgba(0,0,0,0.2)",
-                            overflow: "hidden",
-                          }}
-                        >
-                          {/* Visitor Details */}
-                          <Box
-                            sx={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              bgcolor: "#029898",
-                              color: "#fff",
-                              px: 2,
-                              py: 1,
-                              borderRadius: "8px 8px 0 0",
-                              boxShadow: 3,
-                            }}
-                          >
-                            <Box >
-                            <Typography sx={{fontSize:"18px",fontWeight:600}}>Task Id</Typography>
-                            <Typography sx={{fontSize:"14px"}}>Assign Date</Typography>
-                            </Box>
-
-                              <Box sx={{ borderRadius:"18px",p:2,mt:1,bgcolor:"white",color:"#029898",display:"flex",alignItems:"center",justifyContent:"center",width:"150px",height:"20px"  }}>
-                                                <Typography sx={{fontSize:"12px"}}>1 Hr 44 mints left</Typography>
-                                              </Box>
-                            </Box>
-          
-                          <Box sx={{ p: 2, pb: 0 }}>
-                            
-          
-                            <Box sx={{ height: "100px",mb:1 }}>
-                              {/* Row 1 */}
-                              <Box sx={{ display: "flex", pb: 1,justifyContent:"space-between" }}>
-                                <Typography fontSize="14px">Name</Typography>
-                               
-                               <IconButton size="small" >
-                            <Eye size={22} />
-                          </IconButton>
-                                
-                              </Box>
-          
-                              {/* Row 2 */}
-                              <Box sx={{ display: "flex", pb: 2 }}>
-                                <Typography fontSize="14px">Address</Typography>
-                              
-                                
-                              </Box>
-          
-                              {/* Row 3 */}
-                              <Box sx={{ display: "flex" }}>
-                                <Typography fontSize="14px">Ctiy</Typography>
-                               
-                              </Box>
-                            </Box>
-                          </Box>
-                          <Divider />
-          
-                          {/* Contact Details */}
-                          <Box >
-                          
-                            <Box sx={{ display: "flex", pl: 2, py: 1.5, gap:18 }}>
-                              <Typography fontSize="14px">Email</Typography>
-                              <Typography fontSize="14px">Mobile</Typography>
-                            
-                           
-                            </Box>
-                          </Box>
-          
-                          {/* Service Details */}
-                          <Divider />
-                          <Typography
-                            variant="subtitle1"
-                            sx={{ fontSize:"14px", pl: 2, py: 1.5, borderRadius: 1 }}
-                          >
-                           Total Square Feet
-                          </Typography>
-          
-                          
-                          <Divider />
-          
-                          <Box display="flex" sx={{ p: 2, pt: 1, pb: 0 }}>
-                            <Typography sx={{ fontWeight: 600, pr: 11.5 ,fontSize:"13px"}}>Prefer Date</Typography>
-                            <Typography sx={{ fontWeight: 600, pr: 2,fontSize:"13px" }}>Prefer Time</Typography>
-                          </Box>
-          
-                         
-          
-          
-                          {/* Action Buttons */}
-                         
-                        </CardContent>
-                      </Grid>
-
-                       {/* card 3 */}
-
-          <Grid sx={{ width: "350px" }} item xs={12} md={6}>
-                       
-          
-                        <CardContent
-                          sx={{
-                            border: "1px solid #abababff",
-                            borderRadius: "14px",
-                            p: 0,
-                            boxShadow: "0px 4px 12px rgba(0,0,0,0.2)",
-                            overflow: "hidden",
-                          }}
-                        >
-                          {/* Visitor Details */}
-                          <Box
-                            sx={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              bgcolor: "#029898",
-                              color: "#fff",
-                              px: 2,
-                              py: 1,
-                              borderRadius: "8px 8px 0 0",
-                              boxShadow: 3,
-                            }}
-                          >
-                            <Box >
-                            <Typography sx={{fontSize:"18px",fontWeight:600}}>Task Id</Typography>
-                            <Typography sx={{fontSize:"14px"}}>Assign Date</Typography>
-                            </Box>
-
-                               <Box sx={{ borderRadius:"18px",p:2,mt:1,bgcolor:"white",color:"#029898",display:"flex",alignItems:"center",justifyContent:"center",width:"150px",height:"20px"  }}>
-                                                <Typography sx={{fontSize:"12px"}}>2 Days left</Typography>
-                                              </Box>
-                            </Box>
-          
-                          <Box sx={{ p: 2, pb: 0 }}>
-                            
-          
-                            <Box sx={{ height: "100px",mb:1 }}>
-                              {/* Row 1 */}
-                              <Box sx={{ display: "flex", pb: 1,justifyContent:"space-between" }}>
-                                <Typography fontSize="14px">Name</Typography>
-                               
-                               <IconButton size="small"color="#883f3fff" >
-                            <Eye size={22}  />
-                          </IconButton>
-                                
-                              </Box>
-          
-                              {/* Row 2 */}
-                              <Box sx={{ display: "flex", pb: 2 }}>
-                                <Typography fontSize="14px">Address</Typography>
-                              
-                                
-                              </Box>
-          
-                              {/* Row 3 */}
-                              <Box sx={{ display: "flex" }}>
-                                <Typography fontSize="14px">Ctiy</Typography>
-                               
-                              </Box>
-                            </Box>
-                          </Box>
-                          <Divider />
-          
-                          {/* Contact Details */}
-                          <Box >
-                          
-                            <Box sx={{ display: "flex", pl: 2, py: 1.5, gap:18 }}>
-                              <Typography fontSize="14px">Email</Typography>
-                              <Typography fontSize="14px">Mobile</Typography>
-                            
-                           
-                            </Box>
-                          </Box>
-          
-                          {/* Service Details */}
-                          <Divider />
-                          <Typography
-                            variant="subtitle1"
-                            sx={{ fontSize:"14px", pl: 2, py: 1.5, borderRadius: 1 }}
-                          >
-                           Total Square Feet
-                          </Typography>
-          
-                          
-                          <Divider />
-          
-                          <Box display="flex" sx={{ p: 2, pt: 1, pb: 0 }}>
-                            <Typography sx={{ fontWeight: 600, pr: 11.5 ,fontSize:"13px"}}>Prefer Date</Typography>
-                            <Typography sx={{ fontWeight: 600, pr: 2,fontSize:"13px" }}>Prefer Time</Typography>
-                          </Box>
-          
-                         
-          
-          
-                          {/* Action Buttons */}
-                         
-                        </CardContent>
-                      </Grid>
-                       {/* card 1 */}
-
-          
-
-
-
+          {/* --- Card Section --- */}
+          <Box display="flex" gap="40px" sx={{ m: 2, ml: 5 }}>
+            {tasks.map((task) => (
+              <Grid key={task.id} sx={{ width: "350px" }} item xs={12} md={6}>
+                <Box
+                  onClick={() => navigate("/technician-new-enquiry")}
+                  sx={{
+                    cursor: "pointer",
+                    transition: "0.3s",
+                    "&:hover": {
+                      transform: "scale(1.02)",
+                    },
+                  }}
+                >
+                  <CardContent
+                    sx={{
+                      border: "1px solid #abababff",
+                      borderRadius: "14px",
+                      p: 0,
+                      boxShadow: "0px 4px 12px rgba(0,0,0,0.2)",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {/* Header */}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        bgcolor: "#029898",
+                        color: "#fff",
+                        px: 2,
+                        py: 1,
+                        borderRadius: "8px 8px 0 0",
+                        boxShadow: 3,
+                      }}
+                    >
+                      <Box>
+                        <Typography sx={{ fontSize: "18px", fontWeight: 600 }}>
+                          {task.id}
+                        </Typography>
+                        <Typography sx={{ fontSize: "14px" }}>
+                          {task.assignDate}
+                        </Typography>
                       </Box>
-         
+
+                      <Box
+                        sx={{
+                          borderRadius: "18px",
+                          p: 2,
+                          mt: 1,
+                          bgcolor: "white",
+                          color: "#029898",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: "150px",
+                          height: "20px",
+                        }}
+                      >
+                        <Typography sx={{ fontSize: "12px" }}>
+                          {task.timeLeft}
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    <Box sx={{ p: 2, pb: 0 }}>
+                      <Box sx={{ height: "100px", mb: 1 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            pb: 1,
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Typography fontSize="14px">{task.name}</Typography>
+                          <IconButton size="small">
+                            <Eye size={22} />
+                          </IconButton>
+                        </Box>
+
+                        <Box sx={{ display: "flex", pb: 2 }}>
+                          <Typography fontSize="14px">
+                            {task.address}
+                          </Typography>
+                        </Box>
+
+                        <Box sx={{ display: "flex" }}>
+                          <Typography fontSize="14px">{task.city}</Typography>
+                        </Box>
+                      </Box>
+                    </Box>
+
+                    <Divider />
+
+                    <Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          pl: 2,
+                          py: 1.5,
+                          gap: 18,
+                        }}
+                      >
+                        <Typography fontSize="14px">{task.email}</Typography>
+                        <Typography fontSize="14px">{task.mobile}</Typography>
+                      </Box>
+                    </Box>
+
+                    <Divider />
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        fontSize: "14px",
+                        pl: 2,
+                        py: 1.5,
+                        borderRadius: 1,
+                      }}
+                    >
+                      Total Square Feet: {task.sqft}
+                    </Typography>
+
+                    <Divider />
+                    <Box display="flex" sx={{ p: 2, pt: 1, pb: 0 }}>
+                      <Typography
+                        sx={{
+                          fontWeight: 600,
+                          pr: 11.5,
+                          fontSize: "13px",
+                        }}
+                      >
+                        {task.preferDate}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          fontWeight: 600,
+                          pr: 2,
+                          fontSize: "13px",
+                        }}
+                      >
+                        {task.preferTime}
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </Box>
+              </Grid>
+            ))}
+          </Box>
         </Box>
       </Box>
     </>

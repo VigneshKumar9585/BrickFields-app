@@ -27,7 +27,7 @@ import TechnicianDashbored from "./Tachnician/Dashborad/Dasborad.jsx"
 import TechnicianNewtask from "./Tachnician/Task/NewTask.jsx"
 import TechnicianCurrenttask from "./Tachnician/Task/CurrentTask.jsx"
 import TechnicianNewEnquiry from "./Tachnician/Enquiry/NewEnquiry.jsx"
-import TechnicianCurrentEnquiry from "./Tachnician/Enquiry/CurrentEnquiry.jsx"
+// import TechnicianCurrentEnquiry from "./Tachnician/Enquiry/CurrentEnquiry.jsx"
 import TechnicianLiveUpdate from "./Tachnician/LiveUpdate/Liveupadate.jsx"
 import TechnicianInspectionGeneral from "./Tachnician/Inaspection/General.jsx"
 
@@ -72,7 +72,7 @@ function App() {
       <Route path='/technician-new-task' element={<TechnicianNewtask/>}/>
       <Route path='/technician-current-task' element={<TechnicianCurrenttask/>}/>
       <Route path='/technician-new-enquiry' element={<TechnicianNewEnquiry/>}/>
-      <Route path='/technician-current-enquiry' element={<TechnicianCurrentEnquiry/>}/>
+      {/* <Route path='/technician-current-enquiry' element={<TechnicianCurrentEnquiry/>}/> */}
       <Route path='/technician-Dashboard' element={<TechnicianDashbored/>}/>
       <Route path='/technician-live-update' element={<TechnicianLiveUpdate/>}/>
       <Route path='/technician-inspection-general' element={<TechnicianInspectionGeneral/>}/>
