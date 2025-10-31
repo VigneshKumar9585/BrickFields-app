@@ -71,7 +71,10 @@ const SidebarLayout = () => {
     ) {
       setOpenKeys((prev) => ({ ...prev, Tasks: true }));
     }
-    if (location.pathname.startsWith("/technician-inspection")) {
+    if (
+      location.pathname.startsWith("/technician-inspection-general") ||
+      location.pathname.startsWith("/technician-inspection-cheaklist")
+    ) {
       setOpenKeys((prev) => ({ ...prev, Inspection: true }));
     }
   }, [location.pathname]);
@@ -187,21 +190,7 @@ const SidebarLayout = () => {
             </ListItemButton>
           </List>
         </Collapse>
-        {/* <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} /> */}
 
-        {/* ✅ Enquiry (single link, no child menu) */}
-        {/* <ListItemButton
-          component={NavLink}
-          to="/technician-new-enquiry"
-          onClick={handleDrawerToggle}
-          style={activeLinkStyles}
-        >
-          <QuestionAnswerIcon sx={{ mr: 2, color: "black" }} />
-          <ListItemText
-            primary="Enquiry"
-            primaryTypographyProps={{ fontSize: "14px" }}
-          />
-        </ListItemButton> */}
         <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
 
         {/* Live Update */}
@@ -219,19 +208,64 @@ const SidebarLayout = () => {
         </ListItemButton>
         <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
 
-        {/* Inspection */}
+        {/* ✅ Inspection (with child menu) */}
         <ListItemButton
-          component={NavLink}
-          to="/technician-inspection-general"
-          onClick={handleDrawerToggle}
-          style={activeLinkStyles}
+          onClick={() => toggleOpen("Inspection")}
+          sx={{
+            color: "black",
+            margin: "0 8px",
+            width: "calc(100% - 16px)",
+            backgroundColor:
+              openKeys.Inspection ||
+              isSubmenuActive([
+                "/technician-inspection-general",
+                "/technician-inspection-cheaklist",
+              ])
+                ? "#e0f7fa"
+                : "transparent",
+            fontWeight:
+              openKeys.Inspection ||
+              isSubmenuActive([
+                "/technician-inspection-general",
+                "/technician-inspection-cheaklist",
+              ])
+                ? 600
+                : 400,
+          }}
         >
           <SearchIcon sx={{ mr: 2, color: "black" }} />
-          <ListItemText
-            primary="Inspection"
-            primaryTypographyProps={{ fontSize: "14px" }}
-          />
+          <ListItemText primary="Inspection" />
+          {openKeys.Inspection ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </ListItemButton>
+
+        <Collapse in={openKeys.Inspection} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItemButton
+              sx={{ pl: 4 }}
+              component={NavLink}
+              to="/technician-inspection-general"
+              onClick={handleDrawerToggle}
+              style={activeLinkStyles}
+            >
+              <ListItemText
+                primary="General"
+                primaryTypographyProps={{ fontSize: "14px" }}
+              />
+            </ListItemButton>
+            <ListItemButton
+              sx={{ pl: 4 }}
+              component={NavLink}
+              to="/technician-inspection-cheaklist"
+              onClick={handleDrawerToggle}
+              style={activeLinkStyles}
+            >
+              <ListItemText
+                primary="Checklist"
+                primaryTypographyProps={{ fontSize: "14px" }}
+              />
+            </ListItemButton>
+          </List>
+        </Collapse>
       </List>
     </div>
   );

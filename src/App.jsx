@@ -30,6 +30,8 @@ import TechnicianNewEnquiry from "./Tachnician/Enquiry/NewEnquiry.jsx"
 // import TechnicianCurrentEnquiry from "./Tachnician/Enquiry/CurrentEnquiry.jsx"
 import TechnicianLiveUpdate from "./Tachnician/LiveUpdate/Liveupadate.jsx"
 import TechnicianInspectionGeneral from "./Tachnician/Inaspection/General.jsx"
+import TechnicianInspectionCheacklist from "./Tachnician/Inaspection/CheakList.jsx"
+
 
 
 
@@ -76,6 +78,8 @@ function App() {
       <Route path='/technician-Dashboard' element={<TechnicianDashbored/>}/>
       <Route path='/technician-live-update' element={<TechnicianLiveUpdate/>}/>
       <Route path='/technician-inspection-general' element={<TechnicianInspectionGeneral/>}/>
+      <Route path='/technician-inspection-cheaklist' element={<TechnicianInspectionCheacklist/>}/>
+     
 
 
       
