@@ -34,6 +34,16 @@ import TechnicianInspectionCheacklist from "./Tachnician/Inaspection/CheakList.j
 
 
 
+// LSP
+import LspDashboard from "./LSP/Dashborad/Dashboard.jsx"
+import LspReport from "./LSP/Report/Report.jsx"
+import LspAddLsp from "./LSP/AddUser/AddLsp.jsx"
+import LspManageLsp from "./LSP/AddUser/ManageLSP.jsx"
+import LspNewEnquiry from "./LSP/Enquiry/NewEnquiry.jsx"
+import LspManageEnquiry from "./LSP/Enquiry/MangeEnquiry.jsx"
+import LspEditAssign from "./LSP/Enquiry/EditAssign.jsx";
+import LspNewEditAssgin from "./LSP/Enquiry/NewTaskDetails.jsx"
+
 
 import { Routes, Route } from "react-router-dom";
 
@@ -79,6 +89,19 @@ function App() {
       <Route path='/technician-live-update' element={<TechnicianLiveUpdate/>}/>
       <Route path='/technician-inspection-general' element={<TechnicianInspectionGeneral/>}/>
       <Route path='/technician-inspection-cheaklist' element={<TechnicianInspectionCheacklist/>}/>
+
+
+    {/* LSP */}
+
+      <Route path='/lsp-Dashboard' element={<LspDashboard/>}/>
+      <Route path='/lsp-report' element={<LspReport/>}/>
+      <Route path='/lsp-addLSP' element={<LspAddLsp/>}/>
+      <Route path='/lsp-manageLSP' element={<LspManageLsp/>}/>
+      <Route path='/lsp-new-enquiry' element={<LspNewEnquiry/>}/>
+      <Route path='/lsp-manage-enquiry' element={<LspManageEnquiry/>}/>
+      <Route path='/lsp-edit-assgin' element={<LspEditAssign/>}/>
+      <Route path='/lsp-new-edit-assgin' element={<LspNewEditAssgin/>}></Route>
+
      
 
 
