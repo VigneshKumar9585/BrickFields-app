@@ -133,7 +133,7 @@ function ChecklistGeneral() {
           {/* Card Container */}
           <Box
             sx={{
-              border: "3px solid #c8c4c4ff",
+              border: "3px solid #fff",
               borderRadius: "14px",
               boxShadow: "0px 4px 12px rgba(0,0,0,0.2)",
             }}

@@ -14,23 +14,23 @@ import {
   Divider,
   Dialog,
   DialogContent,
+  Collapse,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import ImageIcon from "@mui/icons-material/Image";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Navbar from "../../componts/TachnicanNavbar";
 
 const KitchenChecklist = () => {
   const [openPopup, setOpenPopup] = useState(false);
+  const [openKitchen, setOpenKitchen] = useState(false); // 👈 state for accordion
 
-  const handleSaveClick = () => {
-    setOpenPopup(true);
-  };
-
-  const handleClosePopup = () => {
-    setOpenPopup(false);
-  };
+  const handleSaveClick = () => setOpenPopup(true);
+  const handleClosePopup = () => setOpenPopup(false);
+  const handleKitchenToggle = () => setOpenKitchen((prev) => !prev);
 
   return (
     <>
@@ -52,16 +52,12 @@ const KitchenChecklist = () => {
         {/* Main Content */}
         <Box sx={{ flexGrow: 1 }}>
           <Typography variant="h5" fontWeight={600} sx={{ mb: 3 }}>
-            Checklist{" "}
-            <Typography component="span" color="grey">
-              | Kitchen
-            </Typography>
+            Checklist
           </Typography>
 
           {/* Card Container */}
           <Box
             sx={{
-              border: "3px solid #c8c4c4ff",
               borderRadius: "14px",
               boxShadow: "0px 4px 12px rgba(0,0,0,0.2)",
               width: "full",
@@ -94,7 +90,6 @@ const KitchenChecklist = () => {
                     <Typography
                       variant="body2"
                       sx={{
-                        color: "#b0b0b0",
                         mb: 1,
                         fontWeight: "bold",
                       }}
@@ -102,39 +97,64 @@ const KitchenChecklist = () => {
                       General
                     </Typography>
 
+                    {/* ✅ Accordion Sidebar */}
                     <List sx={{ pl: 1 }}>
-                      <ListItemButton sx={{ pl: 0 }}>
+                      {/* Kitchen (Accordion Trigger) */}
+                      <ListItemButton onClick={handleKitchenToggle} sx={{ pl: 0 }}>
                         <ListItemText
                           primary="Kitchen"
-                          primaryTypographyProps={{ color: "#fff" }}
-                        />
-                        <AddIcon sx={{ color: "#fff", fontSize: 18 }} />
-                      </ListItemButton>
-
-                      {[
-                        "Platform",
-                        "Sink",
-                        "Cabinets",
-                        "Electrical Points",
-                        "Chimney",
-                        "Ventilation",
-                      ].map((item) => (
-                        <ListItemText
-                          key={item}
-                          primary={item}
                           primaryTypographyProps={{
-                            color: "#b0b0b0",
-                            pl: 3,
+                            color: "#fff",
+                            fontWeight: 500,
                           }}
                         />
-                      ))}
+                        {openKitchen ? (
+                          <ExpandLessIcon sx={{ color: "#fff", fontSize: 18 }} />
+                        ) : (
+                          <ExpandMoreIcon sx={{ color: "#fff", fontSize: 18 }} />
+                        )}
+                      </ListItemButton>
 
+                      {/* Collapsible Kitchen Subcategories */}
+                      <Collapse in={openKitchen} timeout="auto" unmountOnExit>
+                        {[
+                          "Platform",
+                          "Sink",
+                          "Cabinets",
+                          "Electrical Points",
+                          "Chimney",
+                          "Ventilation",
+                        ].map((item, idx) => (
+                          <React.Fragment key={item}>
+                            <ListItemText
+                              primary={item}
+                              primaryTypographyProps={{
+                                pl: 3,
+                                py: 0.5,
+                              }}
+                            />
+                            {idx < 5 && (
+                              <Divider
+                                sx={{
+                                  bgcolor: "rgba(255,255,255,0.2)",
+                                  ml: 3,
+                                }}
+                              />
+                            )}
+                          </React.Fragment>
+                        ))}
+                      </Collapse>
+
+                      {/* Other Rooms */}
                       {["Bed Room", "Living Room", "Portico", "Master Bed .."].map(
                         (room) => (
                           <ListItemButton key={room} sx={{ pl: 0 }}>
                             <ListItemText
                               primary={room}
-                              primaryTypographyProps={{ color: "#fff" }}
+                              primaryTypographyProps={{
+                                color: "#fff",
+                                fontWeight: 500,
+                              }}
                             />
                             <AddIcon sx={{ color: "#fff", fontSize: 18 }} />
                           </ListItemButton>
@@ -143,6 +163,7 @@ const KitchenChecklist = () => {
                     </List>
                   </Box>
 
+                  {/* Sidebar Footer */}
                   <Box
                     sx={{
                       p: 2,
