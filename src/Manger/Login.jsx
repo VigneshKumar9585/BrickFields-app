@@ -27,6 +27,9 @@ const Login = () => {
     }else if (email === "technician@gmail.com" && password === "technician") {
       setError("");
       navigate("/technician-dashboard"); // ✅ go to dashboard if correct
+    }else if (email === "lsp@gmail.com" && password === "lsp") {
+      setError("");
+      navigate("/lsp-dashboard"); // ✅ go to dashboard if correct
     } else {
       setError("Invalid email or password");
     }

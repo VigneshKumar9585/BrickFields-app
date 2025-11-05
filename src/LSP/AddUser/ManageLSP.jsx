@@ -41,27 +41,28 @@ export default function ManageEnquiry() {
 
   const [tasks, setTasks] = useState([
     {
-      _id: "1",
-      companyName: "TechVision Pvt Ltd",
-      businessType: "Software",
-      phone: "9876543210",
-      email: "info@techvision.com",
-      pointOfContact: "Rahul Mehta",
-      pointOfContactMobile: "9988776655",
-      district: "Bangalore Urban",
-      city: "Bangalore",
-      serviceableCities: ["Mysore", "Mangalore"],
-      status: "Open",
-      documents: [
-        "Aadhaar Card",
-        "Degree Certificate",
-        "Experience Certificate",
-      ],
-    },
+  _id: "1",
+  companyName: "ComfortLiv",
+  businessType: "Owner",
+  phone: "9876543210",
+  email: "info@techvision.com",
+  pointOfContact: "Rahul Mehta",
+  pointOfContactMobile: "9988776655",
+  district: "Bangalore Urban",
+  city: "Bangalore",
+  serviceableCities: ["Mysore", "Mangalore"],
+  status: "Open",
+  documents: [
+    "Aadhaar Card",
+    "Degree Certificate",
+    "Experience Certificate"
+  ]
+}
+
   ]);
 
   const handleEditClick = (task) => {
-    navigate(`/user/addLSP`, { state: { task } });
+    navigate(`/lsp-edit  `, { state: { task } });
   };
 
   const handleOpenViewDialog = (task) => {
@@ -115,7 +116,7 @@ export default function ManageEnquiry() {
             color="rgb(0,0,0)"
             sx={{ fontSize: { xs: "20px", md: "24px" }, fontWeight: "500" }}
           >
-            Manage LSP
+            Manage Technician
           </Typography>
 
           {/* Filter Bar */}

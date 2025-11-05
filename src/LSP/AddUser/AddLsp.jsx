@@ -24,8 +24,8 @@ function AddLsp() {
   const location = useLocation();
 
   // ✅ Read task data if we came from edit
-  const taskData = location.state?.task || null;
-
+  const taskData =  null;
+  console.log("🚀 ~ file: AddLsp.jsx:16 ~ AddLsp ~ taskData:", taskData);
   // ✅ Manage form state
   const [formData, setFormData] = useState({
     companyName: "",
@@ -191,7 +191,7 @@ function AddLsp() {
               mb: 2,
             }}
           >
-            {taskData ? "Edit LSP" : "Add LSP"}
+            {taskData ? "Edit Technician" : "Add Technician"}
           </Typography>
 
           <Box sx={{ width: "100%", maxWidth: "1190px" }}>

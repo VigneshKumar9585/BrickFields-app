@@ -4,6 +4,7 @@ import {
   List,
   ListItemButton,
   ListItemText,
+  ListItemIcon,
   Collapse,
   IconButton,
   Box,
@@ -15,6 +16,7 @@ import {
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import ReportIcon from "@mui/icons-material/Assessment";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AssignmentIcon from "@mui/icons-material/Assignment";
@@ -28,7 +30,7 @@ import LaunchIcon from "@mui/icons-material/Launch";
 import ManageHistoryIcon from "@mui/icons-material/ManageHistory";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 const SidebarLayout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openKeys, setOpenKeys] = useState({
@@ -172,7 +174,7 @@ useEffect(() => {
               onClick={handleDrawerToggle}
               style={activeLinkStyles}
             >
-              <NewReleasesIcon sx={{ mr: 2, color: "black" }} />
+              <NewReleasesIcon sx={{ mr: 2, color: "black", fontSize: "20px" }} />
               <ListItemText
                 primary="New Enquiry"
                 primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
@@ -185,7 +187,7 @@ useEffect(() => {
               onClick={handleDrawerToggle}
               style={activeLinkStyles}
             >
-              <ManageHistoryIcon sx={{ mr: 2, color: "black" }} />
+              <ManageHistoryIcon sx={{ mr: 2, color: "black", fontSize: "20px" }} />
               <ListItemText
                 primary="Manage Enquiry"
                 primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
@@ -220,29 +222,38 @@ useEffect(() => {
           {openKeys["Add User"] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </ListItemButton>
         <Collapse in={openKeys["Add User"]} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            {["Add LSP", "Manage LSP"].map((item, idx) => (
-              <ListItemButton
-                key={item}
-                sx={{ pl: 4, color: "black" }}
-                component={NavLink}
-                to={
-                  idx === 0
-                    ? "/lsp-addLSP"
-                    : idx === 1
-                    ? "/lsp-manageLSP"
-                    : "/lsp-manageLSP"
-                }
-                onClick={handleDrawerToggle}
-                style={activeLinkStyles}
-              >
-                <ListItemText
-                  primary={item}
-                  primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
-                />
-              </ListItemButton>
-            ))}
-          </List>
+        
+<List component="div" disablePadding>
+  {["Add Technician", "Manage Technician"].map((item, idx) => (
+    <ListItemButton
+      key={item}
+      sx={{ pl: 4, color: "black" }}
+      component={NavLink}
+      to={
+        idx === 0
+          ? "/lsp-addLSP"
+          : idx === 1
+          ? "/lsp-manageLSP"
+          : "/lsp-manageLSP"
+      }
+      onClick={handleDrawerToggle}
+      style={activeLinkStyles}
+    >
+      <ListItemIcon sx={{ minWidth: 32, color: "black" }}>
+        {idx === 0 ? (
+          <PersonAddAltIcon sx={{ fontSize: 20 }} />
+        ) : (
+          <ManageAccountsIcon sx={{ fontSize: 20 }} />
+        )}
+      </ListItemIcon>
+
+      <ListItemText
+        primary={item}
+        primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
+      />
+    </ListItemButton>
+  ))}
+</List>
         </Collapse>
         <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
 

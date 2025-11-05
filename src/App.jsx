@@ -46,6 +46,7 @@ import LspNewEditAssgin from "./LSP/Enquiry/NewTaskDetails.jsx"
 
 
 import { Routes, Route } from "react-router-dom";
+import AddLsp from './LSP/AddUser/AddLsp.jsx';
 
 function App() {
 
@@ -99,8 +100,9 @@ function App() {
       <Route path='/lsp-manageLSP' element={<LspManageLsp/>}/>
       <Route path='/lsp-new-enquiry' element={<LspNewEnquiry/>}/>
       <Route path='/lsp-manage-enquiry' element={<LspManageEnquiry/>}/>
-      <Route path='/lsp-edit-assgin' element={<LspEditAssign/>}/>
       <Route path='/lsp-new-edit-assgin' element={<LspNewEditAssgin/>}></Route>
+      <Route path='/lsp-edit' element={<AddLsp />} />
+
 
      
 
