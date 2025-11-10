@@ -1,5 +1,19 @@
 
 import './App.css'
+// Admin
+
+import AdminDashboared from "./Admin/Dashbored/Dashbored.jsx"
+import MasterSetting from "./Admin/Masters/Setting.jsx"
+import MasterCountry from "./Admin/Masters/Country.jsx"
+import MasterState from "./Admin/Masters/State.jsx"
+import MasterRegion from './Admin/Masters/Region.jsx'
+import MasterDistrict from './Admin/Masters/District.jsx'
+import MasterChecklist from './Admin/Masters/Checklist.jsx'
+import MasterCategory from './Admin/Masters/Category.jsx'
+import AdminInspection from "./Admin/Inspection/inspection.jsx"
+import AdminInspectionDetails from "./Admin/Inspection/inspectionDetails.jsx"
+import AdminPrfile from "./Admin/Dashbored/profile.jsx"
+import AdminReport from "./Admin/Report/Report.jsx"
 
 
 // Manager
@@ -27,10 +41,10 @@ import TechnicianDashbored from "./Tachnician/Dashborad/Dasborad.jsx"
 import TechnicianNewtask from "./Tachnician/Task/NewTask.jsx"
 import TechnicianCurrenttask from "./Tachnician/Task/CurrentTask.jsx"
 import TechnicianNewEnquiry from "./Tachnician/Enquiry/NewEnquiry.jsx"
-// import TechnicianCurrentEnquiry from "./Tachnician/Enquiry/CurrentEnquiry.jsx"
 import TechnicianLiveUpdate from "./Tachnician/LiveUpdate/Liveupadate.jsx"
 import TechnicianInspectionGeneral from "./Tachnician/Inaspection/General.jsx"
 import TechnicianInspectionCheacklist from "./Tachnician/Inaspection/CheakList.jsx"
+// import TechnicianCurrentEnquiry from "./Tachnician/Enquiry/CurrentEnquiry.jsx"
 
 
 
@@ -41,22 +55,34 @@ import LspAddLsp from "./LSP/AddUser/AddLsp.jsx"
 import LspManageLsp from "./LSP/AddUser/ManageLSP.jsx"
 import LspNewEnquiry from "./LSP/Enquiry/NewEnquiry.jsx"
 import LspManageEnquiry from "./LSP/Enquiry/MangeEnquiry.jsx"
-import LspEditAssign from "./LSP/Enquiry/EditAssign.jsx";
 import LspNewEditAssgin from "./LSP/Enquiry/NewTaskDetails.jsx"
+// import LspEditAssign from "./LSP/Enquiry/EditAssign.jsx";
 
 
 import { Routes, Route } from "react-router-dom";
-import AddLsp from './LSP/AddUser/AddLsp.jsx';
 
 function App() {
-
   return (
-    <>
+    <><Routes>
 
-     <Routes>
+
+
+
 
       {/* Admin */}
-
+      <Route path="/admin-Dashboard" element={<AdminDashboared />} />
+      <Route path="/master/setting" element={<MasterSetting />} />
+      <Route path="/master/country" element={<MasterCountry />} />
+      <Route path="/master/state" element={<MasterState />} />
+      <Route path='/master/region' element={<MasterRegion/>} />
+      <Route path='/master/district' element={<MasterDistrict/>} />
+      <Route path='/master/checklist' element={<MasterChecklist/>} />
+      <Route path='/master/category' element={<MasterCategory/>} />
+      <Route path='/admin-inspection' element={<AdminInspection/>} />
+      <Route path="/admin-inspection-Details" element={<AdminInspectionDetails/>} />
+      <Route path='/admin-profile' element={<AdminPrfile/>} />
+      <Route path='/admin-report' element={<AdminReport/>} />
+      
 
       {/* Manager */}
       <Route path="/" element={<Login />} />
@@ -77,23 +103,18 @@ function App() {
       <Route path='/inspection-Details' element={<InspectionDetails/>}/>
 
 
-
-
 {/* Tachnician */}
-
-
       <Route path='/technician-new-task' element={<TechnicianNewtask/>}/>
       <Route path='/technician-current-task' element={<TechnicianCurrenttask/>}/>
       <Route path='/technician-new-enquiry' element={<TechnicianNewEnquiry/>}/>
-      {/* <Route path='/technician-current-enquiry' element={<TechnicianCurrentEnquiry/>}/> */}
       <Route path='/technician-Dashboard' element={<TechnicianDashbored/>}/>
       <Route path='/technician-live-update' element={<TechnicianLiveUpdate/>}/>
       <Route path='/technician-inspection-general' element={<TechnicianInspectionGeneral/>}/>
       <Route path='/technician-inspection-cheaklist' element={<TechnicianInspectionCheacklist/>}/>
+      {/* <Route path='/technician-current-enquiry' element={<TechnicianCurrentEnquiry/>}/> */}
 
 
     {/* LSP */}
-
       <Route path='/lsp-Dashboard' element={<LspDashboard/>}/>
       <Route path='/lsp-report' element={<LspReport/>}/>
       <Route path='/lsp-addLSP' element={<LspAddLsp/>}/>
@@ -101,7 +122,7 @@ function App() {
       <Route path='/lsp-new-enquiry' element={<LspNewEnquiry/>}/>
       <Route path='/lsp-manage-enquiry' element={<LspManageEnquiry/>}/>
       <Route path='/lsp-new-edit-assgin' element={<LspNewEditAssgin/>}></Route>
-      <Route path='/lsp-edit' element={<AddLsp />} />
+      {/* <Route path='/lsp-edit' element={<AddLsp />} /> */}
 
 
      

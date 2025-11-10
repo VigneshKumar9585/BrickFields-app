@@ -1,12 +1,25 @@
 import React from "react";
-import Navbar from "../../componts/Navbar.jsx";
+import Navbar from "../../componts/AdminNavbar";
 import {
   Box,
   Card,
   CardContent,
   Typography,
   Grid,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
 } from "@mui/material";
+import {
+  CheckCircle,
+  AssignmentTurnedIn,
+  PendingActions,
+  PeopleAlt,
+  SupervisorAccount,
+  Handshake,
+} from "@mui/icons-material";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -18,23 +31,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import {
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
-  Avatar,
-} from "@mui/material";
-import { CheckCircle } from "@mui/icons-material";
-
-
-// ✅ Import Recharts for Pie chart
-import {
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
+import { ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 // ✅ Register Chart.js modules
 ChartJS.register(
@@ -60,53 +57,27 @@ const lineChartData = [
 ];
 
 const recentActivities = [
-  {
-    id: 1,
-    manager: 'Manager Name',
-    task: 'Task ID Is Assigned To Lsp Name',
-    date: 'Aug 2, 2025',
-  },
-  {
-    id: 2,
-    manager: 'Manager Name',
-    task: 'Task ID Is Assigned To Lsp Name',
-    date: 'Aug 2, 2025',
-  },
-  {
-    id: 3,
-    manager: 'New Enquiry',
-    task: 'New Enquiry Added',
-    date: 'Aug 2, 2025',
-  },
-  {
-    id: 4,
-    manager: 'Technician Complete Task',
-    task: 'Technician Completed The Assigned Task',
-    date: 'Aug 2, 2025',
-  },
+  { id: 1, manager: "Manager Name", task: "Task ID is assigned to LSP Name", date: "Aug 2, 2025" },
+  { id: 2, manager: "Manager Name", task: "Task ID is assigned to LSP Name", date: "Aug 2, 2025" },
+  { id: 3, manager: "New Enquiry", task: "New Enquiry Added", date: "Aug 2, 2025" },
+  { id: 4, manager: "Technician Complete Task", task: "Technician Completed The Assigned Task", date: "Aug 2, 2025" },
 ];
 
+// ✅ Line Chart
 const lineData = {
   labels: lineChartData.map((d) => d.name),
   datasets: [
     {
       label: "Total Enquiry",
       data: lineChartData.map((d) => d.value),
-      borderColor: "#000000ff",
-      backgroundColor: "rgba(0, 0, 0, 0.3)",
-      borderWidth: 1,
-      tension: 0, // straight lines
-      pointBackgroundColor: "#000000ff",
-      pointBorderColor: "#000000ff",
-      pointHoverRadius: 6,
-      pointRadius: (ctx) => {
-        const index = ctx.dataIndex;
-        const total = ctx.dataset.data.length;
-        // ❌ no point on first (index 0) and last (index total-1)
-        if (index === 0 || index === total - 1) return 0;
-        return 2; // normal size for others
-      },
-      fill: false,
+      borderColor: "#556ee6",
+      backgroundColor: "rgba(85,110,230,0.1)",
+      borderWidth: 2.5,
+      tension: 0.3,
+      pointBackgroundColor: "#556ee6",
+      pointBorderColor: "#fff",
+      pointHoverRadius: 7,
+      fill: true,
     },
   ],
 };
@@ -114,48 +85,39 @@ const lineData = {
 const lineOptions = {
   responsive: true,
   maintainAspectRatio: false,
-  plugins: {
-    legend: { display: false },
-    title: { display: false },
-  },
+  plugins: { legend: { display: false } },
   scales: {
     x: {
-      ticks: { color: "#000" },
-      grid: {
-        drawTicks: true,
-        color: "transparent", // hide vertical grid lines
-        lineWidth: 2, // thickness of X-axis baseline
-      },
-      border: {
-        display: true,
-        color: "#000",
-        width: 3, // make X-axis line thicker
-      },
+      ticks: { color: "#495057", font: { weight: "500" } },
+      grid: { color: "rgba(0,0,0,0.05)" },
     },
     y: {
-      ticks: { color: "#000" },
-      grid: { display: false },
+      ticks: { color: "#495057" },
+      grid: { color: "rgba(0,0,0,0.05)" },
       min: 0,
       max: 80,
       stepSize: 10,
-      border: {
-        display: true,
-        color: "#000",
-        width: 3,
-      },
     },
   },
 };
 
 // ✅ Pie Chart Data
 const pieChartData = [
-  { name: "Closed", value: 60, color: "#b2acacff" },
-  { name: "Pending", value: 90, color: "#797775ff" },
-  { name: "Denied", value: 20, color: "#545151ff" },
-  { name: "Steve", value: 40, color: "#191919ff" },
+  { name: "Closed", value: 60, color: "#556ee6" },
+  { name: "Pending", value: 90, color: "#74788d" },
+  { name: "Denied", value: 20, color: "#f1b44c" },
+  { name: "Other", value: 40, color: "#34c38f" },
 ];
 
 function Dashboard() {
+  const cardData = [
+    { title: "No Of Enquiry", value: 150, icon: <Handshake fontSize="large" sx={{ color: "#556ee6" }} /> },
+    { title: "Enquiry Closed", value: 60, icon: <AssignmentTurnedIn fontSize="large" sx={{ color: "#34c38f" }} /> },
+    { title: "Enquiry Pending", value: 90, icon: <PendingActions fontSize="large" sx={{ color: "#f1b44c" }} /> },
+    { title: "Total Manager", value: 42, icon: <SupervisorAccount fontSize="large" sx={{ color: "#74788d" }} /> },
+    { title: "Total LSP", value: 180, icon: <PeopleAlt fontSize="large" sx={{ color: "#556ee6" }} /> },
+  ];
+
   return (
     <>
       <Navbar />
@@ -164,43 +126,16 @@ function Dashboard() {
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
           minHeight: "100%",
+          pb: 4,
+          pl:5
         }}
       >
-        {/* Sidebar */}
-        <Box sx={{ width:"400px"  }} />
+        <Box sx={{ width: "400px" }} />
 
-        {/* Main Content */}
         <Box sx={{ flexGrow: 1 }}>
-          {/* Page Title */}
-          <Box
-            sx={{
-              display: "grid",
-              justifyContent: "flex-start",
-              alignItems: "flex-start",
-            }}
-          >
-            <Typography
-              color="rgb(0,0,0)"
-              sx={{
-                fontSize: { xs: "20px", md: "24px" },
-                pl: 5,
-                fontWeight: "500",
-                textAlign: "center",
-              }}
-            >
-              Dashboard
-            </Typography>
-          </Box>
-
-          <Grid container spacing={3} sx={{ pl: 5 }}>
-            {/* Top Stats Cards */}
-            {[
-              { title: "No Of Enquiry", value: 150 },
-              { title: "Enquiry Closed", value: 60 },
-              { title: "Enquiry Pending", value: 90 },
-              { title: "Total Manager", value: 42 },
-              { title: "Total LSP", value: 180 },
-            ].map((item, index) => (
+          <Grid container spacing={3} sx={{ pl: 5, pt: 1 }}>
+            {/* Top Cards */}
+            {cardData.map((item, index) => (
               <Grid
                 item
                 xs={12}
@@ -216,31 +151,33 @@ function Dashboard() {
               >
                 <Card
                   sx={{
-                    bgcolor: "rgba(237, 235, 235, 1)",
-                    boxShadow: "0 1px 3px hsl(var(--dashboard-card-shadow))",
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "flex-start",
+                    background: "#fff",
+                    border: "1px solid #e5e7eb",
                     borderRadius: "16px",
+                    transition: "0.3s",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                    "&:hover": {
+                      transform: "translateY(-4px)",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                    },
                   }}
                 >
-                  <CardContent sx={{ textAlign: "center", py: 3 }}>
+                  <CardContent
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      py: 3,
+                    }}
+                  >
+                    {item.icon}
                     <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      gutterBottom
-                      sx={{ fontSize: "16px", fontWeight: "400" }}
+                      sx={{ fontSize: "16px", fontWeight: "500", color: "#495057", mt: 1 }}
                     >
                       {item.title}
                     </Typography>
                     <Typography
-                      variant="h3"
-                      sx={{
-                        fontWeight: 700,
-                        color: "hsl(var(--foreground))",
-                        fontSize: "40px",
-                        fontStyle: "Bold",
-                      }}
+                      sx={{ fontWeight: 700, fontSize: "34px", mt: 0.5, color: "#000" }}
                     >
                       {item.value}
                     </Typography>
@@ -250,35 +187,28 @@ function Dashboard() {
             ))}
 
             {/* Line Chart */}
-            <Grid item sx={{ml:1}}>
-              <Box
+            <Grid item sx={{ ml: 1 }}>
+              <Typography
                 sx={{
-                  display: "grid",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                  pl: 0,
+                  fontSize: { xs: "20px", md: "24px" },
+                  pt: 2,
+                  pb: 2,
+                  fontWeight: "600",
+                  textAlign: "center",
+                  color: "#495057",
                 }}
               >
-                <Typography
-                  color="rgb(0,0,0)"
-                  sx={{
-                    fontSize: { xs: "20px", md: "24px" },
-                    pt: 2,
-                    pb: 2,
-                    fontWeight: "500",
-                    textAlign: "center",
-                  }}
-                >
-                  Total Enquiry
-                </Typography>
-              </Box>
+                Total Enquiry
+              </Typography>
               <Card
                 sx={{
                   p: 2,
-                  height: 285,
-                  width: 430,
-                  bgcolor: "rgba(237, 235, 235, 1)",
-                  borderRadius:"16px"
+                  height: 330,
+                  width: 380,
+                  background: "#fff",
+                  borderRadius: "16px",
+                  border: "1px solid #e5e7eb",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
                 }}
               >
                 <Box sx={{ width: "100%", height: "100%" }}>
@@ -288,60 +218,48 @@ function Dashboard() {
             </Grid>
 
             {/* Pie Chart */}
-            <Grid item xs={12} md={3} sx={{ml:"12px",mr:"14px"}}>
-               <Box
+            <Grid item xs={12} md={4} sx={{ ml: "12px", mr: "14px" }}>
+              <Typography
                 sx={{
-                  display: "grid",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                  ml:0,
+                  fontSize: { xs: "20px", md: "24px" },
+                  pt: 2,
+                  pb: 2,
+                  fontWeight: "600",
+                  textAlign: "center",
+                  color: "#495057",
                 }}
               >
-                <Typography
-                  color="rgb(0,0,0)"
-                  sx={{
-                    fontSize: { xs: "20px", md: "24px" },
-                    pt: 2,
-                    pb: 2,
-                    fontWeight: "500",
-                    textAlign: "center",
-                  }}
-                >
-                  Enquiry Status
-                </Typography>
-              </Box>
+                Enquiry Status
+              </Typography>
               <Card
                 sx={{
-                  // bgcolor: "hsl(var(--dashboard-card))",
-                  boxShadow: "0 1px 3px hsl(var(--dashboard-card-shadow))",
-                  height: "290px",
-                  width: "200px",
-                  bgcolor:"rgba(237, 235, 235, 1)",
-                  borderRadius:"16px"
+                  height: "330px",
+                  width: "350px",
+                  borderRadius: "16px",
+                  border: "1px solid #e5e7eb",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                  background: "#fff",
                 }}
               >
                 <CardContent>
-                 
-                  <Box sx={{ height: "150px", }}>
+                  <Box sx={{ height: "150px" }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
                           data={pieChartData}
                           cx="50%"
                           cy="50%"
-                          // innerRadius={40}
                           outerRadius={75}
                           dataKey="value"
                         >
                           {pieChartData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
+                            <Cell key={index} fill={entry.color} />
                           ))}
                         </Pie>
                       </PieChart>
                     </ResponsiveContainer>
                   </Box>
-                  {/* ✅ Legend with color + name + value */}
-                  <Box sx={{ mt:"12px" }}>
+                  <Box sx={{ mt: "12px" }}>
                     {pieChartData.map((item, index) => (
                       <Box
                         key={index}
@@ -353,14 +271,11 @@ function Dashboard() {
                             height: 14,
                             bgcolor: item.color,
                             mr: 1.5,
-                            ml:3,
+                            ml: 3,
                             borderRadius: "3px",
                           }}
                         />
-                        <Typography
-                          variant="body2"
-                          sx={{ color: "#000", fontWeight: 400 }}
-                        >
+                        <Typography sx={{ color: "#495057", fontWeight: 500 }}>
                           {item.name}: {item.value}
                         </Typography>
                       </Box>
@@ -370,103 +285,80 @@ function Dashboard() {
               </Card>
             </Grid>
 
-
-             <Grid item xs={12} md={3}>
-                <Box
+            {/* Recent Activity */}
+            <Grid item xs={12} md={3}>
+              <Typography
                 sx={{
-                  display: "grid",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                  pl: 0,
+                  fontSize: { xs: "20px", md: "24px" },
+                  pt: 2,
+                  pb: 2,
+                  fontWeight: "600",
+                  textAlign: "center",
+                  color: "#495057",
                 }}
               >
-                <Typography
-                  color="rgb(0,0,0)"
+                Recent Activity
+              </Typography>
+              <Card
+                sx={{
+                  borderRadius: "16px",
+                  background: "#fff",
+                  border: "1px solid #e5e7eb",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                  height: "330px",
+                  width: "380px",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <CardContent
                   sx={{
-                    fontSize: { xs: "20px", md: "24px" },
-                    pt: 2,
-                    pb: 2,
-                    fontWeight: "500",
-                    textAlign: "center",
+                    flex: 1,
+                    overflowY: "auto",
+                    p: 2,
+                    "&::-webkit-scrollbar": { width: "6px" },
+                    "&::-webkit-scrollbar-thumb": {
+                      backgroundColor: "#adb5bd",
+                      borderRadius: "10px",
+                    },
                   }}
                 >
-                  Recent Activity
-                </Typography>
-              </Box>
-            <Card
-  sx={{
-    borderRadius: "16px",
-    bgcolor: "rgba(237, 235, 235, 1)",
-    boxShadow: "0 1px 3px hsl(var(--dashboard-card-shadow))",
-    height: "290px",
-    width:"460px",
-    display: "flex",
-    flexDirection: "column",
-  }}
->
-  <CardContent  sx={{
-      flex: 1,
-      overflowY: "auto",
-      p: 2,
-
-      // ✅ Scrollbar Styling
-      "&::-webkit-scrollbar": {
-        width: "6px",
-      },
-      "&::-webkit-scrollbar-track": {
-        background: "transparent",
-      },
-      "&::-webkit-scrollbar-thumb": {
-        backgroundColor: "#888",
-        borderRadius: "10px",
-      },
-      "&::-webkit-scrollbar-thumb:hover": {
-        backgroundColor: "#555",
-      },
-    }}>
-    <List>
-      {recentActivities.map((activity) => (
-        <ListItem key={activity.id} sx={{ px: 0, py: 1.5 }}>
-          <ListItemAvatar>
-            <Avatar
-              sx={{
-                bgcolor: "rgba(0, 0, 0, 1)",
-                width: 42,
-                height: 42,
-              }}
-            />
-          </ListItemAvatar>
-          <ListItemText
-            primary={
-              <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
-                {activity.manager}
-              </Typography>
-            }
-            secondary={
-              <Typography
-                variant="body2"
-                color="textSecondary"
-                sx={{ fontSize: "0.75rem" }}
-              >
-                {activity.task}
-              </Typography>
-            }
-          />
-          <Typography
-            variant="caption"
-            color="textSecondary"
-            sx={{ ml: 1 }}
-          >
-            {activity.date}
-          </Typography>
-        </ListItem>
-      ))}
-    </List>
-  </CardContent>
-</Card>
-
-
-        </Grid>
+                  <List>
+                    {recentActivities.map((activity) => (
+                      <ListItem key={activity.id} sx={{ px: 0, py: 1.5 }}>
+                        <ListItemAvatar>
+                          <Avatar
+                            sx={{
+                              bgcolor: "#556ee6",
+                              width: 42,
+                              height: 42,
+                              boxShadow: "0 2px 5px rgba(85,110,230,0.4)",
+                            }}
+                          >
+                            <CheckCircle sx={{ color: "white" }} />
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={
+                            <Typography sx={{ fontWeight: 600, mb: 0.5, color: "#495057" }}>
+                              {activity.manager}
+                            </Typography>
+                          }
+                          secondary={
+                            <Typography sx={{ fontSize: "0.8rem", color: "#6c757d" }}>
+                              {activity.task}
+                            </Typography>
+                          }
+                        />
+                        <Typography variant="caption" sx={{ color: "#6c757d" }}>
+                          {activity.date}
+                        </Typography>
+                      </ListItem>
+                    ))}
+                  </List>
+                </CardContent>
+              </Card>
+            </Grid>
           </Grid>
         </Box>
       </Box>
