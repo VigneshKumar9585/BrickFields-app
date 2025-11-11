@@ -14,6 +14,9 @@ import AdminInspection from "./Admin/Inspection/inspection.jsx"
 import AdminInspectionDetails from "./Admin/Inspection/inspectionDetails.jsx"
 import AdminPrfile from "./Admin/Dashbored/profile.jsx"
 import AdminReport from "./Admin/Report/Report.jsx"
+import AdminNewEnaquiry from "./Admin/Enquiry/NewEnquiry.jsx"
+import AdminNewTaskDetails from "./Admin/Enquiry/NewTaskDetails.jsx"
+import AdminManageEnquiry from "./Admin/Enquiry/ManageEnquiry.jsx"
 
 
 // Manager
@@ -82,6 +85,9 @@ function App() {
       <Route path="/admin-inspection-Details" element={<AdminInspectionDetails/>} />
       <Route path='/admin-profile' element={<AdminPrfile/>} />
       <Route path='/admin-report' element={<AdminReport/>} />
+      <Route path='/admin-new-enquiry' element={<AdminNewEnaquiry/>} />
+      <Route path='/admin-new-enquiry-Details' element={<AdminNewTaskDetails/>} />
+      <Route path='/admin-manage-enquiry' element={<AdminManageEnquiry/>} />
       
 
       {/* Manager */}
