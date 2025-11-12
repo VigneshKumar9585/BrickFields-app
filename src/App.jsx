@@ -17,6 +17,9 @@ import AdminReport from "./Admin/Report/Report.jsx"
 import AdminNewEnaquiry from "./Admin/Enquiry/NewEnquiry.jsx"
 import AdminNewTaskDetails from "./Admin/Enquiry/NewTaskDetails.jsx"
 import AdminManageEnquiry from "./Admin/Enquiry/ManageEnquiry.jsx"
+import AdminAddManager from "./Admin/AddUser/AddManager.jsx"
+import AdminAddStaff from "./Admin/AddUser/AddStaff.jsx"
+import AdminManagerUser from "./Admin/AddUser/ManageUser.jsx"
 
 
 // Manager
@@ -73,7 +76,7 @@ function App() {
 
 
       {/* Admin */}
-      <Route path="/admin-Dashboard" element={<AdminDashboared />} />
+      <Route path="/admin-dashboard" element={<AdminDashboared />} />
       <Route path="/master/setting" element={<MasterSetting />} />
       <Route path="/master/country" element={<MasterCountry />} />
       <Route path="/master/state" element={<MasterState />} />
@@ -88,6 +91,9 @@ function App() {
       <Route path='/admin-new-enquiry' element={<AdminNewEnaquiry/>} />
       <Route path='/admin-new-enquiry-Details' element={<AdminNewTaskDetails/>} />
       <Route path='/admin-manage-enquiry' element={<AdminManageEnquiry/>} />
+      <Route path='/admin-add-manager' element={<AdminAddManager/>} />
+      <Route path='/admin-add-Staff' element={<AdminAddStaff/>} />
+      <Route path='/admin-manage-user' element={<AdminManagerUser/>} />
       
 
       {/* Manager */}

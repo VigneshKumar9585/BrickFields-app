@@ -34,9 +34,11 @@ import {
   Trash2,
   ChevronLeft,
   ChevronRight,
+  Edit3,
+  X,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-// Sample data
 const sampleTasks = [
   {
     id: "TSK001",
@@ -64,73 +66,7 @@ const sampleTasks = [
     technicians: "Anna",
     status: "Open",
   },
-   {
-    id: "TSK002",
-    name: "Jane Smith",
-    address: "456 Oak Ave, Midtown",
-    email: "jane.smith@email.com",
-    preferDate: "2024-01-16",
-    preferTime: "2:00 PM",
-    assignedLSP: "LSP-102",
-    lspAssignDate: "2024-01-15",
-    city: "Brooklyn",
-    technicians: "Anna",
-    status: "Open",
-  },
-   {
-    id: "TSK002",
-    name: "Jane Smith",
-    address: "456 Oak Ave, Midtown",
-    email: "jane.smith@email.com",
-    preferDate: "2024-01-16",
-    preferTime: "2:00 PM",
-    assignedLSP: "LSP-102",
-    lspAssignDate: "2024-01-15",
-    city: "Brooklyn",
-    technicians: "Anna",
-    status: "Open",
-  },
-   {
-    id: "TSK002",
-    name: "Jane Smith",
-    address: "456 Oak Ave, Midtown",
-    email: "jane.smith@email.com",
-    preferDate: "2024-01-16",
-    preferTime: "2:00 PM",
-    assignedLSP: "LSP-102",
-    lspAssignDate: "2024-01-15",
-    city: "Brooklyn",
-    technicians: "Anna",
-    status: "Open",
-  },
-   {
-    id: "TSK002",
-    name: "Jane Smith",
-    address: "456 Oak Ave, Midtown",
-    email: "jane.smith@email.com",
-    preferDate: "2024-01-16",
-    preferTime: "2:00 PM",
-    assignedLSP: "LSP-102",
-    lspAssignDate: "2024-01-15",
-    city: "Brooklyn",
-    technicians: "Anna",
-    status: "Open",
-  },
-   {
-    id: "TSK002",
-    name: "Jane Smith",
-    address: "456 Oak Ave, Midtown",
-    email: "jane.smith@email.com",
-    preferDate: "2024-01-16",
-    preferTime: "2:00 PM",
-    assignedLSP: "LSP-102",
-    lspAssignDate: "2024-01-15",
-    city: "Brooklyn",
-    technicians: "Anna",
-    status: "Open",
-  },
 ];
-import { useNavigate } from "react-router-dom";
 
 export default function ManageEnquiry() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -140,18 +76,15 @@ export default function ManageEnquiry() {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
 
-  // Popup states
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [activeTab, setActiveTab] = useState(0);
-
-  // Delete popup state
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   const navigate = useNavigate();
 
   const handleEditClick = (task) => {
-    navigate(`/edit/assign`, { state: { task } }); // pass task data
+    navigate(`/edit/assign`, { state: { task } });
   };
 
   const handleOpenDialog = (task) => {
@@ -185,15 +118,14 @@ export default function ManageEnquiry() {
   const itemsPerPage = 10;
   const totalItems = sampleTasks.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+  const currentItems = sampleTasks.slice(startIndex, endIndex);
 
   const handlePreviousPage = () =>
     setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNextPage = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-  const currentItems = sampleTasks.slice(startIndex, endIndex);
 
   return (
     <>
@@ -204,10 +136,7 @@ export default function ManageEnquiry() {
         <Box sx={{ m: 0, p: 0 }}>
           <Typography
             color="rgb(0,0,0)"
-            sx={{
-              fontSize: { xs: "20px", md: "24px" },
-              fontWeight: "500",
-            }}
+            sx={{ fontSize: { xs: "20px", md: "24px" }, fontWeight: "500" }}
           >
             Managing Tasks Details
           </Typography>
@@ -228,7 +157,6 @@ export default function ManageEnquiry() {
               }}
             >
               <Box display="flex" gap={2} alignItems="center">
-                {/* LSP */}
                 <FormControl sx={{ width: "120px" }} size="small">
                   <InputLabel>LSP</InputLabel>
                   <Select
@@ -242,7 +170,6 @@ export default function ManageEnquiry() {
                   </Select>
                 </FormControl>
 
-                {/* Status */}
                 <FormControl sx={{ width: "120px" }} size="small">
                   <InputLabel>Status</InputLabel>
                   <Select
@@ -256,7 +183,6 @@ export default function ManageEnquiry() {
                   </Select>
                 </FormControl>
 
-                {/* City */}
                 <FormControl sx={{ width: "120px" }} size="small">
                   <InputLabel>City</InputLabel>
                   <Select
@@ -270,7 +196,6 @@ export default function ManageEnquiry() {
                   </Select>
                 </FormControl>
 
-                {/* Date */}
                 <FormControl sx={{ width: "120px" }} size="small">
                   <InputLabel>Date</InputLabel>
                   <Select
@@ -285,7 +210,6 @@ export default function ManageEnquiry() {
                   </Select>
                 </FormControl>
 
-                {/* Search */}
                 <TextField
                   sx={{ width: "200px" }}
                   size="small"
@@ -293,9 +217,7 @@ export default function ManageEnquiry() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   InputProps={{
-                    startAdornment: (
-                      <Search style={{ marginRight: 8 }} size={18} />
-                    ),
+                    startAdornment: <Search style={{ marginRight: 8 }} size={18} />,
                   }}
                 />
               </Box>
@@ -303,188 +225,116 @@ export default function ManageEnquiry() {
           </Card>
 
           {/* Table */}
-         <Card
-  sx={{
-    boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.08)",
-    bgcolor: "#fff",
-    borderRadius: "10px",
-    overflow: "hidden",
-    width: "1180px", // ✅ same fixed width
-  }}
->
-  <TableContainer
-    component={Paper}
-    sx={{
-      borderRadius: "10px",
-      overflowX: "auto", // ✅ horizontal scroll
-      whiteSpace: "nowrap", // ✅ prevent wrapping
-      bgcolor: "#fafafa",
-      boxShadow: "none",
-    }}
-  >
-    <Table 
-    sx={{
-         "td": {
-          whiteSpace: "nowrap", // ✅ single line only
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          fontSize: "0.88rem",
-          padding: "8px 12px", // compact padding
-          textAlign: "center",
-        },
-        "th":{
-            whiteSpace: "nowrap", // ✅ single line only
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          fontSize: "0.88rem",
-          padding: "12px 12px", // compact padding
-          textAlign: "center",
-          color:"#fff"
-        }
-      }}> {/* ✅ allows right scroll */}
-      <TableHead>
-        <TableRow sx={{bgcolor: "#029898"}}>
-          {[
-            "S.No",
-            "Task Id",
-            "Name",
-            "Address",
-            "Mobile",
-            "Service",
-            "Enquiry Date",
-            "Verified Date",
-            "Payment",
-            "Assigned Manager",
-            "LSP",
-            "Status",
-            "Action",
-          ].map((head) => (
-            <TableCell
-             
-            >
-              {head}
-            </TableCell>
-          ))}
-        </TableRow>
-      </TableHead>
-
-      <TableBody>
-        {currentItems.map((task, idx) => (
-          <TableRow
-            key={task.id}
+          <Card
             sx={{
-              "&:hover": {
-                backgroundColor: "#f5f5f5",
-              },
-              transition: "background 0.2s ease",
+              boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.08)",
+              bgcolor: "#fff",
+              borderRadius: "10px",
+              overflow: "hidden",
+              width: "1180px",
             }}
           >
-            <TableCell align="center" >
-              {startIndex + idx + 1}
-            </TableCell>
-            <TableCell align="center" >
-              {task.id}
-            </TableCell>
-            <TableCell
-              align="center"
-              
+            <TableContainer
+              component={Paper}
+              sx={{
+                borderRadius: "10px",
+                overflowX: "auto",
+                whiteSpace: "nowrap",
+                bgcolor: "#fafafa",
+                boxShadow: "none",
+              }}
             >
-              {task.name}
-            </TableCell>
-            <TableCell
-              align="left"
-            
-            >
-              {task.address}
-            </TableCell>
-            <TableCell
-              align="center"
-           
-            >
-              {task.email}
-            </TableCell>
-            <TableCell align="center" >
-              {task.preferDate}
-            </TableCell>
-            <TableCell align="center" >
-              {task.preferTime}
-            </TableCell>
-            <TableCell align="center" >
-              {task.assignedLSP}
-            </TableCell>
-            <TableCell align="center" >
-              {task.lspAssignDate}
-            </TableCell>
-            <TableCell align="center" >
-              {task.city}
-            </TableCell>
-            <TableCell align="center" >
-              {task.technicians}
-            </TableCell>
-
-            <TableCell align="center" >
-              <Chip
-                label={task.status}
-                size="small"
+              <Table
                 sx={{
-                  fontWeight: 500,
-                  color:
-                    task.status === "Open"
-                      ? "#0F5132"
-                      : task.status === "In Progress"
-                      ? "#664d03"
-                      : "#0C5460",
-                  bgcolor:
-                    task.status === "Open"
-                      ? "#D1E7DD"
-                      : task.status === "In Progress"
-                      ? "#FFF3CD"
-                      : "#D1ECF1",
+                  td: {
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    fontSize: "0.88rem",
+                    padding: "8px 12px",
+                    textAlign: "center",
+                  },
+                  th: {
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    fontSize: "0.88rem",
+                    padding: "12px 12px",
+                    textAlign: "center",
+                    color: "#fff",
+                  },
                 }}
-              />
-            </TableCell>
+              >
+                <TableHead>
+                  <TableRow sx={{ bgcolor: "#029898" }}>
+                    {[
+                      "S.No",
+                      "Task Id",
+                      "Name",
+                      "Address",
+                      "Mobile",
+                      "Service",
+                      "Enquiry Date",
+                      "Verified Date",
+                      "Payment",
+                      "Assigned Manager",
+                      "LSP",
+                      "Status",
+                      "Action",
+                    ].map((head) => (
+                      <TableCell key={head}>{head}</TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
 
-            <TableCell align="center" >
-              <Box display="flex" justifyContent="center" gap={0.5}>
-                <IconButton
-                  size="small"
-                  sx={{
-                    color: "#00796B",
-                    "&:hover": { bgcolor: "rgba(0,121,107,0.08)" },
-                  }}
-                  onClick={() => handleOpenDialog(task)}
-                >
-                  <Eye size={18} />
-                </IconButton>
-                <IconButton
-                  size="small"
-                  sx={{
-                    color: "#0288d1",
-                    "&:hover": { bgcolor: "rgba(2,136,209,0.08)" },
-                  }}
-                  onClick={() => handleEditClick(task)}
-                >
-                  <Pencil size={18} />
-                </IconButton>
-                <IconButton
-                  size="small"
-                  sx={{
-                    color: "#d32f2f",
-                    "&:hover": { bgcolor: "rgba(211,47,47,0.08)" },
-                  }}
-                  onClick={() => handleOpenDeleteDialog(task)}
-                >
-                  <Trash2 size={18} />
-                </IconButton>
-              </Box>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  </TableContainer>
-</Card>
-
+                <TableBody>
+                  {currentItems.map((task, idx) => (
+                    <TableRow key={task.id}>
+                      <TableCell>{startIndex + idx + 1}</TableCell>
+                      <TableCell>{task.id}</TableCell>
+                      <TableCell>{task.name}</TableCell>
+                      <TableCell align="left">{task.address}</TableCell>
+                      <TableCell>{task.email}</TableCell>
+                      <TableCell>{task.preferDate}</TableCell>
+                      <TableCell>{task.preferTime}</TableCell>
+                      <TableCell>{task.assignedLSP}</TableCell>
+                      <TableCell>{task.lspAssignDate}</TableCell>
+                      <TableCell>{task.city}</TableCell>
+                      <TableCell>{task.technicians}</TableCell>
+                      <TableCell>
+                        <Chip
+                          label={task.status}
+                          size="small"
+                          sx={{
+                            fontWeight: 500,
+                            color:
+                              task.status === "Open" ? "#0F5132" : "#0C5460",
+                            bgcolor:
+                              task.status === "Open" ? "#D1E7DD" : "#D1ECF1",
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Box display="flex" justifyContent="center" gap={0.5}>
+                          <IconButton onClick={() => handleOpenDialog(task)}>
+                            <Eye size={18} />
+                          </IconButton>
+                          <IconButton onClick={() => handleEditClick(task)}>
+                            <Pencil size={18} />
+                          </IconButton>
+                          <IconButton
+                            onClick={() => handleOpenDeleteDialog(task)}
+                          >
+                            <Trash2 size={18} />
+                          </IconButton>
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Card>
 
           {/* Pagination */}
           <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
@@ -492,11 +342,7 @@ export default function ManageEnquiry() {
               Showing {startIndex + 1} to {endIndex} of {totalItems} results
             </Typography>
             <Box display="flex" gap={1} alignItems="center">
-              <Button
-                variant="outlined"
-                onClick={handlePreviousPage}
-                disabled={currentPage === 1}
-              >
+              <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
                 <ChevronLeft size={16} /> Previous
               </Button>
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -506,23 +352,14 @@ export default function ManageEnquiry() {
                   onClick={() => setCurrentPage(page)}
                   sx={{
                     minWidth: "36px",
-                    mx: 0.5,
                     color: currentPage === page ? "white" : "#029898",
                     bgcolor: currentPage === page ? "#029898" : "transparent",
-                    "&:hover": {
-                      bgcolor:
-                        currentPage === page ? "#027777" : "rgba(2, 152, 152, 0.1)",
-                    },
                   }}
                 >
                   {page}
                 </Button>
               ))}
-              <Button
-                variant="outlined"
-                onClick={handleNextPage}
-                disabled={currentPage === totalPages}
-              >
+              <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
                 Next <ChevronRight size={16} />
               </Button>
             </Box>
@@ -530,212 +367,205 @@ export default function ManageEnquiry() {
         </Box>
       </Box>
 
-      {/* ===== VIEW POPUP ===== */}
+      {/* ✅ NEW VIEW POPUP EXACTLY LIKE FIGMA */}
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}
-        maxWidth="md"
-        PaperProps={{ sx: { borderRadius: "18px" } }}
+        maxWidth="lg"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: "14px",
+            overflow: "hidden",
+            bgcolor: "#fff",
+          },
+        }}
       >
-        <DialogTitle
-          sx={{
-            p: 1.5,
-            bgcolor: "#029898",
-            color: "#ffffffff",
-            display: "flex",
-            justifyContent: "center",
-          }}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          px={3}
+          py={0}
+          borderBottom="1px solid #ddd"
+          bgcolor={"#029898"}
+          color={"#fff"}
         >
-          <Typography variant="h6">Task Details</Typography>
-        </DialogTitle>
-        <Divider />
         <Tabs
           value={activeTab}
           onChange={handleTabChange}
           sx={{
-            pt: 1,
-            pl: 14,
-            "& .MuiTab-root": {
-              color: "#888888ff",
-            },
-            "& .Mui-selected": {
-              color: "#029898",
-              fontWeight: "bold",
-            },
-            "& .MuiTabs-indicator": {
-              backgroundColor: "#029898",
-            },
+            color:"#fff",
+            "& .MuiTab-root": { textTransform: "none", fontWeight: 600 },
+            "& .Mui-selected": { color: "#fff" },
+            "& .MuiTabs-indicator": { bgcolor: "#fff" },
+            pl: 2,
           }}
         >
-          <Tab label="Visitor Details" />
-          <Tab label="Local Service Partner Details" />
+          <Tab label="Enquiry Details" />
+          <Tab label="Payment Details" />
         </Tabs>
+     
+          <Box display="flex" alignItems="center" gap={1}>
+            <Edit3 size={18} />
+            <Typography sx={{ textDecoration: "underline", cursor: "pointer" }}>
+              Edit
+            </Typography>
+            <IconButton  onClick={handleCloseDialog}>
+              <X color="#ffffffff"/>
+            </IconButton>
+          </Box>
+        </Box>
 
-        <DialogContent dividers>{activeTab === 0 && selectedTask && (
-  <Box
-    border="1px solid #ddd"
-    sx={{
-      width: "570px",
-      height: "300px",
-      bgcolor: "#f0f0f0ff",
-      borderRadius: "16px",
-      display: "flex",
-      flexDirection: "column",
-    }}
-  >
-    {/* Header */}
-    <Box sx={{ display: "flex", justifyContent: "space-between", p: 1.5 }}>
-      <Typography sx={{ fontSize: "14px" }}>
-        Enquiry ID: {selectedTask.id}
-      </Typography>
-      <Typography sx={{ fontSize: "14px" }}>Enquiry Data</Typography>
-    </Box>
 
-    <Divider sx={{ width: "100%" }} />
+        <DialogContent sx={{ p: 3 }}>
+          {/* Enquiry Details */}
+          {activeTab === 0 && (
+            <>
+              <Typography fontWeight="600" mb={1}>
+                Visitor Details
+              </Typography>
+              <Box display="grid" gridTemplateColumns="repeat(6, 1fr)" gap={2} mb={2}>
+                {[
+                  "Enquiry ID",
+                  "Name",
+                  "Country",
+                  "State",
+                  "District",
+                  "Region",
+                  "Address",
+                  "Mobile No.",
+                  "E-Mail",
+                  "Service",
+                  "Total Sq. Feet",
+                  "Enquired Date",
+                ].map((label) => (
+                  <TextField
+                    key={label}
+                    label={label}
+                    size="small"
+                    
+                    fullWidth
+                  />
+                ))}
+              </Box>
 
-    {/* Name / Mobile / Email / Country */}
-    <Box sx={{ display: "flex", justifyContent: "space-between", p: 1.5 }}>
-      <Typography sx={{ fontSize: "14px" }}>Name:</Typography>
-      <Typography sx={{ fontSize: "14px" }}>Mobile:</Typography>
-      <Typography sx={{ fontSize: "14px" }}>Email:</Typography>
-      <Typography sx={{ fontSize: "14px" }}>Country:</Typography>
-    </Box>
+              <Divider sx={{ my: 2 }} />
 
-    <Divider sx={{ width: "100%" }} />
+              <Typography fontWeight="600" mb={1}>
+                Conversion Details
+              </Typography>
+              <Box display="grid" gridTemplateColumns="repeat(5, 1fr)" gap={2}>
+                {[
+                  "Task ID",
+                  "Bg Verification Date",
+                  "Assigned Manager",
+                  "Status",
+                  "Preferred Date",
+                  "Preferred Time",
+                  "Remarks",
+                ].map((label) => (
+                  <TextField
+                    key={label}
+                    label={label}
+                    size="small"
+                    
+                    fullWidth
+                  />
+                ))}
+              </Box>
+            </>
+          )}
 
-    {/* State / District / City */}
-    <Box sx={{ display: "flex", justifyContent: "space-between", p: 1.5 }}>
-      <Typography sx={{ fontSize: "14px" }}>State:</Typography>
-      <Typography sx={{ fontSize: "14px" }}>District:</Typography>
-      <Typography sx={{ fontSize: "14px" }}>City: {selectedTask.city}</Typography>
-    </Box>
-
-    <Divider sx={{ width: "100%" }} />
-
-    {/* Address */}
-    <Box sx={{ p: 1.5 }}>
-      <Typography sx={{ fontSize: "14px" }}>Address:</Typography>
-    </Box>
-
-    <Divider sx={{ width: "100%" }} />
-
-    {/* Prefer Date / Prefer Time */}
-    <Box sx={{ display: "flex", justifyContent: "space-between", p: 1.5 }}>
-      <Typography sx={{ fontSize: "14px" }}>Prefer Date:</Typography>
-      <Typography sx={{ fontSize: "14px" }}>
-        Prefer Time: {selectedTask.preferTime}
-      </Typography>
-    </Box>
-
-    <Divider sx={{ width: "100%" }} />
-
-    {/* Remark */}
-    <Typography sx={{ fontSize: "14px", p: 1.5 }}>Remark:</Typography>
-  </Box>
-)}
-
-{activeTab === 1 && selectedTask && (
-  <Box
-    border="1px solid #ddd"
-    sx={{
-      width: "570px",
-      height: "300px",
-      bgcolor: "#f0f0f0ff",
-      borderRadius: "16px",
-      display: "flex",
-      flexDirection: "column",
-    }}
-  >
-    {/* Header */}
-    <Box sx={{ display: "flex", gap: 6, p: 1.2, pl: 2 }}>
-      <Typography sx={{ fontSize: "14px" }} fontWeight="bold">
-        Task ID
-      </Typography>
-      <Typography sx={{ fontSize: "14px" }}>Assigned Date</Typography>
-    </Box>
-
-    <Divider sx={{ width: "100%" }} />
-
-    {/* Company Box */}
-    <Box sx={{ display: "flex", p: 2, py: 1 }}>
-      <Box
-        sx={{
-          width: "100px",
-          height: "80px",
-          bgcolor: "#d0cfcfff",
-          border: "3px solid #7e7e7eff",
-          borderRadius: "10px",
-        }}
-      />
-      <Box sx={{ p: 2, py: 1 }}>
-        <Typography fontWeight="bold" sx={{ fontSize: "16px" }}>
-          Company Name
-        </Typography>
-        <Typography sx={{ fontSize: "13px" }}>Point of Contact Name</Typography>
-        <Typography sx={{ fontSize: "13px" }}>Point of Contact Mobile</Typography>
-      </Box>
-    </Box>
-
-    <Divider sx={{ width: "100%" }} />
-
-    {/* Address / Email */}
-    <Box sx={{ display: "flex", justifyContent: "space-between", p: 2, py: 1 }}>
-      <Typography sx={{ fontSize: "14px" }}>Company Address</Typography>
-      <Typography sx={{ fontSize: "14px" }}>Company Email</Typography>
-    </Box>
-
-    <Divider sx={{ width: "100%" }} />
-
-    {/* Business Type */}
-    <Box sx={{ p: 2, py: 1 }}>
-      <Typography sx={{ fontSize: "14px" }}>Business Type</Typography>
-    </Box>
-
-    <Divider sx={{ width: "100%" }} />
-
-    {/* District / City / Pincode */}
-    <Box sx={{ display: "flex", justifyContent: "space-between", p: 2, py: 1 }}>
-      <Typography sx={{ fontSize: "14px" }}>District</Typography>
-      <Typography sx={{ fontSize: "14px" }}>City</Typography>
-      <Typography sx={{ fontSize: "14px" }}>Pincode</Typography>
-    </Box>
-
-    <Divider sx={{ width: "100%" }} />
-
-    {/* Status */}
-    <Box sx={{ p: 2, py: 1 }}>
-      <Typography sx={{ fontSize: "14px" }}>Status</Typography>
-    </Box>
-  </Box>
-)}
-  </DialogContent>
+          {/* Payment Details */}
+          {activeTab === 1 && (
+            <TableContainer
+              component={Paper}
+              sx={{
+                mt: 2,
+                boxShadow: "0px 2px 6px rgba(0,0,0,0.1)",
+                borderRadius: "10px",
+              }}
+            >
+              <Table>
+                <TableHead sx={{ bgcolor: "#029898" }}>
+                  <TableRow>
+                    {[
+                      "Payment %",
+                      "Task Id",
+                      "Name",
+                      "Total Sq.Ft",
+                      "Grand Amount",
+                      "Date",
+                      "Paid Amount",
+                      "Pending Amount",
+                      "Mode Of Transaction",
+                      "Evidence",
+                      "Action",
+                    ].map((head) => (
+                      <TableCell
+                        key={head}
+                        sx={{
+                          color: "#fff",
+                          fontWeight: "600",
+                          textAlign: "center",
+                        }}
+                      >
+                        {head}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {[10, 40, 50].map((p) => (
+                    <TableRow key={p}>
+                      <TableCell align="center">{p}%</TableCell>
+                      <TableCell align="center">TSK00{p / 10}</TableCell>
+                      <TableCell align="center">John Doe</TableCell>
+                      <TableCell align="center">1500</TableCell>
+                      <TableCell align="center">$2000</TableCell>
+                      <TableCell align="center">2024-01-15</TableCell>
+                      <TableCell align="center">$1000</TableCell>
+                      <TableCell align="center">$1000</TableCell>
+                      <TableCell align="center">Online</TableCell>
+                      <TableCell align="center">---</TableCell>
+                      <TableCell align="center">
+                        <IconButton size="small">
+                          <Pencil size={16} />
+                        </IconButton>
+                        <IconButton size="small">
+                          <Trash2 size={16} />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </DialogContent>
       </Dialog>
-      {/* ===== DELETE POPUP ===== */}
+
+      {/* Delete Popup */}
       <Dialog
         open={openDeleteDialog}
         onClose={handleCloseDeleteDialog}
         PaperProps={{ sx: { borderRadius: "18px" } }}
       >
-        <Box display="flex" flexDirection="column" alignItems="center" gap={2} sx={{ width: "600px" }}>
-          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", p: 2 }}>
-            <Trash2 size={40} style={{ color: "black" }} />
-            <Typography variant="h6" fontWeight="bold">
-              Delete Data
-            </Typography>
-            <Typography textAlign="center">
-              Are You Sure You Want To Delete This Information
-            </Typography>
-          </Box>
-          <Divider sx={{ width: "100%", border: "2px solid #ceccccff" }} />
-          <Box display="flex" gap={2} pb={2}>
-            <Button variant="outlined" onClick={handleCloseDeleteDialog} sx={{ width: "100px" }}>
+        <Box p={3} textAlign="center">
+          <Trash2 size={40} />
+          <Typography variant="h6" mt={2}>
+            Delete Data
+          </Typography>
+          <Typography>
+            Are you sure you want to delete this information?
+          </Typography>
+          <Divider sx={{ my: 2 }} />
+          <Box display="flex" justifyContent="center" gap={2}>
+            <Button variant="outlined" onClick={handleCloseDeleteDialog}>
               Cancel
             </Button>
-            <Button
-              variant="contained"
-              onClick={handleConfirmDelete}
-              sx={{ bgcolor: "#db0303ff", "&:hover": { bgcolor: "#333" }, width: "100px" }}
-            >
+            <Button variant="contained" color="error" onClick={handleConfirmDelete}>
               Delete
             </Button>
           </Box>
