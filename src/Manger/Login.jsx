@@ -21,7 +21,7 @@ const Login = () => {
   const [error, setError] = useState("");
 
   const handleLogin = () => {
-    if (email === "admin@gmail.com" && password === "admin") {
+    if (email === "manager@gmail.com" && password === "manager") {
       setError("");
       navigate("/dashboard"); // ✅ go to dashboard if correct
     }else if (email === "technician@gmail.com" && password === "technician") {
@@ -30,7 +30,13 @@ const Login = () => {
     }else if (email === "lsp@gmail.com" && password === "lsp") {
       setError("");
       navigate("/lsp-dashboard"); // ✅ go to dashboard if correct
-    } else {
+    }else if (email === "lsp@gmail.com" && password === "lsp") {
+      setError("");
+      navigate("/lsp-dashboard"); // ✅ go to dashboard if correct
+    } else if (email === "admin@gmail.com" && password === "admin") {
+      setError("");
+      navigate("/admin-dashboard"); // ✅ go to dashboard if correct
+    }else {
       setError("Invalid email or password");
     }
   };
