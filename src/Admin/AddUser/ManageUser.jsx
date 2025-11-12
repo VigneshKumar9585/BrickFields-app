@@ -62,7 +62,18 @@ export default function ManageEnquiry() {
   ]);
 
   const handleEditClick = (task) => {
-    navigate(`/user/addLSP`, { state: { task } });
+    if (selectedStaff === "Staff") {
+      navigate("/admin-add-staff", { state: { task } });
+    } else if (selectedStaff === "Manager") {
+      navigate("/admin-add-manager", { state: { task } });
+    } else {
+      Swal.fire({
+        icon: "warning",
+        title: "Select Role First",
+        text: "Please select Staff or Manager before editing.",
+        confirmButtonColor: "#029898",
+      });
+    }
   };
 
   const handleOpenViewDialog = (task) => {
@@ -306,7 +317,7 @@ export default function ManageEnquiry() {
         </Box>
       </Box>
 
-      {/* ✅ Redesigned VIEW POPUP (Figma Style) */}
+      {/* ✅ Redesigned VIEW POPUP */}
       <Dialog
         open={openViewDialog}
         onClose={handleCloseViewDialog}
@@ -314,16 +325,27 @@ export default function ManageEnquiry() {
           sx: {
             borderRadius: "16px",
             overflow: "visible",
-            mr:60 
+            mr: 60,
           },
         }}
       >
         {selectedTask && (
-          <Box sx={{ bgcolor: "#fff", borderRadius: "16px", p: 3,width:"1100px",}}>
-            {/* Header */}
-            <Box display="flex" justifyContent="space-between" alignItems="center" pb={2}>
-              <Typography sx={{ fontSize: "20px", fontWeight: 600 ,}}>
-                User Details | Manager
+          <Box
+            sx={{
+              bgcolor: "#fff",
+              borderRadius: "16px",
+              p: 3,
+              width: "1100px",
+            }}
+          >
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              pb={2}
+            >
+              <Typography sx={{ fontSize: "20px", fontWeight: 600 }}>
+                User Details 
               </Typography>
               <Box display="flex" alignItems="center" gap={1}>
                 <Pen size={16} />
@@ -340,9 +362,7 @@ export default function ManageEnquiry() {
               </Box>
             </Box>
 
-            {/* Body */}
             <Box display="flex" gap={2}>
-              {/* Left Section */}
               <Box
                 sx={{
                   bgcolor: "#f4f4f4",
@@ -351,7 +371,6 @@ export default function ManageEnquiry() {
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  // justifyContent: "center",
                   py: 3,
                   gap: 1,
                 }}
@@ -365,52 +384,55 @@ export default function ManageEnquiry() {
                 </Typography>
               </Box>
 
-              {/* Right Section */}
               <Box
                 sx={{
                   flexGrow: 1,
                   bgcolor: "#f4f4f4",
                   borderRadius: "10px",
-                  // p: 3,
                   display: "flex",
                   flexDirection: "column",
                   gap: 2,
                 }}
               >
-                {/* Personal Data */}
                 <Box p={2}>
-                <Typography fontWeight="600" pb={1}>Personal Data</Typography>
-                <Box display="grid" gridTemplateColumns="repeat(4, 1fr)" gap={1}>
-                  <TextField size="small" label="Mobile No." />
-                  <TextField size="small" label="Email ID" />
-                  <TextField size="small" label="Address" />
-                  <TextField size="small" label="Country" />
-                  <TextField size="small" label="State" />
-                  <TextField size="small" label="City" />
-                  <TextField size="small" label="Region" />
-                </Box>
+                  <Typography fontWeight="600" pb={1}>
+                    Personal Data
+                  </Typography>
+                  <Box display="grid" gridTemplateColumns="repeat(4, 1fr)" gap={1}>
+                    <TextField size="small" label="Mobile No." />
+                    <TextField size="small" label="Email ID" />
+                    <TextField size="small" label="Address" />
+                    <TextField size="small" label="Country" />
+                    <TextField size="small" label="State" />
+                    <TextField size="small" label="City" />
+                    <TextField size="small" label="Region" />
+                  </Box>
                 </Box>
 
                 <Divider />
 
-                {/* Social Media */}
                 <Box p={2}>
-                <Typography pb={1} fontWeight="600">Social Media Platforms</Typography>
-                <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" gap={2}>
-                  <TextField size="small" label="Instagram" />
-                  <TextField size="small" label="YouTube" />
-                  <TextField size="small" label="LinkedIn" />
-                </Box>
+                  <Typography pb={1} fontWeight="600">
+                    Social Media Platforms
+                  </Typography>
+                  <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" gap={2}>
+                    <TextField size="small" label="Instagram" />
+                    <TextField size="small" label="YouTube" />
+                    <TextField size="small" label="LinkedIn" />
+                  </Box>
                 </Box>
 
                 <Divider />
 
-                {/* Documents */}
                 <Box p={2}>
-                <Typography fontWeight="600">Document Data</Typography>
-                <Box display="flex" gap={3}>
-                  {["Adhaar Card", "Degree Certificate", "Provisional Certificate", "Experience Certificate"].map(
-                    (doc, i) => (
+                  <Typography fontWeight="600">Document Data</Typography>
+                  <Box display="flex" gap={3}>
+                    {[
+                      "Adhaar Card",
+                      "Degree Certificate",
+                      "Provisional Certificate",
+                      "Experience Certificate",
+                    ].map((doc, i) => (
                       <Box
                         key={i}
                         display="flex"
@@ -429,9 +451,8 @@ export default function ManageEnquiry() {
                         </Typography>
                         <FileImage size={16} />
                       </Box>
-                    )
-                  )}
-                </Box>
+                    ))}
+                  </Box>
                 </Box>
               </Box>
             </Box>

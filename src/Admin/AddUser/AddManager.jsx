@@ -13,9 +13,15 @@ import {
   IconButton,
 } from "@mui/material";
 import { Edit, Close } from "@mui/icons-material";
+import { useLocation } from "react-router-dom";
 import logo from "../../assets/logo/logo.webp";
 
 function Dashboard() {
+  // ✅ Detect Edit Mode (from ManageEnquiry navigation)
+  const location = useLocation();
+  const taskData = location.state?.task;
+  const isEditMode = !!taskData;
+
   const personalFields = [
     "Name",
     "Mobile No",
@@ -69,27 +75,33 @@ function Dashboard() {
           <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
             <Typography sx={{ fontWeight: 600, cursor: "pointer" }}>
               Add User
-            </Typography>|
+            </Typography>
+            |
             <Typography sx={{ color: "#000", cursor: "pointer" }}>
-              Add Manager
+              {isEditMode ? "Edit Manager" : "Add Manager"}
             </Typography>
           </Box>
 
           {/* Container */}
           <Box sx={{ width: "100%", maxWidth: "1190px" }}>
             {/* Personal Data Section */}
-            <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none",  }}>
+            <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none" }}>
               <CardContent sx={{ p: 3 }}>
                 <Typography
                   variant="h6"
-                  sx={{ fontWeight: 600, fontSize: "14px", color: "#000", mb: 2 }}
+                  sx={{
+                    fontWeight: 600,
+                    fontSize: "14px",
+                    color: "#000",
+                    mb: 2,
+                  }}
                 >
                   Personal Data
                 </Typography>
 
                 <Box sx={{ display: "flex", gap: 4 }}>
                   {/* Left side - Fields */}
-                  <Grid container spacing={2} sx={{ flex: 1  }}>
+                  <Grid container spacing={2} sx={{ flex: 1 }}>
                     {personalFields.map((field, i) => (
                       <Grid item xs={12} sm={6} md={3} key={i}>
                         <Typography
@@ -103,12 +115,15 @@ function Dashboard() {
                         >
                           {field}
                         </Typography>
-                        {["Country", "State", "Region", "District"].includes(field) ? (
+                        {["Country", "State", "Region", "District"].includes(
+                          field
+                        ) ? (
                           <TextField
                             select
                             variant="outlined"
                             size="small"
                             sx={getTextFieldSx(field)}
+                            defaultValue={taskData ? taskData[field] || "" : ""}
                           >
                             <MenuItem value="">Select {field}</MenuItem>
                           </TextField>
@@ -117,6 +132,7 @@ function Dashboard() {
                             variant="outlined"
                             size="small"
                             sx={getTextFieldSx(field)}
+                            defaultValue={taskData ? taskData[field] || "" : ""}
                           />
                         )}
                       </Grid>
@@ -129,7 +145,7 @@ function Dashboard() {
                     flexDirection="column"
                     alignItems="center"
                     gap={1}
-                    sx={{ position: "relative",mr:10 }}
+                    sx={{ position: "relative", mr: 10 }}
                   >
                     <Box
                       component="img"
@@ -137,7 +153,7 @@ function Dashboard() {
                       alt="profile"
                       sx={{ width: 100, height: 100, borderRadius: "50%" }}
                     />
-                   
+
                     <Box display="flex" alignItems="center" gap={1}>
                       <Edit sx={{ fontSize: 16 }} />
                       <Typography sx={{ fontSize: 14 }}>Edit</Typography>
@@ -148,11 +164,16 @@ function Dashboard() {
             </Card>
 
             {/* Document Data Section */}
-            <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none"}}>
+            <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none" }}>
               <CardContent sx={{ p: 3 }}>
                 <Typography
                   variant="h6"
-                  sx={{ fontWeight: 600, fontSize: "14px", color: "#000", mb: 2 }}
+                  sx={{
+                    fontWeight: 600,
+                    fontSize: "14px",
+                    color: "#000",
+                    mb: 2,
+                  }}
                 >
                   Document Data
                 </Typography>
@@ -175,7 +196,7 @@ function Dashboard() {
                           textTransform: "none",
                           fontSize: "12px",
                           width: "200px",
-                          color:"#000",
+                          color: "#000",
                           bgcolor: "#e0e0e0",
                           "&:hover": { bgcolor: "#d5d5d5" },
                           height: 30,
@@ -194,7 +215,12 @@ function Dashboard() {
               <CardContent sx={{ p: 3 }}>
                 <Typography
                   variant="h6"
-                  sx={{ fontWeight: 600, fontSize: "14px", color: "#000", mb: 2 }}
+                  sx={{
+                    fontWeight: 600,
+                    fontSize: "14px",
+                    color: "#000",
+                    mb: 2,
+                  }}
                 >
                   Social Media Platforms
                 </Typography>
@@ -231,7 +257,7 @@ function Dashboard() {
                         InputProps={{
                           endAdornment: (
                             <IconButton size="small">
-                              <Close sx={{ fontSize: 16 ,color:"#000"}} />
+                              <Close sx={{ fontSize: 16, color: "#000" }} />
                             </IconButton>
                           ),
                         }}
@@ -277,7 +303,7 @@ function Dashboard() {
                   width: "120px",
                 }}
               >
-                Add
+                {isEditMode ? "Update" : "Add"}
               </Button>
             </Box>
           </Box>
