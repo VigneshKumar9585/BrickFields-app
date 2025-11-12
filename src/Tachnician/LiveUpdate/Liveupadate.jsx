@@ -33,15 +33,25 @@ function LiveUpdate() {
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [completedTime, setCompletedTime] = useState(null);
 
-  const handleUpdate = () => {
-    if (activeStep < steps.length - 1) {
-      setActiveStep((prev) => prev + 1);
-      setRemarks("");
-    } else {
-      // Final step (Completed)
-      setOpenOTP(true);
-    }
-  };
+ const handleUpdate = () => {
+  // Step 1 → Step 2 triggers OTP popup
+  if (activeStep === 1) {
+    setOpenOTP(true);
+  } else if (activeStep < steps.length - 1) {
+    setActiveStep((prev) => prev + 1);
+    setRemarks("");
+  } else {
+    // Final step (Completed)
+    setCompletedTime({
+      date: new Date().toLocaleDateString(),
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    });
+  }
+};
+
 
   const handleClose = () => setOpenOTP(false);
 
@@ -55,14 +65,26 @@ function LiveUpdate() {
     }
   };
 
-  const handleSubmitOTP = () => {
-    console.log("Entered OTP:", otp.join(""));
-    setCompletedTime({
-      date: new Date().toLocaleDateString(),
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    });
-    setOpenOTP(false);
-  };
+const handleSubmitOTP = () => {
+  console.log("Entered OTP:", otp.join(""));
+
+  // ✅ Move to next step automatically after OTP submission
+  setActiveStep((prev) => prev + 1);
+
+  // Reset remarks & OTP inputs
+  setRemarks("");
+  setOtp(["", "", "", ""]);
+
+  // Close OTP popup
+  setOpenOTP(false);
+
+  // Optionally record timestamp (optional)
+  setCompletedTime({
+    date: new Date().toLocaleDateString(),
+    time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+  });
+};
+
 
   return (
     <>
@@ -279,18 +301,19 @@ function LiveUpdate() {
               ))}
             </Box>
 
-            <Button
-              variant="contained"
-              fullWidth
-              sx={{
-                bgcolor: "#029898",
-                "&:hover": { bgcolor: "#038585ff" },
-                borderRadius: "8px",
-              }}
-              onClick={handleSubmitOTP}
-            >
-              Submit
-            </Button>
+           <Button
+  variant="contained"
+  fullWidth
+  sx={{
+    bgcolor: "#029898",
+    "&:hover": { bgcolor: "#038585ff" },
+    borderRadius: "8px",
+  }}
+  onClick={handleSubmitOTP} // ✅ Enable this
+>
+  Submit
+</Button>
+
           </Box>
         </Fade>
       </Modal>

@@ -134,10 +134,10 @@ export default function MasterSettings() {
               ]}
             />
 
-            <SectionCard
+            {/* <SectionCard
               title="Google Map API Key"
               fields={[{ label: "API Key" }]}
-            />
+            /> */}
 
             <SectionCard
               title="Payment (Razor)"

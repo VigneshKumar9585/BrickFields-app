@@ -21,11 +21,11 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 // Dummy LSP Data
 const partners = [
-  { name: "LSP Name", tasks: "36 Profiled Task", technicians: 20, status: "Currently No Task" },
-  { name: "LSP Name", tasks: "21 Profiled Task", technicians: 16, status: "Currently No Task" },
-  { name: "LSP Name", tasks: "6 Profiled Task", technicians: 8, status: "Currently No Task" },
-  { name: "LSP Name", tasks: "12 Profiled Task", technicians: 13, status: "Currently No Task" },
-  { name: "LSP Name", tasks: "28 Profiled Task", technicians: 15, status: "On Processing" },
+  { name: "Technician Name", tasks: "36 Profiled Task", technicians: 20, status: "Currently No Task" },
+  { name: "Technician Name", tasks: "21 Profiled Task", technicians: 16, status: "Currently No Task" },
+  { name: "Technician Name", tasks: "6 Profiled Task", technicians: 8, status: "Currently No Task" },
+  { name: "Technician Name", tasks: "12 Profiled Task", technicians: 13, status: "Currently No Task" },
+  { name: "Technician Name", tasks: "28 Profiled Task", technicians: 15, status: "On Processing" },
 ];
 
 function Dashboard() {
@@ -267,7 +267,7 @@ function Dashboard() {
             {/* Right Section */}
             <Grid sx={{ width: "700px" }} item xs={12} md={6}>
               <Typography variant="h6" sx={{ mb: 3, fontWeight: "600" }}>
-                Assign To Local Service Partner
+                Assign To Technician
               </Typography>
 
               {/* Book Prefer Date & Time */}
@@ -419,9 +419,7 @@ function Dashboard() {
 
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                       <Typography variant="body2">Mobile No</Typography>
-                      <Typography variant="body2">
-                        {p.technicians} Technicians
-                      </Typography>
+                     
                       <Button variant="contained" sx={{ bgcolor: "#029898" }}>
                         Assign
                       </Button>

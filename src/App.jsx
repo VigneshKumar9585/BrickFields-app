@@ -77,7 +77,7 @@ function App() {
 
       {/* Admin */}
       <Route path="/admin-dashboard" element={<AdminDashboared />} />
-      <Route path="/master/setting" element={<MasterSetting />} />
+      <Route path="/master/settings" element={<MasterSetting />} />
       <Route path="/master/country" element={<MasterCountry />} />
       <Route path="/master/state" element={<MasterState />} />
       <Route path='/master/region' element={<MasterRegion/>} />
@@ -105,6 +105,7 @@ function App() {
       <Route path='/profile/edit' element={<EditProfile/>}/>
       <Route path='/enquiry/new' element={<NewEnqiry/>}/>
       <Route path='/enquiry/manage' element={<ManageEnqiry/>}/>
+
       <Route path='/enquiry/new/details' element={<NewTask/>}/>
       <Route path='/change/passwored' element={<ChangePasswored/>}/>
       <Route path="/edit/assign" element={<AssignEdit />} />

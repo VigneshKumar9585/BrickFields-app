@@ -12,6 +12,11 @@ import {
   MenuItem,
   Divider,
 } from "@mui/material";
+import AddModeratorIcon from "@mui/icons-material/AddModerator";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+import { ListItemIcon } from "@mui/material";
+
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -28,6 +33,14 @@ import LaunchIcon from "@mui/icons-material/Launch";
 import ManageHistoryIcon from "@mui/icons-material/ManageHistory";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import TuneIcon from "@mui/icons-material/Tune";
+import PublicIcon from "@mui/icons-material/Public";
+import MapIcon from "@mui/icons-material/Map";
+import ApartmentIcon from "@mui/icons-material/Apartment";
+import LocationCityIcon from "@mui/icons-material/LocationCity";
+import FactCheckIcon from "@mui/icons-material/FactCheck";
+import CategoryIcon from "@mui/icons-material/Category";
+
 
 const SidebarLayout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -97,7 +110,7 @@ const SidebarLayout = () => {
   const drawer = (
     <div
       style={{
-        height: "100%",
+        minHeight: "100%",
         backgroundColor: "#F0F6F6",
         color: "rgba(0, 0, 0, 1)",
       }}
@@ -228,31 +241,35 @@ const SidebarLayout = () => {
         </ListItemButton>
 
         <Collapse in={openKeys["Add User"]} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            {[
-              { name: "Add Manager", path: "/admin-add-manager" },
-              { name: "Add Staff", path: "/admin-add-staff" },
-              { name: "Manage User", path: "/admin-manage-user" },
-            ].map((item) => (
-              <ListItemButton
-                key={item.name}
-                sx={{ pl: 4, color: "black" }}
-                component={NavLink}
-                to={item.path}
-                onClick={handleDrawerToggle}
-                style={activeLinkStyles}
-              >
-                <ListItemText
-                  primary={item.name}
-                  primaryTypographyProps={{
-                    fontSize: "14px",
-                    fontWeight: 400,
-                  }}
-                />
-              </ListItemButton>
-            ))}
-          </List>
-        </Collapse>
+  <List component="div" disablePadding>
+    {[
+      { name: "Add Manager", path: "/admin-add-manager", icon: <AddModeratorIcon /> },
+      // { name: "Add Staff", path: "/admin-add-staff", icon: <PersonAddAlt1Icon /> },
+      { name: "Manage User", path: "/admin-manage-user", icon: <ManageAccountsIcon /> },
+    ].map((item) => (
+      <ListItemButton
+        key={item.name}
+        sx={{ pl: 4, color: "black" }}
+        component={NavLink}
+        to={item.path}
+        onClick={handleDrawerToggle}
+        style={activeLinkStyles}
+      >
+        <ListItemIcon sx={{ minWidth: "36px", color: "black" }}>
+          {item.icon}
+        </ListItemIcon>
+        <ListItemText
+          primary={item.name}
+          primaryTypographyProps={{
+            fontSize: "14px",
+            fontWeight: 400,
+          }}
+        />
+      </ListItemButton>
+    ))}
+  </List>
+</Collapse>
+
         <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
 
         {/* Report */}
@@ -281,7 +298,7 @@ const SidebarLayout = () => {
             backgroundColor:
               openKeys.Master ||
               isSubmenuActive([
-                "/master/setting",
+                "/master/settings",
                 "/master/country",
                 "/master/state",
                 "/master/region",
@@ -294,7 +311,7 @@ const SidebarLayout = () => {
             fontWeight:
               openKeys.Master ||
               isSubmenuActive([
-                "/master/setting",
+                "/master/settings",
                 "/master/country",
                 "/master/state",
                 "/master/region",
@@ -314,33 +331,36 @@ const SidebarLayout = () => {
           {openKeys.Master ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </ListItemButton>
 
-        <Collapse in={openKeys.Master} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            {[
-              { name: "Setting", path: "/master/setting" },
-              { name: "Country", path: "/master/country" },
-              { name: "State", path: "/master/state" },
-              { name: "Region", path: "/master/region" },
-              { name: "District", path: "/master/district" },
-              { name: "Checklist", path: "/master/checklist" },
-              { name: "Category", path: "/master/category" },
-            ].map((item) => (
-              <ListItemButton
-                key={item.name}
-                sx={{ pl: 4, color: "black" }}
-                component={NavLink}
-                to={item.path}
-                onClick={handleDrawerToggle}
-                style={activeLinkStyles}
-              >
-                <ListItemText
-                  primary={item.name}
-                  primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
-                />
-              </ListItemButton>
-            ))}
-          </List>
-        </Collapse>
+       <Collapse in={openKeys.Master} timeout="auto" unmountOnExit>
+  <List component="div" disablePadding>
+    {[
+      { name: "Settings", path: "/master/settings", icon: <TuneIcon /> },
+      { name: "Country", path: "/master/country", icon: <PublicIcon /> },
+      { name: "State", path: "/master/state", icon: <MapIcon /> },
+      { name: "Region", path: "/master/region", icon: <ApartmentIcon /> },
+      { name: "District", path: "/master/district", icon: <LocationCityIcon /> },
+      { name: "Checklist", path: "/master/checklist", icon: <FactCheckIcon /> },
+      { name: "Category", path: "/master/category", icon: <CategoryIcon /> },
+    ].map((item) => (
+      <ListItemButton
+        key={item.name}
+        sx={{ pl: 4, color: "black" }}
+        component={NavLink}
+        to={item.path}
+        onClick={handleDrawerToggle}
+        style={activeLinkStyles}
+      >
+        <ListItemIcon sx={{ minWidth: "36px", color: "black" }}>
+          {item.icon}
+        </ListItemIcon>
+        <ListItemText
+          primary={item.name}
+          primaryTypographyProps={{ fontSize: "14px", fontWeight: 400 }}
+        />
+      </ListItemButton>
+    ))}
+  </List>
+</Collapse>
 
         <Divider sx={{ my: 1, mx: 2, borderColor: "#e0e0e0" }} />
 
