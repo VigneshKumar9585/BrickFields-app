@@ -343,6 +343,12 @@ function Dashboard() {
                             </Typography>
                           </Box>
                         </Box>
+                        <Box>
+                          <Box>
+                            <Box>City</Box>
+                            <Box>Pincode</Box>
+                          </Box>
+                        </Box>
 
                         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                           <Typography variant="body2">Mobile No</Typography>

@@ -24,9 +24,13 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Popover,
 } from "@mui/material";
 import { Search, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { DateRange } from "react-date-range";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
 
 // --- Sample Data ---
 const sampleTasks = [
@@ -93,9 +97,27 @@ export default function ManageEnquiry() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
-  const [selectedDate, setSelectedDate] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [dateRange, setDateRange] = useState([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    },
+  ]);
+
+  const handleDateClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseDatePicker = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
 
   const itemsPerPage = 5;
   const totalItems = sampleTasks.length;
@@ -122,6 +144,21 @@ export default function ManageEnquiry() {
 
   const handleRowClick = (task) => {
     navigate("/admin-new-enquiry-Details");
+  };
+
+  // Format date range text for filter display
+  const formatRange = (range) => {
+    const start = range[0].startDate.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+    const end = range[0].endDate.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+    return `${start} - ${end}`;
   };
 
   return (
@@ -156,7 +193,7 @@ export default function ManageEnquiry() {
               <Box display="flex" gap={2} alignItems="center">
                 {/* Filters */}
                 <FormControl sx={{ width: "120px" }} size="small">
-                  <InputLabel>District</InputLabel>
+                  <InputLabel>Country</InputLabel>
                   <Select
                     value={selectedDistrict}
                     onChange={(e) => setSelectedDistrict(e.target.value)}
@@ -172,7 +209,7 @@ export default function ManageEnquiry() {
                 </FormControl>
 
                 <FormControl sx={{ width: "120px" }} size="small">
-                  <InputLabel>City</InputLabel>
+                  <InputLabel>Region</InputLabel>
                   <Select
                     value={selectedCity}
                     onChange={(e) => setSelectedCity(e.target.value)}
@@ -187,19 +224,83 @@ export default function ManageEnquiry() {
                   </Select>
                 </FormControl>
 
-                <FormControl sx={{ width: "120px" }} size="small">
-                  <InputLabel>Date</InputLabel>
+                <FormControl
+                  sx={{
+                    width: "120px",
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "8px",
+                    },
+                  }}
+                  size="small"
+                >
+                  <InputLabel>District</InputLabel>
                   <Select
-                    value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
-                    label="Date"
+                    value={selectedCity}
+                    onChange={(e) => setSelectedCity(e.target.value)}
+                    label="City"
                   >
                     <MenuItem value="">All</MenuItem>
-                    <MenuItem value="today">Today</MenuItem>
-                    <MenuItem value="yesterday">Yesterday</MenuItem>
-                    <MenuItem value="last-7-days">Last 7 Days</MenuItem>
+                    <MenuItem value="New York">New York</MenuItem>
+                    <MenuItem value="Brooklyn">Brooklyn</MenuItem>
+                    <MenuItem value="Queens">Queens</MenuItem>
+                    <MenuItem value="Manhattan">Manhattan</MenuItem>
+                    <MenuItem value="Bronx">Bronx</MenuItem>
                   </Select>
                 </FormControl>
+
+                {/* --- Date Filter Styled like Normal Filter --- */}
+                <FormControl
+                  sx={{ width: "180px", cursor: "pointer" }}
+                  size="small"
+                  onClick={handleDateClick}
+                >
+                  <InputLabel>Date</InputLabel>
+                  <Select
+                    value={formatRange(dateRange)}
+                    label="Date"
+                    readOnly
+                    sx={{
+                      pointerEvents: "none",
+                      "& .MuiSelect-select": {
+                        display: "flex",
+                        alignItems: "center",
+                      },
+                    }}
+                  >
+                    <MenuItem value={formatRange(dateRange)}>
+                      {formatRange(dateRange)}
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+
+                <Popover
+                  open={open}
+                  anchorEl={anchorEl}
+                  onClose={handleCloseDatePicker}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left",
+                  }}
+                >
+                  <Box p={1} sx={{ bgcolor: "#fff", borderRadius: "6px" }}>
+                    <DateRange
+                      editableDateInputs={true}
+                      onChange={(item) => setDateRange([item.selection])}
+                      moveRangeOnFirstSelection={false}
+                      ranges={dateRange}
+                    />
+                    <Box display="flex" justifyContent="flex-end" gap={1} mt={1}>
+                      <Button onClick={handleCloseDatePicker}>Cancel</Button>
+                      <Button
+                        variant="contained"
+                        onClick={handleCloseDatePicker}
+                        sx={{ bgcolor: "#029898", "&:hover": { bgcolor: "#027777" } }}
+                      >
+                        Apply
+                      </Button>
+                    </Box>
+                  </Box>
+                </Popover>
 
                 <TextField
                   sx={{ width: "200px" }}
@@ -237,7 +338,7 @@ export default function ManageEnquiry() {
             >
               <Table
                 sx={{
-                  "td": {
+                  td: {
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -245,7 +346,7 @@ export default function ManageEnquiry() {
                     padding: "8px 12px",
                     textAlign: "center",
                   },
-                  "th": {
+                  th: {
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -262,13 +363,15 @@ export default function ManageEnquiry() {
                       "S.No",
                       "Enquiry Id",
                       "Name",
+                      "Country",
+                      "State",
+                      "Region",
                       "Address",
-                      "Email",
                       "Mobile",
-                      "District",
-                      "City",
-                      "Assign Date",
-                      "Total Sq.Feet",
+                      "Email",
+                      "Service",
+                      "Total Sq.Feed",
+                      "Enquired Date",
                       "Action",
                     ].map((head) => (
                       <TableCell key={head}>{head}</TableCell>

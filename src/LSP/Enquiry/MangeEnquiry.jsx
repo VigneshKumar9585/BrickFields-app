@@ -554,7 +554,7 @@ export default function ManageEnquiry() {
           onChange={handleTabChange}
           sx={{
             pt: 1,
-            pl: 18,
+            pl: 14,
             "& .MuiTab-root": {
               color: "#888888ff",
             },
@@ -568,7 +568,7 @@ export default function ManageEnquiry() {
           }}
         >
           <Tab label="Visitor Details" />
-          <Tab label="Technicians" />
+          <Tab label="Local Service Partner Details" />
         </Tabs>
 
         <DialogContent dividers>{activeTab === 0 && selectedTask && (
@@ -576,7 +576,7 @@ export default function ManageEnquiry() {
     border="1px solid #ddd"
     sx={{
       width: "570px",
-      height: "320px",
+      height: "330px",
       bgcolor: "#f0f0f0ff",
       borderRadius: "16px",
       display: "flex",
@@ -594,7 +594,7 @@ export default function ManageEnquiry() {
     <Divider sx={{ width: "100%" }} />
 
     {/* Name / Mobile / Email / Country */}
-    <Box sx={{ display: "flex", justifyContent: "space-between", p: 1.5 }}>
+    <Box sx={{ display: "flex",gap:14, p: 1.5 }}>
       <Typography sx={{ fontSize: "14px" }}>Name:</Typography>
       <Typography sx={{ fontSize: "14px" }}>Mobile:</Typography>
       <Typography sx={{ fontSize: "14px" }}>Email:</Typography>
@@ -604,10 +604,10 @@ export default function ManageEnquiry() {
     <Divider sx={{ width: "100%" }} />
 
     {/* State / District / City */}
-    <Box sx={{ display: "flex", justifyContent: "space-between", p: 1.5 }}>
-      <Typography sx={{ fontSize: "14px" }}>State:</Typography>
-      <Typography sx={{ fontSize: "14px" }}>District:</Typography>
-      <Typography sx={{ fontSize: "14px" }}>City: {selectedTask.city}</Typography>
+    <Box sx={{ display: "flex",  p: 1.5 }}>
+      <Typography sx={{ fontSize: "14px" ,mr:14.5 }}>State:</Typography>
+      <Typography sx={{ fontSize: "14px",mr:14 }}>District:</Typography>
+      <Typography sx={{ fontSize: "14px" }}>{selectedTask.city}</Typography>
     </Box>
 
     <Divider sx={{ width: "100%" }} />
@@ -618,21 +618,21 @@ export default function ManageEnquiry() {
     </Box>
 
     <Divider sx={{ width: "100%" }} />
-     <Box sx={{ display: "flex", justifyContent: "space-between", p: 1.5 }}>
-      <Typography sx={{ fontSize: "14px" }}>Prefer Date:</Typography>
-      <Typography sx={{ fontSize: "14px" }}>
-        Prefer Time: {selectedTask.preferTime}
-      </Typography>
-    </Box>
     
+    {/* Service / Total sq.feet */}
+
+     <Box sx={{ display: "flex",  p: 1.5 }}>
+      <Typography sx={{ fontSize: "14px",mr:13 }}>Service</Typography>
+      <Typography sx={{ fontSize: "14px" }}>  Total Sq.Feet</Typography>
+    </Box>
+
     <Divider sx={{ width: "100%" }} />
 
-
     {/* Prefer Date / Prefer Time */}
-    <Box sx={{ display: "flex", justifyContent: "space-between", p: 1.5 }}>
-      <Typography sx={{ fontSize: "14px" }}>Prefer Date:</Typography>
+    <Box sx={{ display: "flex",  p: 1.5 }}>
+      <Typography sx={{ fontSize: "14px",mr:11 }}>01|01|2026</Typography>
       <Typography sx={{ fontSize: "14px" }}>
-        Prefer Time: {selectedTask.preferTime}
+        {selectedTask.preferTime}
       </Typography>
     </Box>
 
@@ -642,80 +642,135 @@ export default function ManageEnquiry() {
     <Typography sx={{ fontSize: "14px", p: 1.5 }}>Remark:</Typography>
   </Box>
 )}
-
+ 
+     
 {activeTab === 1 && selectedTask && (
+  <Box sx={{
+      width: "full",
+      height: "310px",}}>
+
+        <Box pb={1.5} pl={1}>
+          <Typography>Task Id</Typography>
+        </Box>
+        <Box display={"flex"} gap={2} >
   <Box
-    border="1px solid #ddd"
+    border="1px solid #c9c7c7ff"
     sx={{
-      width: "570px",
-      height: "300px",
+      width: "285px",
+      height: "260px",
       bgcolor: "#f0f0f0ff",
       borderRadius: "16px",
       display: "flex",
       flexDirection: "column",
     }}
   >
-    {/* Header */}
-    <Box sx={{ display: "flex", gap: 6, p: 1.2, pl: 2 }}>
-      <Typography sx={{ fontSize: "14px" }} fontWeight="bold">
-        Task ID
-      </Typography>
-      <Typography sx={{ fontSize: "14px" }}>Assigned Date</Typography>
-    </Box>
-
-    <Divider sx={{ width: "100%" }} />
-
+    
+     
     {/* Company Box */}
     <Box sx={{ display: "flex", p: 2, py: 1 }}>
       <Box
         sx={{
-          width: "100px",
+          width: "80px",
           height: "80px",
           bgcolor: "#d0cfcfff",
-          border: "3px solid #7e7e7eff",
-          borderRadius: "10px",
+          borderRadius: "100%",
         }}
       />
       <Box sx={{ p: 2, py: 1 }}>
-        <Typography fontWeight="bold" sx={{ fontSize: "16px" }}>
-          Company Name
+        <Typography fontWeight="bold" sx={{ fontSize: "14px" }}>
+          Technician Name 1
         </Typography>
-        <Typography sx={{ fontSize: "13px" }}>Point of Contact Name</Typography>
-        <Typography sx={{ fontSize: "13px" }}>Point of Contact Mobile</Typography>
+        <Typography sx={{ fontSize: "13px" }}>Year Of exprience</Typography>
       </Box>
     </Box>
 
+    
+        <Typography sx={{ fontSize: "14px" ,p: 2, py: 1}}>Category Of Service</Typography>
     <Divider sx={{ width: "100%" }} />
 
     {/* Address / Email */}
-    <Box sx={{ display: "flex", justifyContent: "space-between", p: 2, py: 1 }}>
-      <Typography sx={{ fontSize: "14px" }}>Company Address</Typography>
-      <Typography sx={{ fontSize: "14px" }}>Company Email</Typography>
-    </Box>
+      <Typography sx={{ fontSize: "14px",mr:23 ,py:1,pl:2,width:20}}>9876543210</Typography>
+  
 
     <Divider sx={{ width: "100%" }} />
 
     {/* Business Type */}
     <Box sx={{ p: 2, py: 1 }}>
-      <Typography sx={{ fontSize: "14px" }}>Business Type</Typography>
+      <Typography sx={{ fontSize: "14px" }}>Email Id</Typography>
     </Box>
 
     <Divider sx={{ width: "100%" }} />
 
     {/* District / City / Pincode */}
-    <Box sx={{ display: "flex", justifyContent: "space-between", p: 2, py: 1 }}>
-      <Typography sx={{ fontSize: "14px" }}>District</Typography>
-      <Typography sx={{ fontSize: "14px" }}>City</Typography>
-      <Typography sx={{ fontSize: "14px" }}>Pincode</Typography>
+    <Box sx={{ display: "flex",  p: 2, py: 1 }}>
+      <Typography sx={{ fontSize: "14px",mr:15 }}>Language Spoken</Typography>
+    </Box>
+  </Box>
+
+    <Box
+    border="1px solid #c9c7c7ff"
+    sx={{
+      width: "285px",
+      height: "260px",
+      bgcolor: "#f0f0f0ff",
+      borderRadius: "16px",
+      display: "flex",
+      flexDirection: "column",
+    }}
+  >
+    
+     
+    {/* Company Box */}
+    <Box sx={{ display: "flex", p: 2, py: 1 }}>
+      <Box
+        sx={{
+          width: "80px",
+          height: "80px",
+          bgcolor: "#d0cfcfff",
+          borderRadius: "100%",
+        }}
+      />
+      <Box sx={{ p: 2, py: 1 }}>
+        <Typography fontWeight="bold" sx={{ fontSize: "14px" }}>
+          Technician Name 1
+        </Typography>
+        <Typography sx={{ fontSize: "13px" }}>Year Of exprience</Typography>
+      </Box>
+    </Box>
+
+    
+        <Typography sx={{ fontSize: "14px" ,p: 2, py: 1}}>Category Of Service</Typography>
+    <Divider sx={{ width: "100%" }} />
+
+    {/* Address / Email */}
+      <Typography sx={{ fontSize: "14px",mr:23 ,py:1,pl:2,width:20}}>9876543210</Typography>
+  
+
+    <Divider sx={{ width: "100%" }} />
+
+    {/* Business Type */}
+    <Box sx={{ p: 2, py: 1 }}>
+      <Typography sx={{ fontSize: "14px" }}>Email Id</Typography>
     </Box>
 
     <Divider sx={{ width: "100%" }} />
 
-    {/* Status */}
-    <Box sx={{ p: 2, py: 1 }}>
-      <Typography sx={{ fontSize: "14px" }}>Status</Typography>
+    {/* District / City / Pincode */}
+    <Box sx={{ display: "flex",  p: 2, py: 1 }}>
+      <Typography sx={{ fontSize: "14px",mr:15 }}>Language Spoken</Typography>
     </Box>
   </Box>
+  </Box>
+
+
+  </Box>
+
+
+
+
+  
+
+  
 )}
   </DialogContent>
       </Dialog>

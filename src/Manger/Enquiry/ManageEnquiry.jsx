@@ -576,7 +576,7 @@ export default function ManageEnquiry() {
     border="1px solid #ddd"
     sx={{
       width: "570px",
-      height: "300px",
+      height: "330px",
       bgcolor: "#f0f0f0ff",
       borderRadius: "16px",
       display: "flex",
@@ -594,7 +594,7 @@ export default function ManageEnquiry() {
     <Divider sx={{ width: "100%" }} />
 
     {/* Name / Mobile / Email / Country */}
-    <Box sx={{ display: "flex", justifyContent: "space-between", p: 1.5 }}>
+    <Box sx={{ display: "flex",gap:14, p: 1.5 }}>
       <Typography sx={{ fontSize: "14px" }}>Name:</Typography>
       <Typography sx={{ fontSize: "14px" }}>Mobile:</Typography>
       <Typography sx={{ fontSize: "14px" }}>Email:</Typography>
@@ -604,10 +604,10 @@ export default function ManageEnquiry() {
     <Divider sx={{ width: "100%" }} />
 
     {/* State / District / City */}
-    <Box sx={{ display: "flex", justifyContent: "space-between", p: 1.5 }}>
-      <Typography sx={{ fontSize: "14px" }}>State:</Typography>
-      <Typography sx={{ fontSize: "14px" }}>District:</Typography>
-      <Typography sx={{ fontSize: "14px" }}>City: {selectedTask.city}</Typography>
+    <Box sx={{ display: "flex",  p: 1.5 }}>
+      <Typography sx={{ fontSize: "14px" ,mr:14.5 }}>State:</Typography>
+      <Typography sx={{ fontSize: "14px",mr:14 }}>District:</Typography>
+      <Typography sx={{ fontSize: "14px" }}>{selectedTask.city}</Typography>
     </Box>
 
     <Divider sx={{ width: "100%" }} />
@@ -618,12 +618,21 @@ export default function ManageEnquiry() {
     </Box>
 
     <Divider sx={{ width: "100%" }} />
+    
+    {/* Service / Total sq.feet */}
+
+     <Box sx={{ display: "flex",  p: 1.5 }}>
+      <Typography sx={{ fontSize: "14px",mr:13 }}>Service</Typography>
+      <Typography sx={{ fontSize: "14px" }}>  Total Sq.Feet</Typography>
+    </Box>
+
+    <Divider sx={{ width: "100%" }} />
 
     {/* Prefer Date / Prefer Time */}
-    <Box sx={{ display: "flex", justifyContent: "space-between", p: 1.5 }}>
-      <Typography sx={{ fontSize: "14px" }}>Prefer Date:</Typography>
+    <Box sx={{ display: "flex",  p: 1.5 }}>
+      <Typography sx={{ fontSize: "14px",mr:11 }}>01|01|2026</Typography>
       <Typography sx={{ fontSize: "14px" }}>
-        Prefer Time: {selectedTask.preferTime}
+        {selectedTask.preferTime}
       </Typography>
     </Box>
 
@@ -648,10 +657,10 @@ export default function ManageEnquiry() {
   >
     {/* Header */}
     <Box sx={{ display: "flex", gap: 6, p: 1.2, pl: 2 }}>
-      <Typography sx={{ fontSize: "14px" }} fontWeight="bold">
+      <Typography sx={{ fontSize: "14px",mr:14 }} fontWeight="bold">
         Task ID
       </Typography>
-      <Typography sx={{ fontSize: "14px" }}>Assigned Date</Typography>
+      <Typography sx={{ fontSize: "14px", }}>Assigned Date</Typography>
     </Box>
 
     <Divider sx={{ width: "100%" }} />
@@ -679,8 +688,8 @@ export default function ManageEnquiry() {
     <Divider sx={{ width: "100%" }} />
 
     {/* Address / Email */}
-    <Box sx={{ display: "flex", justifyContent: "space-between", p: 2, py: 1 }}>
-      <Typography sx={{ fontSize: "14px" }}>Company Address</Typography>
+    <Box sx={{ display: "flex",p: 2, py: 1 }}>
+      <Typography sx={{ fontSize: "14px",mr:23 }}>Company Address</Typography>
       <Typography sx={{ fontSize: "14px" }}>Company Email</Typography>
     </Box>
 
@@ -694,9 +703,9 @@ export default function ManageEnquiry() {
     <Divider sx={{ width: "100%" }} />
 
     {/* District / City / Pincode */}
-    <Box sx={{ display: "flex", justifyContent: "space-between", p: 2, py: 1 }}>
-      <Typography sx={{ fontSize: "14px" }}>District</Typography>
-      <Typography sx={{ fontSize: "14px" }}>City</Typography>
+    <Box sx={{ display: "flex",  p: 2, py: 1 }}>
+      <Typography sx={{ fontSize: "14px",mr:15 }}>District</Typography>
+      <Typography sx={{ fontSize: "14px",mr:15 }}>City</Typography>
       <Typography sx={{ fontSize: "14px" }}>Pincode</Typography>
     </Box>
 

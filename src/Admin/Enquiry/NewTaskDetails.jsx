@@ -247,7 +247,7 @@ const [paymentAdded, setPaymentAdded] = React.useState(false);
                 </Box>
 
                 {/* Contact Details */}
-                <Box sx={{ py: 1 }}>
+                <Box sx={{ py: 1,  bgcolor:"#ebe8e8ff"}}>
                   <Typography variant="subtitle1" sx={{ fontWeight: 600, pl: 2, pt: 1 }}>
                     Contact Details
                   </Typography>
@@ -378,12 +378,10 @@ const [paymentAdded, setPaymentAdded] = React.useState(false);
   </FormGroup>
 </Box>
 
-<Divider />
 
 
 
 
-                <Divider />
 
                 {/* Action Buttons */}
                 <Box sx={{ display: "flex", gap: 1.2, mt: 1, pt: 1.2, mx: 1.2 }}>
@@ -569,12 +567,11 @@ const [paymentAdded, setPaymentAdded] = React.useState(false);
           sx={{
             fontWeight: 600,
             fontSize: "1rem",
-            borderBottom: "1px solid #ddd",
             px: 2.5,
-            py: 1,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+          
           }}
         >
           Enquiry Details
@@ -590,83 +587,218 @@ const [paymentAdded, setPaymentAdded] = React.useState(false);
         </DialogTitle>
 
         {/* Content */}
-        <DialogContent sx={{ px: 2.5, pt: 1.5, pb: 0.5 }}>
+        <DialogContent  >
           {/* Grid Layout */}
-          <Grid container spacing={1.5} mt={2}>
+          <Grid container spacing={1.5} mb={3} gap={3} ml={3}>
             {/* Row 1 */}
-            {[
-              { label: "Enquiry ID", field: "enquiryId", disabled: true },
-              { label: "Name", field: "name" },
-              { label: "Country", field: "country" },
-              { label: "State", field: "state" },
-              { label: "District", field: "district" },
-              { label: "Region", field: "region" },
-            ].map((item) => (
-              <Grid item xs={12} sm={2} key={item.field}>
-                <TextField
-                  placeholder={item.label}
-                  fullWidth
-                  value={enquiryData[item.field]}
-                  onChange={handleEnquiryDataChange(item.field)}
-                  variant="outlined"
-                  disabled={item.disabled || false}
-                  InputLabelProps={{
-                    shrink: true,
-                    sx: {
-                      fontSize: "12px",
-                      color: "#666",
-                      transform: "translate(12px, -6px) scale(1)",
-                    },
-                  }}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      height: "34px",
-                      bgcolor: "#f0f0f0",
-                      borderRadius: "4px",
-                      "& fieldset": { border: "none" },
-                      "& input": { fontSize: "12px", padding: "6px 8px" },
-                    },
-                  }}
-                />
-              </Grid>
-            ))}
+              
+                               <Box mt={2}>
+                                                     <Typography fontWeight="600" fontSize="13px">Enquiry ID</Typography>
+                                                     <TextField
+                                                       size="small"
+                                                       sx={{
+                                                         mt: 1,
+                                                         "& .MuiOutlinedInput-root": {
+                                                           height: "30px",
+                                                           bgcolor: "#e0e0e0",
+                                                           borderRadius: "4px",
+                                                           "& input": { padding: "4px 8px", fontSize: "12px" },
+                                                           "& fieldset": { border: "none" },
+                                                         },
+                                                       }}
+                                                     />
+                                                   </Box>
+ <Box mt={2}>
+                                                     <Typography fontWeight="600" fontSize="13px">Name</Typography>
+                                                     <TextField
+                                                       size="small"
+                                                       sx={{
+                                                         mt: 1,
+                                                         "& .MuiOutlinedInput-root": {
+                                                           height: "30px",
+                                                           bgcolor: "#e0e0e0",
+                                                           borderRadius: "4px",
+                                                           "& input": { padding: "4px 8px", fontSize: "12px" },
+                                                           "& fieldset": { border: "none" },
+                                                         },
+                                                       }}
+                                                     />
+                                                   </Box>
+ <Box mt={2}>
+                                                     <Typography fontWeight="600" fontSize="13px">Country</Typography>
+                                                     <TextField
+                                                       size="small"
+                                                       sx={{
+                                                         mt: 1,
+                                                         "& .MuiOutlinedInput-root": {
+                                                           height: "30px",
+                                                           bgcolor: "#e0e0e0",
+                                                           borderRadius: "4px",
+                                                           "& input": { padding: "4px 8px", fontSize: "12px" },
+                                                           "& fieldset": { border: "none" },
+                                                         },
+                                                       }}
+                                                     />
+                                                   </Box>
+ <Box mt={2}>
+                                                     <Typography fontWeight="600" fontSize="13px">State</Typography>
+                                                     <TextField
+                                                       size="small"
+                                                       sx={{
+                                                         mt: 1,
+                                                         "& .MuiOutlinedInput-root": {
+                                                           height: "30px",
+                                                           bgcolor: "#e0e0e0",
+                                                           borderRadius: "4px",
+                                                           "& input": { padding: "4px 8px", fontSize: "12px" },
+                                                           "& fieldset": { border: "none" },
+                                                         },
+                                                       }}
+                                                     />
+                                                   </Box>
+                                                    <Box mt={2}>
+                                                     <Typography fontWeight="600" fontSize="13px">District</Typography>
+                                                     <TextField
+                                                       size="small"
+                                                       sx={{
+                                                         mt: 1,
+                                                         "& .MuiOutlinedInput-root": {
+                                                           height: "30px",
+                                                           bgcolor: "#e0e0e0",
+                                                           borderRadius: "4px",
+                                                           "& input": { padding: "4px 8px", fontSize: "12px" },
+                                                           "& fieldset": { border: "none" },
+                                                         },
+                                                       }}
+                                                     />
+                                                   </Box>
+                                                    <Box mt={2}>
+                                                     <Typography fontWeight="600" fontSize="13px">Region</Typography>
+                                                     <TextField
+                                                       size="small"
+                                                       sx={{
+                                                         mt: 1,
+                                                         "& .MuiOutlinedInput-root": {
+                                                           height: "30px",
+                                                           bgcolor: "#e0e0e0",
+                                                           borderRadius: "4px",
+                                                           "& input": { padding: "4px 8px", fontSize: "12px" },
+                                                           "& fieldset": { border: "none" },
+                                                         },
+                                                       }}
+                                                     />
+                                                   </Box>
 
-            {/* Row 2 */}
-            {[
-              { label: "Address", field: "address" },
-              { label: "Mobile No.", field: "mobileNo" },
-              { label: "E-Mail", field: "email" },
-              { label: "Total Sq. Feet", field: "totalSqFeet" },
-              { label: "Enquired Date", field: "enquiredDate", disabled: true },
-            ].map((item) => (
-              <Grid item xs={12} sm={2.4} key={item.field}>
-                <TextField
-                  placeholder={item.label}
-                  fullWidth
-                  value={enquiryData[item.field]}
-                  onChange={handleEnquiryDataChange(item.field)}
-                  variant="outlined"
-                  disabled={item.disabled || false}
-                  InputLabelProps={{
-                    shrink: true,
-                    sx: {
-                      fontSize: "12px",
-                      color: "#666",
-                      transform: "translate(12px, -6px) scale(1)",
-                    },
-                  }}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      height: "34px",
-                      bgcolor: "#f0f0f0",
-                      borderRadius: "4px",
-                      "& fieldset": { border: "none" },
-                      "& input": { fontSize: "12px", padding: "6px 8px" },
-                    },
-                  }}
-                />
-              </Grid>
-            ))}
+
+                                                    <Box mt={2}>
+                                                     <Typography fontWeight="600" fontSize="13px">Address</Typography>
+                                                     <TextField
+                                                       size="small"
+                                                       sx={{
+                                                         mt: 1,
+                                                         "& .MuiOutlinedInput-root": {
+                                                           height: "30px",
+                                                           bgcolor: "#e0e0e0",
+                                                           borderRadius: "4px",
+                                                           "& input": { padding: "4px 8px", fontSize: "12px" },
+                                                           "& fieldset": { border: "none" },
+                                                         },
+                                                       }}
+                                                     />
+                                                   </Box>
+
+                                                    <Box mt={2}>
+                                                     <Typography fontWeight="600" fontSize="13px">Mobile No.</Typography>
+                                                     <TextField
+                                                       size="small"
+                                                       sx={{
+                                                         mt: 1,
+                                                         "& .MuiOutlinedInput-root": {
+                                                           height: "30px",
+                                                           bgcolor: "#e0e0e0",
+                                                           borderRadius: "4px",
+                                                           "& input": { padding: "4px 8px", fontSize: "12px" },
+                                                           "& fieldset": { border: "none" },
+                                                         },
+                                                       }}
+                                                     />
+                                                   </Box>
+
+                                                    <Box mt={2}>
+                                                     <Typography fontWeight="600" fontSize="13px">E-Mail</Typography>
+                                                     <TextField
+                                                       size="small"
+                                                       sx={{
+                                                         mt: 1,
+                                                         "& .MuiOutlinedInput-root": {
+                                                           height: "30px",
+                                                           bgcolor: "#e0e0e0",
+                                                           borderRadius: "4px",
+                                                           "& input": { padding: "4px 8px", fontSize: "12px" },
+                                                           "& fieldset": { border: "none" },
+                                                         },
+                                                       }}
+                                                     />
+                                                   </Box>
+
+                                                    <Box mt={2}>
+                                                     <Typography fontWeight="600" fontSize="13px">Service</Typography>
+                                                     <TextField
+                                                       size="small"
+                                                       sx={{
+                                                         mt: 1,
+                                                         "& .MuiOutlinedInput-root": {
+                                                           height: "30px",
+                                                           bgcolor: "#e0e0e0",
+                                                           borderRadius: "4px",
+                                                           "& input": { padding: "4px 8px", fontSize: "12px" },
+                                                           "& fieldset": { border: "none" },
+                                                         },
+                                                       }}
+                                                     />
+                                                   </Box>
+
+                                                    <Box mt={2}>
+                                                     <Typography fontWeight="600" fontSize="13px">Totel Sq. Feet</Typography>
+                                                     <TextField
+                                                       size="small"
+                                                       sx={{
+                                                         mt: 1,
+                                                         "& .MuiOutlinedInput-root": {
+                                                           height: "30px",
+                                                           bgcolor: "#e0e0e0",
+                                                           borderRadius: "4px",
+                                                           "& input": { padding: "4px 8px", fontSize: "12px" },
+                                                           "& fieldset": { border: "none" },
+                                                         },
+                                                       }}
+                                                     />
+                                                   </Box>
+
+                                                    <Box mt={2}>
+                                                     <Typography fontWeight="600" fontSize="13px">Enqiury Date</Typography>
+                                                     <TextField
+                                                       size="small"
+                                                       sx={{
+                                                         mt: 1,
+                                                         "& .MuiOutlinedInput-root": {
+                                                           height: "30px",
+                                                           bgcolor: "#e0e0e0",
+                                                           borderRadius: "4px",
+                                                           "& input": { padding: "4px 8px", fontSize: "12px" },
+                                                           "& fieldset": { border: "none" },
+                                                         },
+                                                       }}
+                                                     />
+                                                   </Box>
+
+                                                   
+
+
+
+
+
+                
           </Grid>
 
           <Divider sx={{ my: 1.5 }} />
@@ -715,12 +847,12 @@ const [paymentAdded, setPaymentAdded] = React.useState(false);
           sx={{
             fontWeight: 600,
             fontSize: "1rem",
-            borderBottom: "1px solid #ddd",
             px: 2.5,
-            py: 1,
+            pt: 1,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            width:"890px"
           }}
         >
           Estimation Details
@@ -736,41 +868,94 @@ const [paymentAdded, setPaymentAdded] = React.useState(false);
         </DialogTitle>
 
         {/* Content */}
-        <DialogContent sx={{ px: 2.5, pt: 1.5, pb: 0.5 }}>
-          <Grid container spacing={1.5} mt={1}>
-            {[
-              { label: "Total Square Feet", field: "totalSqFeet" },
-              { label: "Amount Per Sq. Feet", field: "amountPerSqFeet" },
-              { label: "Total Amount", field: "totalAmount" },
-              { label: "Discount", field: "discount" },
-              { label: "Grand Amount", field: "grandAmount" },
-            ].map((item) => (
-              <Grid item xs={12} sm={2.4} key={item.field}>
-                <TextField
-                  placeholder={item.label}
-                  fullWidth
-                  value={estimateData[item.field]}
-                  onChange={(e) => setEstimateData({ ...estimateData, [item.field]: e.target.value })}
-                  variant="outlined"
-                  InputLabelProps={{
-                    shrink: true,
-                    sx: {
-                      fontSize: "12px",
-                      color: "#666",
-                    },
-                  }}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      height: "34px",
-                      bgcolor: "#f0f0f0",
-                      borderRadius: "4px",
-                      "& fieldset": { border: "none" },
-                      "& input": { fontSize: "12px", padding: "6px 8px" },
-                    },
-                  }}
-                />
-              </Grid>
-            ))}
+        <DialogContent sx={{ px: 2.5, pt: 1.9, pb: 0.9 }}>
+          <Grid display={"flex"} spacing={1.5} mt={1} gap={3}>
+           <Box mt={2}>
+                                                     <Typography fontWeight="600" fontSize="13px">Total Square Feet</Typography>
+                                                     <TextField
+                                                       size="small"
+                                                       sx={{
+                                                         mt: 1,
+                                                         "& .MuiOutlinedInput-root": {
+                                                           height: "30px",
+                                                           bgcolor: "#e0e0e0",
+                                                           borderRadius: "4px",
+                                                           "& input": { padding: "4px 8px", fontSize: "12px" },
+                                                           "& fieldset": { border: "none" },
+                                                         },
+                                                       }}
+                                                     />
+                                                   </Box>
+
+                                                    <Box mt={2}>
+                                                     <Typography fontWeight="600" fontSize="13px">Amount Per Sq.Feet</Typography>
+                                                     <TextField
+                                                       size="small"
+                                                       sx={{
+                                                         mt: 1,
+                                                         "& .MuiOutlinedInput-root": {
+                                                           height: "30px",
+                                                           bgcolor: "#e0e0e0",
+                                                           borderRadius: "4px",
+                                                           "& input": { padding: "4px 8px", fontSize: "12px" },
+                                                           "& fieldset": { border: "none" },
+                                                         },
+                                                       }}
+                                                     />
+                                                   </Box>
+
+                                                   <Box mt={2}>
+                                                     <Typography fontWeight="600" fontSize="13px">Totel Amount</Typography>
+                                                     <TextField
+                                                       size="small"
+                                                       sx={{
+                                                         mt: 1,
+                                                         "& .MuiOutlinedInput-root": {
+                                                           height: "30px",
+                                                           bgcolor: "#e0e0e0",
+                                                           borderRadius: "4px",
+                                                           "& input": { padding: "4px 8px", fontSize: "12px" },
+                                                           "& fieldset": { border: "none" },
+                                                         },
+                                                       }}
+                                                     />
+                                                   </Box>
+
+                                                   <Box mt={2}>
+                                                     <Typography fontWeight="600" fontSize="13px">Discount</Typography>
+                                                     <TextField
+                                                       size="small"
+                                                       sx={{
+                                                         mt: 1,
+                                                         "& .MuiOutlinedInput-root": {
+                                                           height: "30px",
+                                                           bgcolor: "#e0e0e0",
+                                                           borderRadius: "4px",
+                                                           "& input": { padding: "4px 8px", fontSize: "12px" },
+                                                           "& fieldset": { border: "none" },
+                                                         },
+                                                       }}
+                                                     />
+                                                   </Box>
+
+                                                   <Box mt={2}>
+                                                     <Typography fontWeight="600" fontSize="13px">Grand Amount</Typography>
+                                                     <TextField
+                                                       size="small"
+                                                       sx={{
+                                                         mt: 1,
+                                                         "& .MuiOutlinedInput-root": {
+                                                           height: "30px",
+                                                           bgcolor: "#e0e0e0",
+                                                           borderRadius: "4px",
+                                                           "& input": { padding: "4px 8px", fontSize: "12px" },
+                                                           "& fieldset": { border: "none" },
+                                                         },
+                                                       }}
+                                                     />
+                                                   </Box>
+
+                                                   
           </Grid>
 
           <Divider sx={{ my: 1.5 }} />

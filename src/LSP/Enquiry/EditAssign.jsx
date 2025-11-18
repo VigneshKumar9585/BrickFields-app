@@ -332,9 +332,7 @@ function Dashboard() {
                           <Avatar />
                           <Box>
                             <Typography sx={{ fontWeight: 600 }}>{p.name}</Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              Region
-                            </Typography>
+                          
                             <Typography variant="body2" color="text.secondary">
                               {p.status}
                             </Typography>
@@ -343,6 +341,15 @@ function Dashboard() {
                             </Typography>
                           </Box>
                         </Box>
+
+                          <Box >
+                             <Typography sx={{ fontWeight: 600 ,pb:2}}>Region</Typography>
+                                                  <Box display={"flex"} gap={1}>
+                                                  
+                                                    <Box sx={{bgcolor:"#d0d4d4ff",border:"2px solid #494949ff", width:"full",px:2,fontSize:"12px",alignContent:"center",borderRadius:"16px"}}>City</Box>
+                                                    <Box sx={{bgcolor:"#d0d4d4ff",border:"2px solid #494949ff", width:"full",px:2,fontSize:"12px",alignContent:"center",borderRadius:"16px"}}>Pincode</Box>
+                                                  </Box>
+                                                </Box>
 
                         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                           <Typography variant="body2">Mobile No</Typography>

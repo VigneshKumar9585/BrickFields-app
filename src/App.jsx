@@ -62,7 +62,8 @@ import LspManageLsp from "./LSP/AddUser/ManageLSP.jsx"
 import LspNewEnquiry from "./LSP/Enquiry/NewEnquiry.jsx"
 import LspManageEnquiry from "./LSP/Enquiry/MangeEnquiry.jsx"
 import LspNewEditAssgin from "./LSP/Enquiry/NewTaskDetails.jsx"
-// import LspEditAssign from "./LSP/Enquiry/EditAssign.jsx";
+import LspEditAssign from "./LSP/Enquiry/EditAssign.jsx";
+import LspProfile from "./LSP/Dashborad/Profile.jsx"
 
 
 import { Routes, Route } from "react-router-dom";
@@ -105,7 +106,6 @@ function App() {
       <Route path='/profile/edit' element={<EditProfile/>}/>
       <Route path='/enquiry/new' element={<NewEnqiry/>}/>
       <Route path='/enquiry/manage' element={<ManageEnqiry/>}/>
-
       <Route path='/enquiry/new/details' element={<NewTask/>}/>
       <Route path='/change/passwored' element={<ChangePasswored/>}/>
       <Route path="/edit/assign" element={<AssignEdit />} />
@@ -134,8 +134,10 @@ function App() {
       <Route path='/lsp-manageLSP' element={<LspManageLsp/>}/>
       <Route path='/lsp-new-enquiry' element={<LspNewEnquiry/>}/>
       <Route path='/lsp-manage-enquiry' element={<LspManageEnquiry/>}/>
-      <Route path='/lsp-new-edit-assgin' element={<LspNewEditAssgin/>}></Route>
-      {/* <Route path='/lsp-edit' element={<AddLsp />} /> */}
+      <Route path='/lsp-new-edit-assgin' element={<LspNewEditAssgin/>} />
+      <Route path='/lsp-edit-assgin' element={<LspEditAssign />} />
+      <Route path='/lsp-profile' element={<LspProfile />} />
+
 
 
      

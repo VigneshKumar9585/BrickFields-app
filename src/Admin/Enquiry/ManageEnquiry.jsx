@@ -39,6 +39,19 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+const getTextFieldSx = (field, width = "170px") => ({
+  "& .MuiOutlinedInput-root": {
+    height: "30px",
+    bgcolor: "#e0e0e0",
+    borderRadius: "4px",
+    "& input": {
+      padding: "4px 8px",
+      fontSize: "12px",
+    },
+    "& fieldset": { border: "none" },
+  },
+});
+
 const sampleTasks = [
   {
     id: "TSK001",
@@ -142,10 +155,7 @@ export default function ManageEnquiry() {
           </Typography>
 
           {/* Filter Bar */}
-          <Card
-            elevation={0}
-            sx={{ display: "flex", height: "60px", mt: 1, boxShadow: "none" }}
-          >
+          <Card elevation={0} sx={{ display: "flex", height: "60px", mt: 1 }}>
             <CardContent
               sx={{
                 width: "1195px",
@@ -210,21 +220,23 @@ export default function ManageEnquiry() {
                   </Select>
                 </FormControl>
 
+                {/* Search field updated */}
                 <TextField
-                  sx={{ width: "200px" }}
+                  sx={getTextFieldSx("Search", "200px")}
                   size="small"
                   placeholder="Search..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   InputProps={{
-                    startAdornment: <Search style={{ marginRight: 8 }} size={18} />,
+                    startAdornment: (
+                      <Search style={{ marginRight: 8 }} size={18} />
+                    ),
                   }}
                 />
               </Box>
             </CardContent>
           </Card>
 
-          {/* Table */}
           <Card
             sx={{
               boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.08)",
@@ -337,29 +349,43 @@ export default function ManageEnquiry() {
           </Card>
 
           {/* Pagination */}
-          <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mt={2}
+          >
             <Typography variant="body2">
               Showing {startIndex + 1} to {endIndex} of {totalItems} results
             </Typography>
             <Box display="flex" gap={1} alignItems="center">
-              <Button onClick={handlePreviousPage} disabled={currentPage === 1}>
+              <Button
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+              >
                 <ChevronLeft size={16} /> Previous
               </Button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <Button
-                  key={page}
-                  variant={currentPage === page ? "contained" : "text"}
-                  onClick={() => setCurrentPage(page)}
-                  sx={{
-                    minWidth: "36px",
-                    color: currentPage === page ? "white" : "#029898",
-                    bgcolor: currentPage === page ? "#029898" : "transparent",
-                  }}
-                >
-                  {page}
-                </Button>
-              ))}
-              <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <Button
+                    key={page}
+                    variant={currentPage === page ? "contained" : "text"}
+                    onClick={() => setCurrentPage(page)}
+                    sx={{
+                      minWidth: "36px",
+                      color: currentPage === page ? "white" : "#029898",
+                      bgcolor:
+                        currentPage === page ? "#029898" : "transparent",
+                    }}
+                  >
+                    {page}
+                  </Button>
+                )
+              )}
+              <Button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+              >
                 Next <ChevronRight size={16} />
               </Button>
             </Box>
@@ -367,7 +393,7 @@ export default function ManageEnquiry() {
         </Box>
       </Box>
 
-      {/* ✅ NEW VIEW POPUP EXACTLY LIKE FIGMA */}
+      {/* View Popup */}
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}
@@ -391,32 +417,33 @@ export default function ManageEnquiry() {
           bgcolor={"#029898"}
           color={"#fff"}
         >
-        <Tabs
-          value={activeTab}
-          onChange={handleTabChange}
-          sx={{
-            color:"#fff",
-            "& .MuiTab-root": { textTransform: "none", fontWeight: 600 },
-            "& .Mui-selected": { color: "#fff" },
-            "& .MuiTabs-indicator": { bgcolor: "#fff" },
-            pl: 2,
-          }}
-        >
-          <Tab label="Enquiry Details" />
-          <Tab label="Payment Details" />
-        </Tabs>
-     
+          <Tabs
+            value={activeTab}
+            onChange={handleTabChange}
+            sx={{
+              color: "#fff",
+              "& .MuiTab-root": { textTransform: "none", fontWeight: 600 },
+              "& .Mui-selected": { color: "#fff" },
+              "& .MuiTabs-indicator": { bgcolor: "#fff" },
+              pl: 2,
+            }}
+          >
+            <Tab label="Enquiry Details" />
+            <Tab label="Payment Details" />
+          </Tabs>
+
           <Box display="flex" alignItems="center" gap={1}>
             <Edit3 size={18} />
-            <Typography sx={{ textDecoration: "underline", cursor: "pointer" }}>
+            <Typography
+              sx={{ textDecoration: "underline", cursor: "pointer" }}
+            >
               Edit
             </Typography>
-            <IconButton  onClick={handleCloseDialog}>
-              <X color="#ffffffff"/>
+            <IconButton onClick={handleCloseDialog}>
+              <X color="#ffffffff" />
             </IconButton>
           </Box>
         </Box>
-
 
         <DialogContent sx={{ p: 3 }}>
           {/* Enquiry Details */}
@@ -425,7 +452,12 @@ export default function ManageEnquiry() {
               <Typography fontWeight="600" mb={1}>
                 Visitor Details
               </Typography>
-              <Box display="grid" gridTemplateColumns="repeat(6, 1fr)" gap={2} mb={2}>
+              <Box
+                display="grid"
+                gridTemplateColumns="repeat(6, 1fr)"
+                gap={2}
+                mb={2}
+              >
                 {[
                   "Enquiry ID",
                   "Name",
@@ -444,8 +476,8 @@ export default function ManageEnquiry() {
                     key={label}
                     label={label}
                     size="small"
-                    
                     fullWidth
+                    sx={getTextFieldSx(label)}
                   />
                 ))}
               </Box>
@@ -455,7 +487,11 @@ export default function ManageEnquiry() {
               <Typography fontWeight="600" mb={1}>
                 Conversion Details
               </Typography>
-              <Box display="grid" gridTemplateColumns="repeat(5, 1fr)" gap={2}>
+              <Box
+                display="grid"
+                gridTemplateColumns="repeat(5, 1fr)"
+                gap={2}
+              >
                 {[
                   "Task ID",
                   "Bg Verification Date",
@@ -469,15 +505,15 @@ export default function ManageEnquiry() {
                     key={label}
                     label={label}
                     size="small"
-                    
                     fullWidth
+                    sx={getTextFieldSx(label)}
                   />
                 ))}
               </Box>
             </>
           )}
 
-          {/* Payment Details */}
+          {/* Payment Tab */}
           {activeTab === 1 && (
             <TableContainer
               component={Paper}
@@ -565,7 +601,11 @@ export default function ManageEnquiry() {
             <Button variant="outlined" onClick={handleCloseDeleteDialog}>
               Cancel
             </Button>
-            <Button variant="contained" color="error" onClick={handleConfirmDelete}>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleConfirmDelete}
+            >
               Delete
             </Button>
           </Box>

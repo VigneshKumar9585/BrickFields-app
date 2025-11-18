@@ -348,14 +348,7 @@ export default function ManageEnquiry() {
                 User Details 
               </Typography>
               <Box display="flex" alignItems="center" gap={1}>
-                <Pen size={16} />
-                <Typography
-                  fontSize="14px"
-                  fontWeight="500"
-                  sx={{ cursor: "pointer" }}
-                >
-                  Edit
-                </Typography>
+               
                 <IconButton onClick={handleCloseViewDialog}>
                   <X size={18} />
                 </IconButton>
@@ -366,7 +359,7 @@ export default function ManageEnquiry() {
               <Box
                 sx={{
                   bgcolor: "#f4f4f4",
-                  width: "330px",
+                  width: "280px",
                   borderRadius: "10px",
                   display: "flex",
                   flexDirection: "column",
@@ -398,14 +391,129 @@ export default function ManageEnquiry() {
                   <Typography fontWeight="600" pb={1}>
                     Personal Data
                   </Typography>
-                  <Box display="grid" gridTemplateColumns="repeat(4, 1fr)" gap={1}>
-                    <TextField size="small" label="Mobile No." />
-                    <TextField size="small" label="Email ID" />
-                    <TextField size="small" label="Address" />
-                    <TextField size="small" label="Country" />
-                    <TextField size="small" label="State" />
-                    <TextField size="small" label="City" />
-                    <TextField size="small" label="Region" />
+                  <Box  >
+                    <Box display={"flex"} gap={3}>
+                    <Box mt={2}>
+                                          <Typography fontWeight="600" fontSize="13px">Mobile No</Typography>
+                                          <TextField
+                                            size="small"
+                                            sx={{
+                                              mt: 1,
+                                              "& .MuiOutlinedInput-root": {
+                                                height: "30px",
+                                                bgcolor: "#e0e0e0",
+                                                borderRadius: "4px",
+                                                "& input": { padding: "4px 8px", fontSize: "12px" },
+                                                "& fieldset": { border: "none" },
+                                              },
+                                            }}
+                                          />
+                                        </Box>
+                     
+                   
+                   <Box mt={2}>
+                                         <Typography fontWeight="600" fontSize="13px">Email ID</Typography>
+                                         <TextField
+                                           size="small"
+                                           sx={{
+                                             mt: 1,
+                                             "& .MuiOutlinedInput-root": {
+                                               height: "30px",
+                                               bgcolor: "#e0e0e0",
+                                               borderRadius: "4px",
+                                               "& input": { padding: "4px 8px", fontSize: "12px" },
+                                               "& fieldset": { border: "none" },
+                                             },
+                                           }}
+                                         />
+                                       </Box>
+<Box mt={2}>
+                      <Typography fontWeight="600" fontSize="13px">Address </Typography>
+                      <TextField
+                        size="small"
+                        sx={{
+                          mt: 1,
+                          width:"350px",
+                          "& .MuiOutlinedInput-root": {
+                            height: "30px",
+                            bgcolor: "#e0e0e0",
+                            borderRadius: "4px",
+                            "& input": { padding: "4px 8px", fontSize: "12px" },
+                            "& fieldset": { border: "none" },
+                          },
+                        }}
+                      />
+                    </Box>
+                    </Box>
+
+
+                    <Box display={"flex"} gap={3}>
+
+                    <Box mt={2}>
+                      <Typography fontWeight="600" fontSize="13px">Country</Typography>
+                      <TextField
+                        size="small"
+                        sx={{
+                          mt: 1,
+                          "& .MuiOutlinedInput-root": {
+                            height: "30px",
+                            bgcolor: "#e0e0e0",
+                            borderRadius: "4px",
+                            "& input": { padding: "4px 8px", fontSize: "12px" },
+                            "& fieldset": { border: "none" },
+                          },
+                        }}
+                      />
+                    </Box>
+                    <Box mt={2}>
+                      <Typography fontWeight="600" fontSize="13px">State</Typography>
+                      <TextField
+                        size="small"
+                        sx={{
+                          mt: 1,
+                          "& .MuiOutlinedInput-root": {
+                            height: "30px",
+                            bgcolor: "#e0e0e0",
+                            borderRadius: "4px",
+                            "& input": { padding: "4px 8px", fontSize: "12px" },
+                            "& fieldset": { border: "none" },
+                          },
+                        }}
+                      />
+                    </Box>
+                    <Box mt={2}>
+                      <Typography fontWeight="600" fontSize="13px">City</Typography>
+                      <TextField
+                        size="small"
+                        sx={{
+                          mt: 1,
+                          "& .MuiOutlinedInput-root": {
+                            height: "30px",
+                            bgcolor: "#e0e0e0",
+                            borderRadius: "4px",
+                            "& input": { padding: "4px 8px", fontSize: "12px" },
+                            "& fieldset": { border: "none" },
+                          },
+                        }}
+                      />
+                    </Box>
+                    <Box mt={2}>
+                      <Typography fontWeight="600" fontSize="13px">Region</Typography>
+                      <TextField
+                        size="small"
+                        sx={{
+                          mt: 1,
+                          "& .MuiOutlinedInput-root": {
+                            height: "30px",
+                            bgcolor: "#e0e0e0",
+                            borderRadius: "4px",
+                            "& input": { padding: "4px 8px", fontSize: "12px" },
+                            "& fieldset": { border: "none" },
+                          },
+                        }}
+                      />
+                    </Box>
+                    </Box>
                   </Box>
                 </Box>
 
@@ -415,10 +523,55 @@ export default function ManageEnquiry() {
                   <Typography pb={1} fontWeight="600">
                     Social Media Platforms
                   </Typography>
-                  <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" gap={2}>
-                    <TextField size="small" label="Instagram" />
-                    <TextField size="small" label="YouTube" />
-                    <TextField size="small" label="LinkedIn" />
+                  <Box display="flex" gap={2}>
+                    <Box mt={2}>
+                      <Typography fontWeight="600" fontSize="13px">Instagram</Typography>
+                      <TextField
+                        size="small"
+                        sx={{
+                          mt: 1,
+                          "& .MuiOutlinedInput-root": {
+                            height: "30px",
+                            bgcolor: "#e0e0e0",
+                            borderRadius: "4px",
+                            "& input": { padding: "4px 8px", fontSize: "12px" },
+                            "& fieldset": { border: "none" },
+                          },
+                        }}
+                      />
+                    </Box>
+                      <Box mt={2}>
+                      <Typography fontWeight="600" fontSize="13px">Youtube</Typography>
+                      <TextField
+                        size="small"
+                        sx={{
+                          mt: 1,
+                          "& .MuiOutlinedInput-root": {
+                            height: "30px",
+                            bgcolor: "#e0e0e0",
+                            borderRadius: "4px",
+                            "& input": { padding: "4px 8px", fontSize: "12px" },
+                            "& fieldset": { border: "none" },
+                          },
+                        }}
+                      />
+                    </Box>
+                    <Box mt={2}>
+                      <Typography fontWeight="600" fontSize="13px">Linkedin</Typography>
+                      <TextField
+                        size="small"
+                        sx={{
+                          mt: 1,
+                          "& .MuiOutlinedInput-root": {
+                            height: "30px",
+                            bgcolor: "#e0e0e0",
+                            borderRadius: "4px",
+                            "& input": { padding: "4px 8px", fontSize: "12px" },
+                            "& fieldset": { border: "none" },
+                          },
+                        }}
+                      />
+                    </Box>
                   </Box>
                 </Box>
 
@@ -443,8 +596,9 @@ export default function ManageEnquiry() {
                         <Typography
                           sx={{
                             textDecoration: "underline",
-                            color: "#0077b6",
+                            color: "#000000ff",
                             fontSize: "14px",
+                            mt:1
                           }}
                         >
                           {doc}

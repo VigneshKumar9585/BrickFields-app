@@ -25,14 +25,10 @@ function AddLsp() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // ---------------------------------------------------------
-  // 🔥 Edit Mode — Receive Data
-  // ---------------------------------------------------------
+  // Edit mode
   const taskData = location.state?.task || null;
 
-  // ---------------------------------------------------------
-  // 🔥 Form State
-  // ---------------------------------------------------------
+  // Form Data
   const [formData, setFormData] = useState({
     companyName: "",
     businessType: "",
@@ -49,9 +45,7 @@ function AddLsp() {
     companyDocument: "",
   });
 
-  // ---------------------------------------------------------
-  // 🔥 Prefill in Edit Mode
-  // ---------------------------------------------------------
+  // Prefill edit mode
   useEffect(() => {
     if (taskData) {
       setFormData({
@@ -72,14 +66,10 @@ function AddLsp() {
     }
   }, [taskData]);
 
-  // ---------------------------------------------------------
-  // 🔥 Error Handling
-  // ---------------------------------------------------------
+  // Errors
   const [errors, setErrors] = useState({});
 
-  // ---------------------------------------------------------
-  // 🔥 Handle Input Change
-  // ---------------------------------------------------------
+  // Input change
   const handleChange = (field, value) => {
     if (field === "phone" || field === "pointOfContactMobile") {
       if (!/^\d{0,10}$/.test(value)) return;
@@ -89,11 +79,10 @@ function AddLsp() {
     setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
-  // ---------------------------------------------------------
-  // 🔥 File Inputs (Document Section)
-  // ---------------------------------------------------------
+  // File uploads
   const adhaarFileRef = useRef(null);
   const gstFileRef = useRef(null);
+  const companyFileRef = useRef(null);
 
   const handleFileSelect = (field, file) => {
     if (file) {
@@ -101,9 +90,7 @@ function AddLsp() {
     }
   };
 
-  // ---------------------------------------------------------
-  // 🔥 Submit Form
-  // ---------------------------------------------------------
+  // Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -156,36 +143,29 @@ function AddLsp() {
     }
   };
 
-  // ---------------------------------------------------------
-  // 🔥 Field Lists
-  // ---------------------------------------------------------
+  // Corrected Field List
   const personalFields = [
-    { label: "Employee ID", key: "companyName" },
-    { label: "Full Name", key: "businessType" },
-    { label: "Gender", key: "phone" },
-    { label: "Date Of Birth", key: "email" },
-    { label: "Age", key: "pointOfContact" },
-    { label: "Marital Status", key: "pointOfContactMobile" },
-    { label: "Address", key: "district" },
-    { label: "Mobile Number", key: "city" },
-    { label: "Email ID", key: "serviceableCities" },
-    { label: "Category Of Service", key: "address" },
-    { label: "Area/City Of Operation", key: "serviceableCities" },
-    { label: "Year Of Experience", key: "serviceableCities" },
-    { label: "Language Spoken", key: "serviceableCities" },
-    { label: "Emergency Phone No", key: "serviceableCities" },
+    { label: "Company Name", key: "companyName" },
+    { label: "Business Type", key: "businessType" },
+    { label: "Company Phone No.", key: "phone" },
+    { label: "Company Email", key: "email" },
+    { label: "Point Of Contact Name", key: "pointOfContact" },
+    { label: "Point Of Contact Mobile", key: "pointOfContactMobile" },
+    { label: "District", key: "district" },
+    { label: "City", key: "city" },
+    { label: "Address", key: "address" },
+    { label: "Serviceable Cities", key: "serviceableCities" },
   ];
 
   const documentFields = [
-    { label: "ID Proof", key: "adhaarCard" },
-    { label: "Upload", key: "gstDocument" },
+    { label: "Adhaar Card", key: "adhaarCard" },
+    { label: "GST Document", key: "gstDocument" },
+    { label: "Company Document", key: "companyDocument" },
   ];
 
   const getTextFieldSx = (field, width = "165px") => ({
     width:
-      field === "Address" ||
-      field === "Category Of Service" ||
-      field === "Area/City Of Operation"
+      field === "Address" || field === "Serviceable Cities"
         ? "346px"
         : width,
     "& .MuiOutlinedInput-root": {
@@ -200,9 +180,6 @@ function AddLsp() {
     },
   });
 
-  // ---------------------------------------------------------
-  // 🔥 JSX
-  // ---------------------------------------------------------
   return (
     <>
       <Navbar />
@@ -212,13 +189,11 @@ function AddLsp() {
 
         <Box sx={{ flexGrow: 1 }}>
           <Typography sx={{ fontSize: "20px", fontWeight: 600, mb: 2 }}>
-            {taskData ? "Edit Technician" : "Add Technician"}
+            Profile
           </Typography>
 
           <Box sx={{ width: "100%", maxWidth: "1190px" }}>
-            {/* --------------------------------------------------- */}
-            {/* 🔹 Personal Data Section */}
-            {/* --------------------------------------------------- */}
+            {/* Personal Section */}
             <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none" }}>
               <CardContent sx={{ p: 3 }}>
                 <Typography sx={{ fontSize: "14px", fontWeight: 600, mb: 2 }}>
@@ -261,8 +236,7 @@ function AddLsp() {
                     ))}
                   </Grid>
 
-                  {/* Profile Image */}
-                  <Box display="flex" flexDirection="column" alignItems="center">
+                  <Box display="flex" flexDirection="column" alignItems="center" mr={20}>
                     <Box
                       component="img"
                       src={logo}
@@ -278,9 +252,7 @@ function AddLsp() {
               </CardContent>
             </Card>
 
-            {/* --------------------------------------------------- */}
-            {/* 🔹 Document Section */}
-            {/* --------------------------------------------------- */}
+            {/* Document Section */}
             <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none" }}>
               <CardContent sx={{ p: 3 }}>
                 <Typography sx={{ fontSize: "14px", fontWeight: 600, mb: 2 }}>
@@ -301,7 +273,7 @@ function AddLsp() {
                         {field.label}
                       </Typography>
 
-                      {/* Hidden File Inputs */}
+                      {/* Hidden Inputs */}
                       {field.key === "adhaarCard" && (
                         <input
                           type="file"
@@ -309,10 +281,7 @@ function AddLsp() {
                           accept=".jpg,.jpeg,.png,.webp,.pdf,.doc,.docx"
                           style={{ display: "none" }}
                           onChange={(e) =>
-                            handleFileSelect(
-                              "adhaarCard",
-                              e.target.files[0]
-                            )
+                            handleFileSelect("adhaarCard", e.target.files[0])
                           }
                         />
                       )}
@@ -324,20 +293,29 @@ function AddLsp() {
                           accept=".jpg,.jpeg,.png,.webp,.pdf,.doc,.docx"
                           style={{ display: "none" }}
                           onChange={(e) =>
-                            handleFileSelect(
-                              "gstDocument",
-                              e.target.files[0]
-                            )
+                            handleFileSelect("gstDocument", e.target.files[0])
                           }
                         />
                       )}
 
-                      {/* Clickable TextField to open file picker */}
+                      {field.key === "companyDocument" && (
+                        <input
+                          type="file"
+                          ref={companyFileRef}
+                          accept=".jpg,.jpeg,.png,.webp,.pdf,.doc,.docx"
+                          style={{ display: "none" }}
+                          onChange={(e) =>
+                            handleFileSelect("companyDocument", e.target.files[0])
+                          }
+                        />
+                      )}
+
                       <TextField
                         value={formData[field.key]}
                         onClick={() => {
                           if (field.key === "adhaarCard") adhaarFileRef.current.click();
                           if (field.key === "gstDocument") gstFileRef.current.click();
+                          if (field.key === "companyDocument") companyFileRef.current.click();
                         }}
                         variant="outlined"
                         size="small"
@@ -367,11 +345,9 @@ function AddLsp() {
               </CardContent>
             </Card>
 
-            {/* --------------------------------------------------- */}
-            {/* 🔹 Buttons */}
-            {/* --------------------------------------------------- */}
             <Divider />
 
+            {/* Buttons */}
             <Box
               sx={{
                 display: "flex",
@@ -418,7 +394,7 @@ function AddLsp() {
                 }}
                 onClick={handleSubmit}
               >
-                {taskData ? "Update" : "Add"}
+                Update
               </Button>
             </Box>
           </Box>

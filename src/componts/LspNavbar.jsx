@@ -410,7 +410,7 @@ useEffect(() => {
               <MenuItem
                 onClick={handleMenuClose}
                 component={NavLink}
-                to="/profile"
+                to="/lsp-profile"
               >
                 <IconButton size="small" sx={{ mr: 1 }}>
                   <AccountCircle
