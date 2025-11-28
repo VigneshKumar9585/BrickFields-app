@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import Navbar from "../../componts/AdminNavbar.jsx";
 import {
   Box,
@@ -20,7 +21,6 @@ import {
   IconButton,
   Paper,
   Dialog,
-  Divider,
   DialogTitle,
   DialogContent,
   DialogActions,
@@ -32,73 +32,28 @@ import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 
-// --- Sample Data ---
-const sampleTasks = [
-  {
-    id: "TSK001",
-    name: "John Doe",
-    address: "123 Main St, Downtown",
-    email: "john.doe@email.com",
-    mobile: "+1 234-567-8901",
-    district: "Central",
-    city: "New York",
-    assignDate: "2024-01-15",
-    totalSqFeet: 1500,
-  },
-  {
-    id: "TSK002",
-    name: "Jane Smith",
-    address: "456 Oak Ave, Midtown",
-    email: "jane.smith@email.com",
-    mobile: "+1 234-567-8902",
-    district: "North",
-    city: "Brooklyn",
-    assignDate: "2024-01-16",
-    totalSqFeet: 2200,
-  },
-  {
-    id: "TSK003",
-    name: "Mike Johnson",
-    address: "789 Pine St, Uptown",
-    email: "mike.johnson@email.com",
-    mobile: "+1 234-567-8903",
-    district: "South",
-    city: "Queens",
-    assignDate: "2024-01-17",
-    totalSqFeet: 1800,
-  },
-  {
-    id: "TSK004",
-    name: "Sarah Wilson",
-    address: "321 Elm Dr, Riverside",
-    email: "sarah.wilson@email.com",
-    mobile: "+1 234-567-8904",
-    district: "East",
-    city: "Manhattan",
-    assignDate: "2024-01-18",
-    totalSqFeet: 3000,
-  },
-  {
-    id: "TSK005",
-    name: "David Brown",
-    address: "654 Cedar Ln, Hillside",
-    email: "david.brown@email.com",
-    mobile: "+1 234-567-8905",
-    district: "West",
-    city: "Bronx",
-    assignDate: "2024-01-19",
-    totalSqFeet: 1200,
-  },
-];
-
-export default function ManageEnquiry() {
+export default function NewEnquiry() {
   const navigate = useNavigate();
+
+  // API data
+  const [tasks, setTasks] = useState([]);
+
+  // Fetch enquiries
+  useEffect(() => {
+    axios.get("http://localhost:5000/api/get-enquiry")
+      .then((res) => {
+        setTasks(res.data)
+        console.log(res.data)
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
+
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(null);
+  const [selectedImages, setSelectedImages] = useState([]);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [dateRange, setDateRange] = useState([
@@ -108,45 +63,79 @@ export default function ManageEnquiry() {
       key: "selection",
     },
   ]);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const handleDateClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const formatTime = (timeString) => {
+  if (!timeString) return "";
 
-  const handleCloseDatePicker = () => {
-    setAnchorEl(null);
-  };
+  const [hours, minutes] = timeString.split(":");
+  let h = parseInt(hours);
+  const ampm = h >= 12 ? "PM" : "AM";
+
+  h = h % 12;          // convert 0 → 12
+  h = h || 12;         // handle midnight (0 becomes 12)
+
+  return `${h}:${minutes} ${ampm}`;
+};
+
+  
+
+  // 🔍 Filter logic for search
+  const filteredTasks = tasks.filter((task) => {
+    const term = searchTerm.toLowerCase();
+
+    return (
+      task.name?.toLowerCase().includes(term) ||
+      task.email?.toLowerCase().includes(term) ||
+      task.phoneNumber?.toString().includes(term) ||
+      task.enquiryId?.toLowerCase().includes(term) ||
+      task.state?.toLowerCase().includes(term) ||
+      task.district?.toLowerCase().includes(term) ||
+      task.city?.toLowerCase().includes(term) ||
+      task.landmark?.toLowerCase().includes(term) ||
+      task.street?.toLowerCase().includes(term) ||
+      (task.preferDate &&
+        new Date(task.preferDate).toLocaleDateString().includes(term))
+    );
+  });
+
+  const handleDateClick = (event) => setAnchorEl(event.currentTarget);
+  const handleCloseDatePicker = () => setAnchorEl(null);
 
   const open = Boolean(anchorEl);
-
   const itemsPerPage = 5;
-  const totalItems = sampleTasks.length;
+  const totalItems = filteredTasks.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-  const handlePreviousPage = () =>
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  const handleNextPage = () =>
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-  const currentItems = sampleTasks.slice(startIndex, endIndex);
+
+  const currentItems = filteredTasks.slice(startIndex, endIndex);
+
+
+  const handlePreviousPage = () =>
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+
+  const handleNextPage = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+
 
   const handleOpenDialog = (task) => {
-    setSelectedTask(task);
+    setSelectedImages(task.siteImage || []);
     setOpenDialog(true);
   };
 
   const handleCloseDialog = () => {
-    setSelectedTask(null);
+    setSelectedImages([]);
     setOpenDialog(false);
   };
 
-  const handleRowClick = (task) => {
-    navigate("/admin-new-enquiry-Details");
+  const handleRowClick = (id) => {
+    navigate(`/admin-new-enquiry-Details/${id}`);
   };
 
-  // Format date range text for filter display
+
+  // Date label text
   const formatRange = (range) => {
     const start = range[0].startDate.toLocaleDateString("en-IN", {
       day: "2-digit",
@@ -164,10 +153,24 @@ export default function ManageEnquiry() {
   return (
     <>
       <Navbar />
-      <Box minHeight="100vh" bgcolor="#fff" display="flex" gap={3}>
-        <Box sx={{ width: "250px", height: "100px" }} />
 
-        <Box sx={{ m: 0, p: 0 }}>
+      <Box minHeight="100vh" bgcolor="#fff" display="flex" gap={3}>
+
+        {/* Sidebar Spacer (keeps table aligned to the right side) */}
+        <Box sx={{ width: "250px", flexShrink: 0 }} />
+
+        {/* Main Content (full width) */}
+        <Box
+          sx={{
+            flexGrow: 1,
+            m: 0,
+            pl: 0,
+            pr: 3,
+            overflowX: "auto"   // 👈 ENABLE PARENT SCROLLING
+          }}
+        >
+
+
           <Typography
             color="rgb(0,0,0)"
             sx={{ fontSize: { xs: "20px", md: "24px" }, fontWeight: "500" }}
@@ -175,7 +178,7 @@ export default function ManageEnquiry() {
             New Tasks
           </Typography>
 
-          {/* --- Filter Card --- */}
+          {/* ---- FILTER CARD ---- */}
           <Card
             elevation={0}
             sx={{ display: "flex", height: "60px", mt: 1, boxShadow: "none" }}
@@ -191,116 +194,168 @@ export default function ManageEnquiry() {
               }}
             >
               <Box display="flex" gap={2} alignItems="center">
-                {/* Filters */}
-                <FormControl sx={{ width: "120px" }} size="small">
+                <FormControl
+                  size="small"
+                  sx={{
+                    width: "140px",
+                    backgroundColor: "#f9f9f9",
+                    borderRadius: "6px",
+                    "& .MuiOutlinedInput-root": {
+                      height: "34px",
+                      fontSize: "12px",
+                      borderRadius: "6px",
+                      "& fieldset": {
+                        borderColor: "#d0d0d0",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#a1a1a1",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#029898",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      fontSize: "12px",
+                    },
+                    "& .MuiSelect-select": {
+                      fontSize: "12px",
+                      padding: "6px 10px",
+                    },
+                  }}
+                >
                   <InputLabel>Country</InputLabel>
                   <Select
                     value={selectedDistrict}
                     onChange={(e) => setSelectedDistrict(e.target.value)}
-                    label="District"
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="Central">Central</MenuItem>
-                    <MenuItem value="North">North</MenuItem>
-                    <MenuItem value="South">South</MenuItem>
-                    <MenuItem value="East">East</MenuItem>
-                    <MenuItem value="West">West</MenuItem>
-                  </Select>
-                </FormControl>
-
-                <FormControl sx={{ width: "120px" }} size="small">
-                  <InputLabel>Region</InputLabel>
-                  <Select
-                    value={selectedCity}
-                    onChange={(e) => setSelectedCity(e.target.value)}
-                    label="City"
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="New York">New York</MenuItem>
-                    <MenuItem value="Brooklyn">Brooklyn</MenuItem>
-                    <MenuItem value="Queens">Queens</MenuItem>
-                    <MenuItem value="Manhattan">Manhattan</MenuItem>
-                    <MenuItem value="Bronx">Bronx</MenuItem>
-                  </Select>
-                </FormControl>
-
-                <FormControl
-                  sx={{
-                    width: "120px",
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "8px",
-                    },
-                  }}
-                  size="small"
-                >
-                  <InputLabel>District</InputLabel>
-                  <Select
-                    value={selectedCity}
-                    onChange={(e) => setSelectedCity(e.target.value)}
-                    label="City"
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="New York">New York</MenuItem>
-                    <MenuItem value="Brooklyn">Brooklyn</MenuItem>
-                    <MenuItem value="Queens">Queens</MenuItem>
-                    <MenuItem value="Manhattan">Manhattan</MenuItem>
-                    <MenuItem value="Bronx">Bronx</MenuItem>
-                  </Select>
-                </FormControl>
-
-                {/* --- Date Filter Styled like Normal Filter --- */}
-                <FormControl
-                  sx={{ width: "180px", cursor: "pointer" }}
-                  size="small"
-                  onClick={handleDateClick}
-                >
-                  <InputLabel>Date</InputLabel>
-                  <Select
-                    value={formatRange(dateRange)}
-                    label="Date"
-                    readOnly
+                    label="Country"
                     sx={{
-                      pointerEvents: "none",
+                      height: "34px",
+                      fontSize: "12px",
                       "& .MuiSelect-select": {
-                        display: "flex",
-                        alignItems: "center",
+                        padding: "6px 10px",
+                        fontSize: "12px",
                       },
                     }}
                   >
-                    <MenuItem value={formatRange(dateRange)}>
-                      {formatRange(dateRange)}
-                    </MenuItem>
+                    <MenuItem value="" sx={{ fontSize: "12px" }}>All</MenuItem>
+                    <MenuItem value="Central" sx={{ fontSize: "12px" }}>Central</MenuItem>
+                    <MenuItem value="North" sx={{ fontSize: "12px" }}>North</MenuItem>
+                    <MenuItem value="South" sx={{ fontSize: "12px" }}>South</MenuItem>
+                    <MenuItem value="East" sx={{ fontSize: "12px" }}>East</MenuItem>
+                    <MenuItem value="West" sx={{ fontSize: "12px" }}>West</MenuItem>
                   </Select>
+
                 </FormControl>
 
-                <Popover
-                  open={open}
-                  anchorEl={anchorEl}
-                  onClose={handleCloseDatePicker}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
+                <FormControl
+                  size="small"
+                  sx={{
+                    width: "140px",
+                    backgroundColor: "#f9f9f9",
+                    borderRadius: "6px",
+                    "& .MuiOutlinedInput-root": {
+                      height: "34px",
+                      fontSize: "12px",
+                      borderRadius: "6px",
+                      "& fieldset": {
+                        borderColor: "#d0d0d0",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#a1a1a1",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#029898",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      fontSize: "12px",
+                    },
+                    "& .MuiSelect-select": {
+                      fontSize: "12px",
+                      padding: "6px 10px",
+                    },
                   }}
                 >
-                  <Box p={1} sx={{ bgcolor: "#fff", borderRadius: "6px" }}>
-                    <DateRange
-                      editableDateInputs={true}
-                      onChange={(item) => setDateRange([item.selection])}
-                      moveRangeOnFirstSelection={false}
-                      ranges={dateRange}
-                    />
-                    <Box display="flex" justifyContent="flex-end" gap={1} mt={1}>
-                      <Button onClick={handleCloseDatePicker}>Cancel</Button>
-                      <Button
-                        variant="contained"
-                        onClick={handleCloseDatePicker}
-                        sx={{ bgcolor: "#029898", "&:hover": { bgcolor: "#027777" } }}
-                      >
-                        Apply
-                      </Button>
-                    </Box>
-                  </Box>
-                </Popover>
+                  <InputLabel>Region</InputLabel>
+                  <Select
+                    value={selectedDistrict}
+                    onChange={(e) => setSelectedDistrict(e.target.value)}
+                    label="Country"
+                    sx={{
+                      height: "34px",
+                      fontSize: "12px",
+                      "& .MuiSelect-select": {
+                        padding: "6px 10px",
+                        fontSize: "12px",
+                      },
+                    }}
+                  >
+                    <MenuItem value="" sx={{ fontSize: "12px" }}>All</MenuItem>
+                    <MenuItem value="Central" sx={{ fontSize: "12px" }}>Central</MenuItem>
+                    <MenuItem value="North" sx={{ fontSize: "12px" }}>North</MenuItem>
+                    <MenuItem value="South" sx={{ fontSize: "12px" }}>South</MenuItem>
+                    <MenuItem value="East" sx={{ fontSize: "12px" }}>East</MenuItem>
+                    <MenuItem value="West" sx={{ fontSize: "12px" }}>West</MenuItem>
+                  </Select>
+
+                </FormControl>
+
+                <FormControl
+                  size="small"
+                  sx={{
+                    width: "140px",
+                    backgroundColor: "#f9f9f9",
+                    borderRadius: "6px",
+                    "& .MuiOutlinedInput-root": {
+                      height: "34px",
+                      fontSize: "12px",
+                      borderRadius: "6px",
+                      "& fieldset": {
+                        borderColor: "#d0d0d0",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#a1a1a1",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#029898",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      fontSize: "12px",
+                    },
+                    "& .MuiSelect-select": {
+                      fontSize: "12px",
+                      padding: "6px 10px",
+                    },
+                  }}
+                >
+                  <InputLabel>District</InputLabel>
+                  <Select
+                    value={selectedDistrict}
+                    onChange={(e) => setSelectedDistrict(e.target.value)}
+                    label="Country"
+                    sx={{
+                      height: "34px",
+                      fontSize: "12px",
+                      "& .MuiSelect-select": {
+                        padding: "6px 10px",
+                        fontSize: "12px",
+                      },
+                    }}
+                  >
+                    <MenuItem value="" sx={{ fontSize: "12px" }}>All</MenuItem>
+                    <MenuItem value="Central" sx={{ fontSize: "12px" }}>Central</MenuItem>
+                    <MenuItem value="North" sx={{ fontSize: "12px" }}>North</MenuItem>
+                    <MenuItem value="South" sx={{ fontSize: "12px" }}>South</MenuItem>
+                    <MenuItem value="East" sx={{ fontSize: "12px" }}>East</MenuItem>
+                    <MenuItem value="West" sx={{ fontSize: "12px" }}>West</MenuItem>
+                  </Select>
+
+                </FormControl>
+
+
+
+                {/* ---- DATE FILTER ---- */}
 
                 <TextField
                   sx={{ width: "200px" }}
@@ -316,112 +371,202 @@ export default function ManageEnquiry() {
             </CardContent>
           </Card>
 
-          {/* --- Modern Table --- */}
+          {/* ---- TABLE ---- */}
           <Card
             sx={{
-              boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.08)",
+              boxShadow: "0px 2px 8px rgba(0,0,0,0.08)",
               bgcolor: "#fff",
-              borderRadius: "10px",
-              overflow: "hidden",
-              width: "1180px",
+              width: "100%",
             }}
           >
             <TableContainer
               component={Paper}
               sx={{
-                borderRadius: "10px",
-                overflowX: "auto",
-                whiteSpace: "nowrap",
                 bgcolor: "#fafafa",
                 boxShadow: "none",
+                width: "100%",
+                overflowX: "auto",      // ENABLE SCROLL
+                overflowY: "hidden",
+                whiteSpace: "nowrap",
               }}
             >
               <Table
                 sx={{
+                  minWidth: 2000,        // 👈 NECESSARY FOR SCROLL
+                  tableLayout: "auto",
+                  width: "100%",
+
                   td: {
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    fontSize: "0.88rem",
-                    padding: "8px 12px",
+                    fontSize: "12px",
+                    padding: "4px 4px",
                     textAlign: "center",
                   },
                   th: {
                     whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    fontSize: "0.88rem",
-                    padding: "12px 12px",
+                    border: "1px solid #e0e0e0",
+                    fontSize: "12px",
+                    padding: "6px 4px",
                     textAlign: "center",
                     color: "#fff",
                   },
                 }}
               >
+
                 <TableHead>
                   <TableRow sx={{ bgcolor: "#029898" }}>
                     {[
                       "S.No",
                       "Enquiry Id",
                       "Name",
-                      "Country",
-                      "State",
-                      "Region",
-                      "Address",
                       "Mobile",
                       "Email",
-                      "Service",
-                      "Total Sq.Feed",
+                      "Sq.Feet",
+                      "State",
+                      "District",
+                      "Street",
+                      "Landmark",
+                      "Preferd Date",
+                      "Prefered Time",
+                      "Initial Amount",
+                      "Assigned",
+                      "Site Images",
                       "Enquired Date",
                       "Action",
-                    ].map((head) => (
-                      <TableCell key={head}>{head}</TableCell>
-                    ))}
+                    ]
+                      .map((head) => (
+                        <TableCell key={head}>{head}</TableCell>
+                      ))}
                   </TableRow>
                 </TableHead>
 
                 <TableBody>
-                  {currentItems.map((task, idx) => (
-                    <TableRow
-                      key={task.id}
-                      onClick={() => handleRowClick(task)}
-                      sx={{
-                        cursor: "pointer",
-                        "&:hover": { bgcolor: "#f5f5f5" },
-                        transition: "background 0.2s ease",
-                      }}
-                    >
-                      <TableCell>{startIndex + idx + 1}</TableCell>
-                      <TableCell>{task.id}</TableCell>
-                      <TableCell>{task.name}</TableCell>
-                      <TableCell>{task.address}</TableCell>
-                      <TableCell>{task.email}</TableCell>
-                      <TableCell>{task.mobile}</TableCell>
-                      <TableCell>{task.district}</TableCell>
-                      <TableCell>{task.city}</TableCell>
-                      <TableCell>{task.assignDate}</TableCell>
-                      <TableCell>{task.totalSqFeet}</TableCell>
-                      <TableCell>
-                        <IconButton
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleOpenDialog(task);
-                          }}
-                        >
-                          <Eye size={18} />
-                        </IconButton>
+                  {currentItems.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={16} style={{ textAlign: "center", padding: "20px" }}>
+                        No enquiries found
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ) : (
+                    currentItems.map((task, idx) => (
+                      <TableRow
+                        key={task._id}
+                        onClick={() => handleRowClick(task._id)}
+                        sx={{
+                          cursor: "pointer",
+                          "&:hover": { bgcolor: "#f5f5f5" },
+                        }}
+                      >
+                        <TableCell>{startIndex + idx + 1}</TableCell>
+                        <TableCell>{task.enquiryId}</TableCell>
+                        <TableCell>{task.name}</TableCell>
+                        <TableCell>{task.phoneNumber}</TableCell>
+                        <TableCell>{task.email}</TableCell>
+                        <TableCell>{task.sqFeet}</TableCell>
+                        {/* <TableCell>{task.country}</TableCell> */}
+                        <TableCell>{task.state}</TableCell>
+                        <TableCell>{task.district}</TableCell>
+                        <TableCell>{task.street}</TableCell>
+                        <TableCell>{task.landmark}</TableCell>
+                        <TableCell> {new Date(task.preferDate).toLocaleDateString()}</TableCell>
+                  <TableCell>{formatTime(task.preferTime)}</TableCell>
+
+                        <TableCell>
+                          {task.initialAmount ? (
+                            <span style={{ color: "green", fontWeight: 600 }}>Paid</span>
+                          ) : (
+                            <span style={{ color: "red", fontWeight: 600 }}>Pending</span>
+                          )}
+                        </TableCell>
+
+                        <TableCell>
+                          {/* Case 1: Initial Amount NOT paid */}
+                          {!task.initialAmount ? (
+                            <span style={{ color: "red", fontWeight: 600 }}>Pending</span>
+                          ) : (
+                            // Case 2 and 3: Initial Amount Paid
+                            <>
+                              {task.assignedTo ? (
+                                // Case 3: Already assigned
+                                <span style={{ color: "green", fontWeight: 600 }}>Assigned</span>
+                              ) : (
+                                // Case 2: Not assigned yet → show Assign link
+                                 <span
+                              style={{
+                                color: "#029898",
+                                cursor: "pointer",
+                                textDecoration: "underline",
+                                fontSize: "12px",
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenDialog(task);
+                              }}
+                            >
+                              Need To Assign
+                            </span>
+                              )}
+                            </>
+                          )}
+                        </TableCell>
+
+
+                        <TableCell>
+                          {task.siteImage && task.siteImage.length > 0 ? (
+                            <span
+                              style={{
+                                color: "#029898",
+                                cursor: "pointer",
+                                textDecoration: "underline",
+                                fontSize: "12px",
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenDialog(task);
+                              }}
+                            >
+                              View
+                            </span>
+                          ) : (
+                            <span style={{ color: "gray", fontSize: "12px" }}>
+                              No Image Provided
+                            </span>
+                          )}
+                        </TableCell>
+
+
+
+                        <TableCell>
+                          {new Date(task.enquiryDate).toLocaleDateString()}
+                        </TableCell>
+
+                        <TableCell>
+                          <IconButton
+                             onClick={() => handleRowClick(task._id)}
+                          >
+                            <Eye size={18} />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    )))}
                 </TableBody>
               </Table>
             </TableContainer>
           </Card>
 
-          {/* Pagination */}
-          <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
+          {/* ---- PAGINATION ---- */}
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mt={2}
+          >
             <Typography variant="body2">
               Showing {startIndex + 1} to {endIndex} of {totalItems} results
             </Typography>
+
             <Box display="flex" gap={1} alignItems="center">
               <Button
                 variant="outlined"
@@ -430,27 +575,26 @@ export default function ManageEnquiry() {
               >
                 <ChevronLeft /> Previous
               </Button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <Button
-                  key={page}
-                  variant={currentPage === page ? "contained" : "text"}
-                  onClick={() => setCurrentPage(page)}
-                  sx={{
-                    minWidth: "36px",
-                    mx: 0.5,
-                    color: currentPage === page ? "white" : "#029898",
-                    bgcolor: currentPage === page ? "#029898" : "transparent",
-                    "&:hover": {
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <Button
+                    key={page}
+                    variant={currentPage === page ? "contained" : "text"}
+                    onClick={() => setCurrentPage(page)}
+                    sx={{
+                      minWidth: "36px",
+                      mx: 0.5,
+                      color: currentPage === page ? "white" : "#029898",
                       bgcolor:
-                        currentPage === page
-                          ? "#027777"
-                          : "rgba(2, 152, 152, 0.1)",
-                    },
-                  }}
-                >
-                  {page}
-                </Button>
-              ))}
+                        currentPage === page ? "#029898" : "transparent",
+                    }}
+                  >
+                    {page}
+                  </Button>
+                )
+              )}
+
               <Button
                 variant="outlined"
                 onClick={handleNextPage}
@@ -462,6 +606,100 @@ export default function ManageEnquiry() {
           </Box>
         </Box>
       </Box>
+
+      {/* ---- IMAGE POPUP ---- */}
+     <Dialog 
+  open={openDialog} 
+  onClose={handleCloseDialog} 
+  maxWidth="md" 
+  fullWidth
+  PaperProps={{
+    sx: {
+      borderRadius: "12px",
+      overflow: "hidden",
+    }
+  }}
+>
+  {/* HEADER */}
+  <DialogTitle
+    sx={{
+      backgroundColor: "#029898",
+      color: "white",
+      fontWeight: 600,
+      fontSize: "18px",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      py: 1.5,
+      px: 2,
+    }}
+  >
+    Site Images
+
+    {/* CLOSE BUTTON */}
+    <Button
+      onClick={handleCloseDialog}
+      sx={{
+        color: "#029898",
+        bgcolor: "white",
+        textTransform: "none",
+        fontSize: "12px",
+        fontWeight: 600,
+        borderRadius: "6px",
+        "&:hover": {
+          bgcolor: "#f1f1f1",
+        },
+      }}
+    >
+      Close
+    </Button>
+  </DialogTitle>
+
+  {/* CONTENT */}
+  <DialogContent sx={{ mt: 2, pb: 3 }}>
+    {selectedImages.length === 0 ? (
+      <Typography sx={{ textAlign: "center", color: "gray" }}>
+        No images available
+      </Typography>
+    ) : (
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        gap={2}
+        justifyContent="center"
+      >
+        {selectedImages.map((img, index) => (
+          <Box
+            key={index}
+            sx={{
+              width: "220px",
+              height: "220px",
+              borderRadius: "12px",
+              overflow: "hidden",
+              boxShadow: "0 3px 10px rgba(0,0,0,0.15)",
+              border: "1px solid #e3e3e3",
+              transition: "0.3s",
+              "&:hover": {
+                transform: "scale(1.03)",
+              },
+            }}
+          >
+            <img
+              src={`http://localhost:5000/upload-site-images/${img}`}
+              alt="enquiry"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
+          </Box>
+        ))}
+      </Box>
+    )}
+  </DialogContent>
+</Dialog>
+
     </>
   );
 }

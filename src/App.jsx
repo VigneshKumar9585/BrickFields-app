@@ -1,7 +1,7 @@
 
 import './App.css'
 // Admin
-
+import { Toaster } from "react-hot-toast";
 import AdminDashboared from "./Admin/Dashbored/Dashbored.jsx"
 import MasterSetting from "./Admin/Masters/Setting.jsx"
 import MasterCountry from "./Admin/Masters/Country.jsx"
@@ -65,12 +65,23 @@ import LspNewEditAssgin from "./LSP/Enquiry/NewTaskDetails.jsx"
 import LspEditAssign from "./LSP/Enquiry/EditAssign.jsx";
 import LspProfile from "./LSP/Dashborad/Profile.jsx"
 
+//customer
+import EnquiryForm from "../AddEnquiry.jsx"
+
 
 import { Routes, Route } from "react-router-dom";
+import PayPage from '../Payment'
 
 function App() {
   return (
-    <><Routes>
+    <>
+    <Toaster
+        position="top-right"
+        toastOptions={{
+          style: { fontSize: "14px", fontWeight: 500 },
+        }}
+      />
+    <Routes>
 
 
 
@@ -90,7 +101,7 @@ function App() {
       <Route path='/admin-profile' element={<AdminPrfile/>} />
       <Route path='/admin-report' element={<AdminReport/>} />
       <Route path='/admin-new-enquiry' element={<AdminNewEnaquiry/>} />
-      <Route path='/admin-new-enquiry-Details' element={<AdminNewTaskDetails/>} />
+      <Route path='/admin-new-enquiry-Details/:id' element={<AdminNewTaskDetails/>} />
       <Route path='/admin-manage-enquiry' element={<AdminManageEnquiry/>} />
       <Route path='/admin-add-manager' element={<AdminAddManager/>} />
       <Route path='/admin-add-Staff' element={<AdminAddStaff/>} />
@@ -141,6 +152,9 @@ function App() {
 
 
      
+      <Route path='/add-enquiry' element={<EnquiryForm />} />
+      <Route path='/pay' element={<PayPage />} />
+
 
 
       

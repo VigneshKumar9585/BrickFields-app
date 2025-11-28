@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../../componts/AdminNavbar";
+import toast from "react-hot-toast";
+import axios from "axios";
 import {
     Avatar,
     Box,
@@ -33,9 +35,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIconcon from "@mui/icons-material/Edit";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { DatePicker } from "@mui/x-date-pickers";
+import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { styled } from "@mui/material/styles";
 
 // Dummy LSP Data
 const partners = [
@@ -45,30 +48,41 @@ const partners = [
     { name: "Manager Name", tasks: "12 Profiled Task", technicians: 13, status: "Currently No Task" },
     { name: "Manager Name", tasks: "28 Profiled Task", technicians: 15, status: "On Processing" },
 ];
+const StyledInput = styled("input")(() => ({
+    width: "100%",
+    height: "36px",
+    backgroundColor: "#f1f1f1",
+    borderRadius: "6px",
+    border: "none",
+    outline: "none",
+    padding: "8px",
+    fontSize: "13px",
+    boxSizing: "border-box",
+    color: "#000",
 
-function Dashboard() {
+    "&:focus": {
+        outline: "2px solid #029898",
+    }
+}));
+
+
+function NewEnquiryDetails() {
     const navigate = useNavigate();
-
+    const { id } = useParams();
     // States
     const [date, setDate] = useState(null);
     const [openPopup, setOpenPopup] = useState(false);
     const [openEstimatePopup, setOpenEstimatePopup] = useState(false);
     const [openPaymentPopup, setOpenPaymentPopup] = useState(false);
+    // Estimation states
+    const [sqFeetEst, setSqFeetEst] = useState("");
+    const [amountPerSqFeetEst, setAmountPerSqFeetEst] = useState(5); // fixed
+    const [totalAmountEst, setTotalAmountEst] = useState("");
+    const [discountEst, setDiscountEst] = useState("");
+    const [grandAmountEst, setGrandAmountEst] = useState("");
 
-    const [enquiryData, setEnquiryData] = useState({
-        enquiryId: "ENQ12345",
-        name: "John Doe",
-        country: "USA",
-        state: "California",
-        district: "Los Angeles",
-        region: "West",
-        address: "123 Main St, Anytown",
-        mobileNo: "123-456-7890",
-        email: "john.doe@example.com",
-        service: "Service A",
-        totalSqFeet: "1500",
-        enquiredDate: "2023-10-27",
-    });
+
+    const [enquiryData, setEnquiryData] = useState([]);
 
     const [estimateData, setEstimateData] = useState({
         totalSqFeet: "",
@@ -126,6 +140,139 @@ function Dashboard() {
 
     const services = ["Service A", "Service B", "Service C"];
 
+     const formatTime = (timeString) => {
+  if (!timeString) return "";
+
+  const [hours, minutes] = timeString.split(":");
+  let h = parseInt(hours);
+  const ampm = h >= 12 ? "PM" : "AM";
+
+  h = h % 12;          // convert 0 → 12
+  h = h || 12;         // handle midnight (0 becomes 12)
+
+  return `${h}:${minutes} ${ampm}`;
+};
+
+    useEffect(() => {
+        axios.get("http://localhost:5000/api/get-enquiry")
+            .then((res) => {
+                setEnquiryData(res.data[0]);
+                setSqFeetEst(res.data[0].sqFeet || ""); // AUTO FILL ESTIMATION FIELD
+            })
+            .catch((err) => console.log(err));
+    }, [id]);
+
+    useEffect(() => {
+        const total = Number(sqFeetEst) * Number(amountPerSqFeetEst);
+        setTotalAmountEst(total || "");
+
+        const grand = total - Number(discountEst);
+        setGrandAmountEst(grand || "");
+    }, [sqFeetEst, amountPerSqFeetEst, discountEst]);
+
+    const sendPaymentEmail = async () => {
+        try {
+            const email = enquiryData.email;
+            const amount = Math.round(grandAmountEst * 0.10);
+            const name = enquiryData.name;
+            const totalAmount = grandAmountEst;
+            const period = "10%"
+            console.log("toot", totalAmount)
+
+
+            if (!email || !amount) {
+                toast.error("Email or amount missing!");
+                return;
+            }
+
+
+
+            const response = await axios.post("http://localhost:5000/api/send-payment-link", {
+                email,
+                amount,
+                name,
+                totalAmount,
+                period,
+                enquiryId: enquiryData.enquiryId
+            });
+            toast.success("Payment link sent successfully!");
+
+            setOpenEstimatePopup(false)
+
+        } catch (error) {
+            console.error("Error sending payment link:", error);
+            toast.error("Failed to send payment link.");
+        }
+    };
+
+
+
+
+    const handleUpdateEnquiry = async () => {
+        try {
+            const res = await axios.put(
+                `http://localhost:5000/api/update-enquiry/${id}`,
+                enquiryData
+            );
+
+            toast.success("Enquiry updated successfully!");
+            setOpenPopup(false);
+        } catch (err) {
+            console.error(err);
+            toast.error("Update failed. Check console.");
+        }
+    };
+    const formatToDDMMYYYY = (dateString) => {
+        if (!dateString) return "";
+
+        const date = new Date(dateString);
+        if (isNaN(date)) return "";
+
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+
+        return `${day}-${month}-${year}`;
+    };
+
+    const formatDateForInput = (date) => {
+        if (!date) return "";
+        const d = new Date(date);
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        const year = d.getFullYear();
+        return `${year}-${month}-${day}`;
+    };
+
+    const formatTimeString = (timeString) => {
+        if (!timeString) return "";
+
+        // CASE 1 → already correct (HH:MM)
+        if (/^\d{2}:\d{2}$/.test(timeString)) {
+            return timeString;
+        }
+
+        // CASE 2 → "10:30 AM" format
+        const date = new Date(`1970-01-01 ${timeString}`);
+        if (!isNaN(date)) {
+            const hrs = String(date.getHours()).padStart(2, "0");
+            const mins = String(date.getMinutes()).padStart(2, "0");
+            return `${hrs}:${mins}`;
+        }
+
+        // CASE 3 → "10:30:00" format
+        if (/^\d{2}:\d{2}:\d{2}$/.test(timeString)) {
+            return timeString.substring(0, 5);
+        }
+
+        return ""; // fallback
+    };
+
+
+
+
+
+
     // Handlers
     const handleOpenPopup = () => setOpenPopup(true);
     const handleClose = () => setOpenPopup(false);
@@ -176,250 +323,242 @@ function Dashboard() {
                     <Grid container spacing={3}>
                         {/* Left Section - New Task Details */}
                         <Grid sx={{ width: "400px" }} item xs={12} md={6}>
-                            <Typography variant="h6" sx={{ mb: 3, fontWeight: "600" }}>
-                                New Task Details
-                            </Typography>
+
 
                             <CardContent
                                 sx={{
-                                    border: "1px solid #abababff",
-                                    borderRadius: "14px",
+                                    border: "1px solid #d0d0d0",
+                                    borderRadius: "10px",
                                     p: 0,
-                                    boxShadow: "0px 4px 12px rgba(0,0,0,0.2)",
+                                    bgcolor: "#fff",
                                     overflow: "hidden",
+                                    boxShadow: "0px 2px 8px rgba(0,0,0,0.08)",
+                                    fontSize: "13px",
                                 }}
                             >
-                                {/* Visitor Details */}
+                                {/* HEADER */}
                                 <Box
                                     sx={{
                                         display: "flex",
                                         justifyContent: "space-between",
-                                        bgcolor: "#029898",
-                                        color: "#fff",
+                                        alignItems: "center",
                                         px: 2,
                                         py: 1,
-                                        borderRadius: "8px 8px 0 0",
-                                        boxShadow: 3,
+                                        bgcolor: "#029898",
+                                        color: "#fff",
                                     }}
                                 >
-                                    <Typography>Task Id</Typography>
-                                    <Typography>Assigned Date</Typography>
+                                    <Typography sx={{ fontSize: "13px", fontWeight: 600 }}>
+                                        Task ID: {enquiryData.enquiryId}
+                                    </Typography>
+
+                                    <Typography sx={{ fontSize: "12px" }}>
+                                        Enquired At: {formatToDDMMYYYY(enquiryData.enquiryDate)}
+                                    </Typography>
                                 </Box>
 
-                                <Box sx={{ p: 2, pb: 0 }}>
-                                    <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+                                {/* VISITOR DETAILS */}
+                                <Box sx={{ px: 2, pt: 1.5 }}>
+
+                                    {/* SECTION TITLE */}
+                                    <Typography
+                                        sx={{
+                                            fontSize: "14px",
+                                            fontWeight: 700,
+                                            color: "#029898",
+                                            mb: 1.5
+                                        }}
+                                    >
                                         Visitor Details
                                     </Typography>
 
-                                    <Box sx={{ height: "100px" }}>
-                                        {/* Row 1 */}
-                                        <Box sx={{ display: "flex", pb: 2 }}>
-                                            <Typography fontSize="14px">Name:</Typography>
-                                            <TextField
-                                                variant="outlined"
-                                                sx={{
-                                                    width: "140px",
-                                                    pl: 2.5,
-                                                    pr: 0.5,
-                                                    "& .MuiInputBase-root": { height: 20 },
-                                                    "& input": { p: 0.5, fontSize: "12px" },
-                                                    "& fieldset": { border: "none" },
-                                                }}
-                                                disabled
-                                            />
-                                            <Typography fontSize="14px">Country:</Typography>
-                                            <TextField
-                                                variant="outlined"
-                                                sx={{
-                                                    width: "140px",
-                                                    pl: 1,
-                                                    "& .MuiInputBase-root": { height: 20 },
-                                                    "& input": { p: 0.5, fontSize: "12px" },
-                                                    "& fieldset": { border: "none" },
-                                                }}
-                                                disabled
-                                            />
-                                        </Box>
+                                    {/* FIELD BLOCK */}
+                                    {[
+                                        { label: "Name", value: enquiryData.name },
+                                        // { label: "Country", value: enquiryData.country },
+                                        { label: "State", value: enquiryData.state },
+                                        { label: "City", value: enquiryData.city },
+                                        { label: "Street", value: enquiryData.street },
+                                        { label: "Landmark", value: enquiryData.landmark },
+                                        { label: "Phone", value: enquiryData.phoneNumber },
+                                        { label: "Email", value: enquiryData.email },
+                                        { label: "Sq-Feet", value: enquiryData.sqFeet },
+                                        { label: "Prefer Date", value: formatToDDMMYYYY(enquiryData.preferDate) },
+                                        { label: "Prefer Time", value: formatTime(enquiryData.preferTime) },
 
-                                        {/* Row 2 */}
-                                        <Box sx={{ display: "flex", pb: 2 }}>
-                                            <Typography fontSize="14px">State:</Typography>
-                                            <TextField
-                                                variant="outlined"
-                                                sx={{
-                                                    width: "140px",
-                                                    pl: 3.2,
-                                                    pr: 0.5,
-                                                    "& .MuiInputBase-root": { height: 20 },
-                                                    "& input": { p: 0.5, fontSize: "12px" },
-                                                    "& fieldset": { border: "none" },
-                                                }}
-                                                disabled
-                                            />
-                                            <Typography fontSize="14px">Region:</Typography>
-                                            <TextField
-                                                variant="outlined"
-                                                sx={{
-                                                    width: "140px",
-                                                    pl: 1.8,
-                                                    "& .MuiInputBase-root": { height: 20 },
-                                                    "& input": { p: 0.5, fontSize: "12px" },
-                                                    "& fieldset": { border: "none" },
-                                                }}
-                                                disabled
-                                            />
-                                        </Box>
 
-                                        {/* Row 3 */}
-                                        <Box sx={{ display: "flex" }}>
-                                            <Typography fontSize="14px">Address:</Typography>
-                                            <TextField
-                                                variant="outlined"
+
+                                    ].map((item, index) => (
+                                        <Box key={index}>
+
+                                            {/* Row */}
+                                            <Box
                                                 sx={{
-                                                    width: "300px",
-                                                    pl: 0.7,
-                                                    "& .MuiInputBase-root": { height: 20 },
-                                                    "& input": { p: 0.5, fontSize: "12px" },
-                                                    "& fieldset": { border: "none" },
+                                                    display: "flex",
+                                                    justifyContent: "space-between",
+                                                    alignItems: "center",
+                                                    mb: 1,
                                                 }}
-                                                disabled
+                                            >
+                                                {/* LABEL */}
+                                                <Typography
+                                                    sx={{
+                                                        fontWeight: 600,
+                                                        fontSize: "13px",
+                                                        width: "120px"
+                                                    }}
+                                                >
+                                                    {item.label}
+                                                </Typography>
+
+                                                {/* VALUE */}
+                                                <Typography
+                                                    sx={{
+                                                        fontSize: "13px",
+                                                        fontWeight: 500,
+                                                        color: "#333",
+                                                        flex: 1,
+                                                        textAlign: "right"
+                                                    }}
+                                                >
+                                                    {item.value}
+                                                </Typography>
+                                            </Box>
+
+                                            {/* Divider */}
+                                            <Box
+                                                sx={{
+                                                    height: "1px",
+                                                    bgcolor: "#e5e5e5",
+                                                    mb: 1.2
+                                                }}
                                             />
                                         </Box>
-                                    </Box>
+                                    ))}
+
                                 </Box>
 
-                                {/* Contact Details */}
-                                <Box sx={{ py: 1, bgcolor: "#ebe8e8ff" }}>
-                                    <Typography variant="subtitle1" sx={{ fontWeight: 600, pl: 2, pt: 1 }}>
-                                        Contact Details
-                                    </Typography>
 
-                                    <Box sx={{ display: "flex", py: 1, px: 2 }}>
-                                        <Typography fontSize="14px">Phone:</Typography>
-                                        <TextField
-                                            variant="outlined"
-                                            sx={{
-                                                width: "140px",
-                                                pl: 3.2,
-                                                pr: 0.5,
-                                                "& .MuiInputBase-root": { height: 20 },
-                                                "& input": { p: 0.5, fontSize: "12px" },
-                                                "& fieldset": { border: "none" },
-                                            }}
-                                            disabled
-                                        />
-                                        <Typography fontSize="14px">Email:</Typography>
-                                        <TextField
-                                            variant="outlined"
-                                            sx={{
-                                                width: "200px",
-                                                pl: 1.8,
-                                                "& .MuiInputBase-root": { height: 20 },
-                                                "& input": { p: 0.5, fontSize: "12px" },
-                                                "& fieldset": { border: "none" },
-                                            }}
-                                            disabled
-                                        />
-                                    </Box>
-                                </Box>
-
-                                {/* Service Details */}
-                                <Typography variant="subtitle1" sx={{ fontWeight: 600, pl: 2, pt: 1 }}>
-                                    Service Details
-                                </Typography>
-
-                                <Box sx={{ display: "flex", py: 1, px: 2 }}>
-                                    <Typography fontSize="14px">Service:</Typography>
-                                    <TextField
-                                        variant="outlined"
-                                        sx={{
-                                            width: "140px",
-                                            pl: 3.2,
-                                            pr: 0.5,
-                                            "& .MuiInputBase-root": { height: 20 },
-                                            "& input": { p: 0.5, fontSize: "12px" },
-                                            "& fieldset": { border: "none" },
-                                        }}
-                                        disabled
-                                    />
-                                    <Typography fontSize="14px">Sq.Feet:</Typography>
-                                    <TextField
-                                        variant="outlined"
-                                        sx={{
-                                            width: "140px",
-                                            pl: 1.8,
-                                            "& .MuiInputBase-root": { height: 20 },
-                                            "& input": { p: 0.5, fontSize: "12px" },
-                                            "& fieldset": { border: "none" },
-                                        }}
-                                        disabled
-                                    />
-                                </Box>
-
+                                {/* CHECKBOX SECTION */}
                                 <Box
                                     sx={{
-                                        borderTop: "1px solid #ccc",
-                                        borderBottom: "1px solid #ccc",
-                                        backgroundColor: "#ffffffff",
+                                        borderTop: "1px solid #e5e5e5",
+                                        borderBottom: "1px solid #e5e5e5",
                                         px: 2,
-                                        py: 1,
+                                        py: 1.5,
+                                        bgcolor: "#fafafa",
+                                        mt: 0.5,
                                     }}
                                 >
-                                    <FormGroup>
-                                        <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    sx={{ color: "#029898", "&.Mui-checked": { color: "#029898" } }}
-                                                    checked={detailsMatched}
-                                                    onChange={(e) => {
-                                                        setDetailsMatched(e.target.checked);
-                                                        if (e.target.checked) setOpenPopup(true);
-                                                    }}
-                                                />
-                                            }
-                                            label={<Typography sx={{ fontSize: "13px" }}>Given Details Are Matched</Typography>}
-                                        />
+                                    <FormGroup sx={{ gap: 0.5 }}>
+                                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                                            {/* FIRST CHECKBOX */}
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        size="small"
+                                                        checked={detailsMatched}
+                                                        onChange={(e) => {
+                                                            setDetailsMatched(e.target.checked);
+                                                        }}
+                                                        sx={{
+                                                            color: "#029898",
+                                                            "&.Mui-checked": { color: "#029898" },
+                                                        }}
+                                                    />
+                                                }
+                                                label={
+                                                    <Typography sx={{ fontSize: "12px" }}>
+                                                        Given Details Are Matched
+                                                    </Typography>
+                                                }
+                                            />
 
-                                        <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    sx={{ color: "#029898", "&.Mui-checked": { color: "#029898" } }}
-                                                    checked={siteEstimated}
-                                                    onChange={(e) => {
-                                                        setSiteEstimated(e.target.checked);
-                                                        if (e.target.checked) setOpenEstimatePopup(true);
-                                                    }}
-                                                />
-                                            }
-                                            label={<Typography sx={{ fontSize: "13px" }}>Site Estimation Provided</Typography>}
-                                        />
+                                            {/* VIEW TEXT */}
+                                            <Typography
+                                                onClick={() => setOpenPopup(true)}
+                                                sx={{
+                                                    fontSize: "12px",
+                                                    color: "#029898",
+                                                    textAlign: "right",
+                                                    fontWeight: 600,
+                                                    cursor: "pointer",
+                                                    ml: "auto",
+                                                    textDecoration: "underline",
+                                                    "&:hover": { color: "#027c7c" },
+                                                }}
+                                            >
+                                                View
+                                            </Typography>
+                                        </Box>
 
-                                        <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    sx={{ color: "#029898", "&.Mui-checked": { color: "#029898" } }}
-                                                    checked={paymentAdded}
-                                                    onChange={(e) => {
-                                                        setPaymentAdded(e.target.checked);
-                                                        if (e.target.checked) setOpenPaymentPopup(true);
-                                                    }}
-                                                />
-                                            }
-                                            label={<Typography sx={{ fontSize: "13px" }}>Add Payment Details</Typography>}
-                                        />
+                                        {/* SECOND CHECKBOX only when first is checked */}
+                                        {detailsMatched && (
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        size="small"
+                                                        checked={siteEstimated}
+                                                        onChange={(e) => {
+                                                            setSiteEstimated(e.target.checked);
+                                                            if (e.target.checked) setOpenEstimatePopup(true);
+                                                        }}
+                                                        sx={{
+                                                            color: "#029898",
+                                                            "&.Mui-checked": { color: "#029898" },
+                                                        }}
+                                                    />
+                                                }
+                                                label={
+                                                    <Typography sx={{ fontSize: "12px" }}>
+                                                        Site Estimation Provided
+                                                    </Typography>
+                                                }
+                                            />
+                                        )}
                                     </FormGroup>
                                 </Box>
 
-                                {/* Action Buttons */}
-                                <Box sx={{ display: "flex", gap: 1.2, mt: 1, pt: 1.2, mx: 1.2 }}>
-                                    <Button variant="outlined" color="error" sx={{ flex: 1 }}>
+
+                                {/* BUTTONS */}
+                                <Box sx={{ display: "flex", gap: 1, px: 2, py: 2 }}>
+                                    <Button
+                                        variant="outlined"
+                                        color="error"
+                                        fullWidth
+                                        sx={{
+                                            fontSize: "12px",
+                                            fontWeight: 600,
+                                            textTransform: "none",
+                                            py: 0.6
+                                        }}
+                                    >
                                         Deny
                                     </Button>
-                                    <Button variant="contained" sx={{ flex: 1, bgcolor: "#029898" }}>
+
+                                    {/* <Button
+                                        variant="contained"
+                                        fullWidth
+                                        sx={{
+                                            bgcolor: "#029898",
+                                            fontSize: "12px",
+                                            fontWeight: 600,
+                                            textTransform: "none",
+                                            py: 0.6,
+                                            "&:hover": { bgcolor: "#027c7c" },
+                                        }}
+                                    >
                                         Accept
-                                    </Button>
+                                    </Button> */}
                                 </Box>
                             </CardContent>
+
+
+
+
+
+
+
                         </Grid>
 
                         {/* Right Section - Assign Partner */}
@@ -828,254 +967,368 @@ function Dashboard() {
             </Box>
 
             {/* Enquiry Popup */}
-            <Dialog
-                open={openPopup}
-                onClose={handleClose}
-                maxWidth="lg"
-                fullWidth
-                PaperProps={{
-                    style: {
-                        backgroundColor: "#fff",
-                        color: "#000",
-                        borderRadius: "6px",
-                        border: "1px solid #ddd",
-                        boxShadow: "0px 4px 10px rgba(0,0,0,0.2)",
-                        padding: "2px",
-                    },
-                }}
-            >
-                <DialogTitle
-                    sx={{
-                        fontWeight: 600,
-                        fontSize: "1rem",
-                        px: 2.5,
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                    }}
-                >
-                    Enquiry Details
-                    <IconButton onClick={handleClose} sx={{ color: "#000", "&:hover": { backgroundColor: "#f2f2f2" } }}>
-                        <CloseIcon sx={{ fontSize: "18px" }} />
-                    </IconButton>
-                </DialogTitle>
+           <Dialog
+  open={openPopup}
+  onClose={handleClose}
+  maxWidth="lg"
+  fullWidth
+  PaperProps={{
+    style: {
+      backgroundColor: "#fff",
+      color: "#000",
+      borderRadius: "8px",
+      border: "1px solid #ddd",
+      boxShadow: "0px 4px 12px rgba(0,0,0,0.15)"
+    },
+  }}
+>
+  {/* HEADER */}
+  <DialogTitle
+    sx={{
+      backgroundColor: "#029898",
+      color: "white",
+      fontWeight: 600,
+      fontSize: "1rem",
+      px: 3,
+      py: 1.5,
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    }}
+  >
+    Enquiry Details
 
-                <DialogContent>
-                    <Grid container spacing={1.5} mb={3} gap={3} ml={3}>
-                        <Box mt={2}>
-                            <Typography fontWeight="600" fontSize="13px">
-                                Enquiry ID
-                            </Typography>
-                            <TextField
-                                size="small"
-                                sx={{
-                                    mt: 1,
-                                    "& .MuiOutlinedInput-root": {
-                                        height: "30px",
-                                        bgcolor: "#e0e0e0",
-                                        borderRadius: "4px",
-                                        "& input": { padding: "4px 8px", fontSize: "12px" },
-                                        "& fieldset": { border: "none" },
-                                    },
-                                }}
-                            />
+    {/* CLOSE BUTTON */}
+    <IconButton
+      onClick={handleClose}
+      sx={{
+        color: "white",
+        "&:hover": {
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+        },
+      }}
+    >
+      <CloseIcon sx={{ fontSize: "20px" }} />
+    </IconButton>
+  </DialogTitle>
+
+                {/* CONTENT */}
+                <DialogContent sx={{ px: 3, py: 1 }}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexWrap: "wrap",
+                                gap: 2,
+                                mt: 1,
+                            }}
+                        >
+                            {[
+                                { label: "Name", field: "name" },
+                                { label: "State", field: "state" },
+                                { label: "Mobile No.", field: "phoneNumber" },
+                                { label: "E-Mail", field: "email" },
+                                { label: "Total Sq. Feet", field: "sqFeet" },
+                                { label: "District", field: "district" },
+
+                                { label: "City", field: "city" },
+
+                                { label: "Landmark", field: "landmark" },
+
+
+
+
+
+                                // DATE & TIME
+                                { label: "Preferred Date", field: "preferDate", type: "date" },
+                                { label: "Preferred Time", field: "preferTime", type: "time" },
+
+                            ].map((item, index) => (
+                                <Box
+                                    key={index}
+                                    sx={{
+                                        width: {
+                                            xs: "100%",
+                                            sm: "48%",
+                                            md: "23%",
+                                        },
+                                    }}
+                                >
+                                    <Typography fontWeight={600} fontSize="13px" mb={0.5}>
+                                        {item.label}
+                                    </Typography>
+
+                                    {/* ------------ DATE FIELD ------------ */}
+                                    {
+                                        item.type === "date" ? (
+                                            <StyledInput
+                                                type="date"
+                                                value={formatDateForInput(enquiryData[item.field])}
+                                                onChange={(e) =>
+                                                    setEnquiryData({ ...enquiryData, [item.field]: e.target.value })
+                                                }
+                                            />
+                                        ) : item.type === "time" ? (
+                                            <StyledInput
+                                                type="time"
+                                                value={formatTimeString(enquiryData[item.field])}
+                                                onChange={(e) =>
+                                                    setEnquiryData({ ...enquiryData, [item.field]: e.target.value })
+                                                }
+                                            />
+
+                                        ) : (
+                                            <TextField
+                                                fullWidth
+                                                size="small"
+                                                value={enquiryData[item.field] || ""}
+                                                onChange={(e) =>
+                                                    setEnquiryData({ ...enquiryData, [item.field]: e.target.value })
+                                                }
+                                                sx={{
+                                                    "& .MuiOutlinedInput-root": {
+                                                        height: "36px",
+                                                        bgcolor: "#f1f1f1",
+                                                        borderRadius: "6px",
+                                                        "& input": { padding: "8px", fontSize: "13px" },
+                                                        "& fieldset": { border: "none" },
+                                                    }
+                                                }}
+                                            />
+                                        )
+                                    }
+
+                                </Box>
+                            ))}
+
+
                         </Box>
+                    </LocalizationProvider>
 
-                        <Box mt={2}>
-                            <Typography fontWeight="600" fontSize="13px">
-                                Name
-                            </Typography>
-                            <TextField size="small" sx={{ mt: 1, "& .MuiOutlinedInput-root": { height: "30px", bgcolor: "#e0e0e0", borderRadius: "4px", "& input": { padding: "4px 8px", fontSize: "12px" }, "& fieldset": { border: "none" } } }} />
-                        </Box>
-
-                        <Box mt={2}>
-                            <Typography fontWeight="600" fontSize="13px">
-                                Country
-                            </Typography>
-                            <TextField size="small" sx={{ mt: 1, "& .MuiOutlinedInput-root": { height: "30px", bgcolor: "#e0e0e0", borderRadius: "4px", "& input": { padding: "4px 8px", fontSize: "12px" }, "& fieldset": { border: "none" } } }} />
-                        </Box>
-
-                        <Box mt={2}>
-                            <Typography fontWeight="600" fontSize="13px">
-                                State
-                            </Typography>
-                            <TextField size="small" sx={{ mt: 1, "& .MuiOutlinedInput-root": { height: "30px", bgcolor: "#e0e0e0", borderRadius: "4px", "& input": { padding: "4px 8px", fontSize: "12px" }, "& fieldset": { border: "none" } } }} />
-                        </Box>
-
-                        <Box mt={2}>
-                            <Typography fontWeight="600" fontSize="13px">
-                                District
-                            </Typography>
-                            <TextField size="small" sx={{ mt: 1, "& .MuiOutlinedInput-root": { height: "30px", bgcolor: "#e0e0e0", borderRadius: "4px", "& input": { padding: "4px 8px", fontSize: "12px" }, "& fieldset": { border: "none" } } }} />
-                        </Box>
-
-                        <Box mt={2}>
-                            <Typography fontWeight="600" fontSize="13px">
-                                Region
-                            </Typography>
-                            <TextField size="small" sx={{ mt: 1, "& .MuiOutlinedInput-root": { height: "30px", bgcolor: "#e0e0e0", borderRadius: "4px", "& input": { padding: "4px 8px", fontSize: "12px" }, "& fieldset": { border: "none" } } }} />
-                        </Box>
-
-                        <Box mt={2}>
-                            <Typography fontWeight="600" fontSize="13px">
-                                Address
-                            </Typography>
-                            <TextField size="small" sx={{ mt: 1, "& .MuiOutlinedInput-root": { height: "30px", bgcolor: "#e0e0e0", borderRadius: "4px", "& input": { padding: "4px 8px", fontSize: "12px" }, "& fieldset": { border: "none" } } }} />
-                        </Box>
-
-                        <Box mt={2}>
-                            <Typography fontWeight="600" fontSize="13px">
-                                Mobile No.
-                            </Typography>
-                            <TextField size="small" sx={{ mt: 1, "& .MuiOutlinedInput-root": { height: "30px", bgcolor: "#e0e0e0", borderRadius: "4px", "& input": { padding: "4px 8px", fontSize: "12px" }, "& fieldset": { border: "none" } } }} />
-                        </Box>
-
-                        <Box mt={2}>
-                            <Typography fontWeight="600" fontSize="13px">
-                                E-Mail
-                            </Typography>
-                            <TextField size="small" sx={{ mt: 1, "& .MuiOutlinedInput-root": { height: "30px", bgcolor: "#e0e0e0", borderRadius: "4px", "& input": { padding: "4px 8px", fontSize: "12px" }, "& fieldset": { border: "none" } } }} />
-                        </Box>
-
-                        <Box mt={2}>
-                            <Typography fontWeight="600" fontSize="13px">
-                                Service
-                            </Typography>
-                            <TextField size="small" sx={{ mt: 1, "& .MuiOutlinedInput-root": { height: "30px", bgcolor: "#e0e0e0", borderRadius: "4px", "& input": { padding: "4px 8px", fontSize: "12px" }, "& fieldset": { border: "none" } } }} />
-                        </Box>
-
-                        <Box mt={2}>
-                            <Typography fontWeight="600" fontSize="13px">
-                                Total Sq. Feet
-                            </Typography>
-                            <TextField size="small" sx={{ mt: 1, "& .MuiOutlinedInput-root": { height: "30px", bgcolor: "#e0e0e0", borderRadius: "4px", "& input": { padding: "4px 8px", fontSize: "12px" }, "& fieldset": { border: "none" } } }} />
-                        </Box>
-
-                        <Box mt={2}>
-                            <Typography fontWeight="600" fontSize="13px">
-                                Enquiry Date
-                            </Typography>
-                            <TextField size="small" sx={{ mt: 1, "& .MuiOutlinedInput-root": { height: "30px", bgcolor: "#e0e0e0", borderRadius: "4px", "& input": { padding: "4px 8px", fontSize: "12px" }, "& fieldset": { border: "none" } } }} />
-                        </Box>
-                    </Grid>
-
-                    <Divider sx={{ my: 1.5 }} />
+                    <Divider sx={{ my: 2 }} />
                 </DialogContent>
 
-                <DialogActions sx={{ px: 2.5, pb: 1.5 }}>
-                    <Button
-                        variant="contained"
-                        onClick={handleClose}
-                        sx={{
-                            bgcolor: "#029898",
-                            color: "#fff",
-                            px: 3,
-                            py: 0.6,
-                            textTransform: "none",
-                            borderRadius: "4px",
-                            fontSize: "13px",
-                            "&:hover": { bgcolor: "#036d6dff" },
-                        }}
-                    >
-                        Update
-                    </Button>
-                </DialogActions>
-            </Dialog>
+
+               
+  {/* FOOTER */}
+  <DialogActions sx={{ px: 3, pb: 2 }}>
+    <Button
+      variant="contained"
+      onClick={handleUpdateEnquiry}
+      sx={{
+        bgcolor: "#029898",
+        color: "#fff",
+        px: 4,
+        py: 0.8,
+        borderRadius: "6px",
+        textTransform: "none",
+        fontSize: "13px",
+        "&:hover": { bgcolor: "#027c7c" },
+      }}
+    >
+      Update
+    </Button>
+  </DialogActions>
+</Dialog>
+
+
 
             {/* Estimation Popup */}
             <Dialog
-                open={openEstimatePopup}
-                onClose={() => setOpenEstimatePopup(false)}
-                maxWidth="md"
-                fullWidth
-                PaperProps={{
-                    style: {
-                        backgroundColor: "#fff",
-                        color: "#000",
-                        borderRadius: "6px",
-                        border: "1px solid #ddd",
-                        boxShadow: "0px 4px 10px rgba(0,0,0,0.2)",
-                        padding: "2px",
-                    },
-                }}
-            >
-                <DialogTitle
-                    sx={{
-                        fontWeight: 600,
-                        fontSize: "1rem",
-                        px: 2.5,
-                        pt: 1,
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        width: "890px",
-                    }}
-                >
-                    Estimation Details
-                    <IconButton onClick={() => setOpenEstimatePopup(false)} sx={{ color: "#000", "&:hover": { backgroundColor: "#f2f2f2" } }}>
-                        <CloseIcon sx={{ fontSize: "18px" }} />
-                    </IconButton>
-                </DialogTitle>
+  open={openEstimatePopup}
+  onClose={() => setOpenEstimatePopup(false)}
+  maxWidth="md"
+  fullWidth
+  PaperProps={{
+      style: {
+          backgroundColor: "#fff",
+          color: "#000",
+          borderRadius: "6px",
+          border: "1px solid #ddd",
+          boxShadow: "0px 4px 10px rgba(0,0,0,0.2)",
+          padding: "2px",
+      },
+  }}
+>
+  {/* HEADER */}
+  <DialogTitle
+    sx={{
+      backgroundColor: "#029898",
+      color: "white",
+      fontWeight: 600,
+      fontSize: "1rem",
+      px: 2.5,
+      py: 1.3,
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    }}
+  >
+    Estimation Details
+
+    <IconButton
+      onClick={() => setOpenEstimatePopup(false)}
+      sx={{
+        color: "white",
+        "&:hover": {
+          backgroundColor: "rgba(255,255,255,0.15)",
+        },
+      }}
+    >
+      <CloseIcon sx={{ fontSize: "20px" }} />
+    </IconButton>
+  </DialogTitle>
+              
 
                 <DialogContent sx={{ px: 2.5, pt: 1.9, pb: 0.9 }}>
                     <Grid display={"flex"} spacing={1.5} mt={1} gap={3}>
+
+                        {/* SQ FEET */}
                         <Box mt={2}>
                             <Typography fontWeight="600" fontSize="13px">
                                 Total Square Feet
                             </Typography>
-                            <TextField size="small" sx={{ mt: 1, "& .MuiOutlinedInput-root": { height: "30px", bgcolor: "#e0e0e0", borderRadius: "4px", "& input": { padding: "4px 8px", fontSize: "12px" }, "& fieldset": { border: "none" } } }} />
+                            <TextField
+                                size="small"
+                                value={sqFeetEst}
+                                onChange={(e) => setSqFeetEst(e.target.value)}
+                                sx={{
+                                    "& .MuiOutlinedInput-root": {
+                                        height: "36px",
+                                        bgcolor: "#f1f1f1",
+                                        borderRadius: "6px",
+                                        "& input": { padding: "8px", fontSize: "13px" },
+                                        "& fieldset": { border: "none" },
+                                    }
+                                }}
+                            />
                         </Box>
 
+                        {/* AMOUNT PER SQ FEET */}
                         <Box mt={2}>
                             <Typography fontWeight="600" fontSize="13px">
                                 Amount Per Sq.Feet
                             </Typography>
-                            <TextField size="small" sx={{ mt: 1, "& .MuiOutlinedInput-root": { height: "30px", bgcolor: "#e0e0e0", borderRadius: "4px", "& input": { padding: "4px 8px", fontSize: "12px" }, "& fieldset": { border: "none" } } }} />
+                            <TextField
+                                size="small"
+                                value={amountPerSqFeetEst}
+                                disabled
+                               sx={{
+  "& .MuiOutlinedInput-root": {
+    height: "36px",
+    bgcolor: "#f1f1f1",
+    borderRadius: "6px",
+    "& input": { 
+      padding: "8px", 
+      fontSize: "13px",
+      color: "#000",           // 🔥 TEXT COLOR BLACK
+      fontWeight: 600          // 🔥 TEXT BOLD
+    },
+    "& fieldset": { border: "none" },
+  }
+}}
+                            />
                         </Box>
 
+                        {/* TOTAL AMOUNT */}
                         <Box mt={2}>
                             <Typography fontWeight="600" fontSize="13px">
                                 Total Amount
                             </Typography>
-                            <TextField size="small" sx={{ mt: 1, "& .MuiOutlinedInput-root": { height: "30px", bgcolor: "#e0e0e0", borderRadius: "4px", "& input": { padding: "4px 8px", fontSize: "12px" }, "& fieldset": { border: "none" } } }} />
+                            <TextField
+                                size="small"
+                                value={totalAmountEst}
+                                disabled
+                               sx={{
+  "& .MuiOutlinedInput-root": {
+    height: "36px",
+    bgcolor: "#f1f1f1",
+    borderRadius: "6px",
+    "& input": { 
+      padding: "8px", 
+      fontSize: "13px",
+      color: "#000",           // 🔥 TEXT COLOR BLACK
+      fontWeight: 600          // 🔥 TEXT BOLD
+    },
+    "& fieldset": { border: "none" },
+  }
+}}
+                            />
                         </Box>
 
+                        {/* DISCOUNT */}
                         <Box mt={2}>
                             <Typography fontWeight="600" fontSize="13px">
                                 Discount
                             </Typography>
-                            <TextField size="small" sx={{ mt: 1, "& .MuiOutlinedInput-root": { height: "30px", bgcolor: "#e0e0e0", borderRadius: "4px", "& input": { padding: "4px 8px", fontSize: "12px" }, "& fieldset": { border: "none" } } }} />
+                            <TextField
+                                size="small"
+                                value={discountEst}
+                                onChange={(e) => setDiscountEst(e.target.value)}
+                                sx={{
+                                    "& .MuiOutlinedInput-root": {
+                                        height: "36px",
+                                        bgcolor: "#f1f1f1",
+                                        borderRadius: "6px",
+                                        "& input": { padding: "8px", fontSize: "13px" },
+                                        "& fieldset": { border: "none" },
+                                    }
+                                }}
+                            />
                         </Box>
 
+                        {/* GRAND AMOUNT */}
                         <Box mt={2}>
                             <Typography fontWeight="600" fontSize="13px">
                                 Grand Amount
                             </Typography>
-                            <TextField size="small" sx={{ mt: 1, "& .MuiOutlinedInput-root": { height: "30px", bgcolor: "#e0e0e0", borderRadius: "4px", "& input": { padding: "4px 8px", fontSize: "12px" }, "& fieldset": { border: "none" } } }} />
+                            <TextField
+                                size="small"
+                                value={grandAmountEst}
+                                disabled
+                                  sx={{
+  "& .MuiOutlinedInput-root": {
+    height: "36px",
+    bgcolor: "#f1f1f1",
+    borderRadius: "6px",
+    "& input": { 
+      padding: "8px", 
+      fontSize: "13px",
+      color: "#000",           // 🔥 TEXT COLOR BLACK
+      fontWeight: 600          // 🔥 TEXT BOLD
+    },
+    "& fieldset": { border: "none" },
+  }
+}}
+                            />
                         </Box>
+
                     </Grid>
+
 
                     <Divider sx={{ my: 1.5 }} />
                 </DialogContent>
 
-                <DialogActions sx={{ px: 2.5, pb: 1.5 }}>
-                    <Button
-                        variant="contained"
-                        onClick={() => setOpenEstimatePopup(false)}
-                        sx={{
-                            bgcolor: "#029898",
-                            color: "#fff",
-                            px: 3,
-                            py: 0.6,
-                            textTransform: "none",
-                            borderRadius: "4px",
-                            fontSize: "13px",
-                            "&:hover": { bgcolor: "#036d6dff" },
-                        }}
-                    >
-                        Update
-                    </Button>
-                </DialogActions>
+             
+  {/* FOOTER */}
+  <DialogActions sx={{ px: 2.5, pb: 1.5 }}>
+    <Button
+      variant="contained"
+      onClick={() => sendPaymentEmail()}
+      sx={{
+        bgcolor: "#029898",
+        color: "#fff",
+        px: 3,
+        py: 0.6,
+        textTransform: "none",
+        borderRadius: "4px",
+        fontSize: "13px",
+        "&:hover": { bgcolor: "#036d6dff" },
+      }}
+    >
+      Send Payment Link
+    </Button>
+  </DialogActions>
             </Dialog>
 
             {/* Add Payment Details Popup */}
@@ -1304,4 +1557,4 @@ function Dashboard() {
     );
 }
 
-export default Dashboard;
+export default NewEnquiryDetails;
