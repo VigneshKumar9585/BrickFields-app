@@ -40,7 +40,7 @@ export default function NewEnquiry() {
 
   // Fetch enquiries
   useEffect(() => {
-    axios.get("http://localhost:5000/api/get-enquiry")
+    axios.get("https://bf-back.appblocky.com/api/get-enquiry")
       .then((res) => {
         setTasks(res.data)
         console.log(res.data)
@@ -685,7 +685,7 @@ export default function NewEnquiry() {
             }}
           >
             <img
-              src={`http://localhost:5000/upload-site-images/${img}`}
+              src={`https://bf-back.appblocky.com/upload-site-images/${img}`}
               alt="enquiry"
               style={{
                 width: "100%",

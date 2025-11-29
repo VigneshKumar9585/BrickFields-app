@@ -200,7 +200,7 @@ const validateForm = () => {
 
     try {
         await axios.post(
-            "http://localhost:5000/api/create-enquiry",
+            "https://bf-back.appblocky.com/api/create-enquiry",
             sendData,
             { headers: { "Content-Type": "multipart/form-data" } }
         );

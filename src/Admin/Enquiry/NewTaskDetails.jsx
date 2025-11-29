@@ -154,7 +154,7 @@ function NewEnquiryDetails() {
 };
 
     useEffect(() => {
-        axios.get("http://localhost:5000/api/get-enquiry")
+        axios.get("https://bf-back.appblocky.com/api/get-enquiry")
             .then((res) => {
                 setEnquiryData(res.data[0]);
                 setSqFeetEst(res.data[0].sqFeet || ""); // AUTO FILL ESTIMATION FIELD
@@ -187,7 +187,7 @@ function NewEnquiryDetails() {
 
 
 
-            const response = await axios.post("http://localhost:5000/api/send-payment-link", {
+            const response = await axios.post("https://bf-back.appblocky.com/api/send-payment-link", {
                 email,
                 amount,
                 name,
@@ -211,7 +211,7 @@ function NewEnquiryDetails() {
     const handleUpdateEnquiry = async () => {
         try {
             const res = await axios.put(
-                `http://localhost:5000/api/update-enquiry/${id}`,
+                `https://bf-back.appblocky.com/api/update-enquiry/${id}`,
                 enquiryData
             );
 
