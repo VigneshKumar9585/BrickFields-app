@@ -213,137 +213,231 @@ export default function ManageEnquiry() {
           </Typography>
 
           {/* Filter Bar */}
-          <Card
-            elevation={0}
-            sx={{ display: "flex", height: "60px", mt: 1, boxShadow: "none" }}
-          >
-            <CardContent
-              sx={{
-                width: "1195px",
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-                p: 0,
-                "&:last-child": { pb: 0 },
-              }}
-            >
-              <Box display="flex" gap={2} alignItems="center">
-                {/* LSP */}
-                <FormControl sx={{ width: "120px" }} size="small">
-                  <InputLabel>LSP</InputLabel>
-                  <Select
-                    value={selectedLSP}
-                    onChange={(e) => setSelectedLSP(e.target.value)}
-                    label="LSP"
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="LSP-101">LSP-101</MenuItem>
-                    <MenuItem value="LSP-102">LSP-102</MenuItem>
-                  </Select>
-                </FormControl>
+         <Card
+  elevation={0}
+  sx={{ display: "flex", height: "60px", mt: 1, boxShadow: "none" }}
+>
+  <CardContent
+    sx={{
+      width: "1195px",
+      display: "flex",
+      justifyContent: "flex-end",
+      alignItems: "center",
+      p: 0,
+      "&:last-child": { pb: 0 },
+    }}
+  >
+    <Box display="flex" gap={2} alignItems="center">
+      {/* LSP */}
+      <FormControl
+        size="small"
+        sx={{
+          width: "120px",
+          backgroundColor: "#f9f9f9",
+          borderRadius: "6px",
+          "& .MuiOutlinedInput-root": {
+            height: "34px",
+            fontSize: "12px",
+            borderRadius: "6px",
+            "& fieldset": { borderColor: "#d0d0d0" },
+            "&:hover fieldset": { borderColor: "#a1a1a1" },
+            "&.Mui-focused fieldset": { borderColor: "#029898" },
+          },
+          "& .MuiInputLabel-root": { fontSize: "12px" },
+          "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
+        }}
+      >
+        <InputLabel>LSP</InputLabel>
+        <Select
+          value={selectedLSP}
+          onChange={(e) => setSelectedLSP(e.target.value)}
+          label="LSP"
+          sx={{ height: "34px", fontSize: "12px" }}
+        >
+          <MenuItem value="">All</MenuItem>
+          <MenuItem value="LSP-101">LSP-101</MenuItem>
+          <MenuItem value="LSP-102">LSP-102</MenuItem>
+        </Select>
+      </FormControl>
 
-                {/* Status */}
-                <FormControl sx={{ width: "120px" }} size="small">
-                  <InputLabel>Status</InputLabel>
-                  <Select
-                    value={selectedStatus}
-                    onChange={(e) => setSelectedStatus(e.target.value)}
-                    label="Status"
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="Open">Open</MenuItem>
-                    <MenuItem value="Closed">Closed</MenuItem>
-                  </Select>
-                </FormControl>
+      {/* Status */}
+      <FormControl
+        size="small"
+        sx={{
+          width: "120px",
+          backgroundColor: "#f9f9f9",
+          borderRadius: "6px",
+          "& .MuiOutlinedInput-root": {
+            height: "34px",
+            fontSize: "12px",
+            borderRadius: "6px",
+            "& fieldset": { borderColor: "#d0d0d0" },
+            "&:hover fieldset": { borderColor: "#a1a1a1" },
+            "&.Mui-focused fieldset": { borderColor: "#029898" },
+          },
+          "& .MuiInputLabel-root": { fontSize: "12px" },
+          "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
+        }}
+      >
+        <InputLabel>Status</InputLabel>
+        <Select
+          value={selectedStatus}
+          onChange={(e) => setSelectedStatus(e.target.value)}
+          label="Status"
+          sx={{ height: "34px", fontSize: "12px" }}
+        >
+          <MenuItem value="">All</MenuItem>
+          <MenuItem value="Open">Open</MenuItem>
+          <MenuItem value="Closed">Closed</MenuItem>
+        </Select>
+      </FormControl>
 
-                {/* City */}
-                <FormControl sx={{ width: "120px" }} size="small">
-                  <InputLabel>City</InputLabel>
-                  <Select
-                    value={selectedCity}
-                    onChange={(e) => setSelectedCity(e.target.value)}
-                    label="City"
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="New York">New York</MenuItem>
-                    <MenuItem value="Brooklyn">Brooklyn</MenuItem>
-                  </Select>
-                </FormControl>
+      {/* City */}
+      <FormControl
+        size="small"
+        sx={{
+          width: "120px",
+          backgroundColor: "#f9f9f9",
+          borderRadius: "6px",
+          "& .MuiOutlinedInput-root": {
+            height: "34px",
+            fontSize: "12px",
+            borderRadius: "6px",
+            "& fieldset": { borderColor: "#d0d0d0" },
+            "&:hover fieldset": { borderColor: "#a1a1a1" },
+            "&.Mui-focused fieldset": { borderColor: "#029898" },
+          },
+          "& .MuiInputLabel-root": { fontSize: "12px" },
+          "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
+        }}
+      >
+        <InputLabel>City</InputLabel>
+        <Select
+          value={selectedCity}
+          onChange={(e) => setSelectedCity(e.target.value)}
+          label="City"
+          sx={{ height: "34px", fontSize: "12px" }}
+        >
+          <MenuItem value="">All</MenuItem>
+          <MenuItem value="New York">New York</MenuItem>
+          <MenuItem value="Brooklyn">Brooklyn</MenuItem>
+        </Select>
+      </FormControl>
 
-                {/* Date */}
-                <FormControl sx={{ width: "120px" }} size="small">
-                  <InputLabel>Date</InputLabel>
-                  <Select
-                    value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
-                    label="Date"
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="today">Today</MenuItem>
-                    <MenuItem value="yesterday">Yesterday</MenuItem>
-                    <MenuItem value="last-7-days">Last 7 Days</MenuItem>
-                  </Select>
-                </FormControl>
+      {/* Date */}
+      <FormControl
+        size="small"
+        sx={{
+          width: "120px",
+          backgroundColor: "#f9f9f9",
+          borderRadius: "6px",
+          "& .MuiOutlinedInput-root": {
+            height: "34px",
+            fontSize: "12px",
+            borderRadius: "6px",
+            "& fieldset": { borderColor: "#d0d0d0" },
+            "&:hover fieldset": { borderColor: "#a1a1a1" },
+            "&.Mui-focused fieldset": { borderColor: "#029898" },
+          },
+          "& .MuiInputLabel-root": { fontSize: "12px" },
+          "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
+        }}
+      >
+        <InputLabel>Date</InputLabel>
+        <Select
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+          label="Date"
+          sx={{ height: "34px", fontSize: "12px" }}
+        >
+          <MenuItem value="">All</MenuItem>
+          <MenuItem value="today">Today</MenuItem>
+          <MenuItem value="yesterday">Yesterday</MenuItem>
+          <MenuItem value="last-7-days">Last 7 Days</MenuItem>
+        </Select>
+      </FormControl>
 
-                {/* Search */}
-                <TextField
-                  sx={{ width: "200px" }}
-                  size="small"
-                  placeholder="Search..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <Search style={{ marginRight: 8 }} size={18} />
-                    ),
-                  }}
-                />
-              </Box>
-            </CardContent>
-          </Card>
+      {/* Search */}
+      <TextField
+        size="small"
+        placeholder="Search..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        sx={{
+          width: "200px",
+          "& .MuiOutlinedInput-root": {
+            height: "34px",
+            bgcolor: "#f9f9f9",
+            borderRadius: "6px",
+            "& fieldset": { borderColor: "#d0d0d0" },
+            "&:hover fieldset": { borderColor: "#a1a1a1" },
+            "&.Mui-focused fieldset": { borderColor: "#029898" },
+            "& input": { padding: "6px 10px", fontSize: "12px" },
+          },
+        }}
+        InputProps={{
+          startAdornment: <Search style={{ marginRight: 8 }} size={16} />,
+        }}
+      />
+    </Box>
+  </CardContent>
+</Card>
+
 
           {/* Table */}
-         <Card
+<Card
   sx={{
-    boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.08)",
-    bgcolor: "#fff",
+    mt: 1,
+    ml: 0,
+    boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
     borderRadius: "10px",
-    overflow: "hidden",
-    width: "1180px", // ✅ same fixed width
+    bgcolor: "#fff",
+    overflowX: "auto",
   }}
 >
   <TableContainer
     component={Paper}
     sx={{
       borderRadius: "10px",
-      overflowX: "auto", // ✅ horizontal scroll
-      whiteSpace: "nowrap", // ✅ prevent wrapping
+      minWidth: "1100px",
       bgcolor: "#fafafa",
       boxShadow: "none",
+      overflowX: "auto",
+      overflowY: "auto",       // ✅ vertical scrolling
+      maxHeight: "480px",      // ✅ fixed height like second table
+      whiteSpace: "nowrap",
     }}
   >
-    <Table 
-    sx={{
-         "td": {
-          whiteSpace: "nowrap", // ✅ single line only
+    <Table
+      stickyHeader                // ✅ header stays fixed
+      sx={{
+        minWidth: "100px",
+        width: "100%",
+        tableLayout: "auto",
+
+        td: {
+          whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
-          fontSize: "0.88rem",
-          padding: "8px 12px", // compact padding
+          fontSize: "12px",
+          padding: "4px 4px",
           textAlign: "center",
+          borderBottom: "1px solid #e0e0e0",
         },
-        "th":{
-            whiteSpace: "nowrap", // ✅ single line only
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          fontSize: "0.88rem",
-          padding: "12px 12px", // compact padding
+
+        th: {
+          whiteSpace: "nowrap",
+          border: "1px solid #e0e0e0",
+          fontSize: "12px",
+          padding: "6px 4px",
           textAlign: "center",
-          color:"#fff"
-        }
-      }}> {/* ✅ allows right scroll */}
+          color: "#fff",
+          backgroundColor: "#029898",
+        },
+      }}
+    >
       <TableHead>
-        <TableRow sx={{bgcolor: "#029898"}}>
+        <TableRow>
           {[
             "S.No",
             "Task Id",
@@ -355,15 +449,11 @@ export default function ManageEnquiry() {
             "Assigned Technician 1",
             "Assigned Technician 2",
             "Assign Date",
-            "City", 
+            "City",
             "Status",
             "Action",
           ].map((head) => (
-            <TableCell
-             
-            >
-              {head}
-            </TableCell>
+            <TableCell key={head}>{head}</TableCell>
           ))}
         </TableRow>
       </TableHead>
@@ -373,56 +463,23 @@ export default function ManageEnquiry() {
           <TableRow
             key={task.id}
             sx={{
-              "&:hover": {
-                backgroundColor: "#f5f5f5",
-              },
+              cursor: "pointer",
               transition: "background 0.2s ease",
+              "&:hover": { bgcolor: "#f5f5f5" },
             }}
           >
-            <TableCell align="center" >
-              {startIndex + idx + 1}
-            </TableCell>
-            <TableCell align="center" >
-              {task.id}
-            </TableCell>
-            <TableCell
-              align="center"
-              
-            >
-              {task.name}
-            </TableCell>
-            <TableCell
-              align="left"
-            
-            >
-              {task.address}
-            </TableCell>
-            <TableCell
-              align="center"
-           
-            >
-              {task.email}
-            </TableCell>
-            <TableCell align="center" >
-              {task.preferDate}
-            </TableCell>
-            <TableCell align="center" >
-              {task.preferTime}
-            </TableCell>
-            <TableCell align="center" >
-              {task.assignedLSP}
-            </TableCell>
-            <TableCell align="center" >
-              {task.lspAssignDate}
-            </TableCell>
-            <TableCell align="center" >
-              {task.city}
-            </TableCell>
-            <TableCell align="center" >
-              {task.technicians}
-            </TableCell>
-
-            <TableCell align="center" >
+            <TableCell align="center">{startIndex + idx + 1}</TableCell>
+            <TableCell align="center">{task.id}</TableCell>
+            <TableCell align="center">{task.name}</TableCell>
+            <TableCell align="left">{task.address}</TableCell>
+            <TableCell align="center">{task.email}</TableCell>
+            <TableCell align="center">{task.preferDate}</TableCell>
+            <TableCell align="center">{task.preferTime}</TableCell>
+            <TableCell align="center">{task.assignedLSP}</TableCell>
+            <TableCell align="center">{task.lspAssignDate}</TableCell>
+            <TableCell align="center">{task.city}</TableCell>
+            <TableCell align="center">{task.technicians}</TableCell>
+            <TableCell align="center">
               <Chip
                 label={task.status}
                 size="small"
@@ -443,8 +500,7 @@ export default function ManageEnquiry() {
                 }}
               />
             </TableCell>
-
-            <TableCell align="center" >
+            <TableCell align="center">
               <Box display="flex" justifyContent="center" gap={0.5}>
                 <IconButton
                   size="small"
@@ -484,6 +540,7 @@ export default function ManageEnquiry() {
     </Table>
   </TableContainer>
 </Card>
+
 
 
           {/* Pagination */}

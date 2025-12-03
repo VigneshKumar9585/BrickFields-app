@@ -356,17 +356,27 @@ export default function NewEnquiry() {
 
 
                 {/* ---- DATE FILTER ---- */}
-
-                <TextField
-                  sx={{ width: "200px" }}
-                  size="small"
-                  placeholder="Search tasks..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  InputProps={{
-                    startAdornment: <Search style={{ marginRight: 8 }} />,
-                  }}
-                />
+ <TextField
+        sx={{
+          width: "200px",
+          "& .MuiOutlinedInput-root": {
+            height: "34px",
+            bgcolor: "#f9f9f9",
+            borderRadius: "6px",
+            "& fieldset": { borderColor: "#d0d0d0" },
+            "&:hover fieldset": { borderColor: "#a1a1a1" },
+            "&.Mui-focused fieldset": { borderColor: "#029898" },
+            "& input": { padding: "6px 10px", fontSize: "12px" },
+          },
+        }}
+        size="small"
+        placeholder="Search..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        InputProps={{
+          startAdornment: <Search style={{ marginRight: 8 }} size={16} />,
+        }}
+      />
               </Box>
             </CardContent>
           </Card>

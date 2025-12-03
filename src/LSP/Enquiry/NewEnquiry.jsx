@@ -169,98 +169,161 @@ export default function ManageEnquiry() {
           </Typography>
 
           {/* --- Filter Card --- */}
-          <Card
-            elevation={0}
-            sx={{ display: "flex", height: "60px", mt: 0, boxShadow: "none" }}
-          >
-            <CardContent
-              sx={{
-                width: "1195px",
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-                p: 0,
-                "&:last-child": { pb: 0 },
-              }}
-            >
-              <Box display="flex" gap={2} alignItems="center">
-                {/* District */}
-                <FormControl sx={{ width: "100px" }} size="small">
-                  <InputLabel>District</InputLabel>
-                  <Select
-                    value={selectedDistrict}
-                    onChange={(e) => setSelectedDistrict(e.target.value)}
-                    label="District"
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="Central">Central</MenuItem>
-                    <MenuItem value="North">North</MenuItem>
-                    <MenuItem value="South">South</MenuItem>
-                    <MenuItem value="East">East</MenuItem>
-                    <MenuItem value="West">West</MenuItem>
-                  </Select>
-                </FormControl>
+        <Card
+  elevation={0}
+  sx={{ display: "flex", height: "60px", mt: 1, boxShadow: "none" }}
+>
+  <CardContent
+    sx={{
+      width: "1195px",
+      display: "flex",
+      justifyContent: "flex-end",
+      alignItems: "center",
+      p: 0,
+      "&:last-child": { pb: 0 },
+    }}
+  >
+    <Box display="flex" gap={2} alignItems="center">
+      
+      {/* District */}
+      <FormControl
+        size="small"
+        sx={{
+          width: "120px",
+          backgroundColor: "#f9f9f9",
+          borderRadius: "6px",
+          "& .MuiOutlinedInput-root": {
+            height: "34px",
+            fontSize: "12px",
+            borderRadius: "6px",
+            "& fieldset": { borderColor: "#d0d0d0" },
+            "&:hover fieldset": { borderColor: "#a1a1a1" },
+            "&.Mui-focused fieldset": { borderColor: "#029898" },
+          },
+          "& .MuiInputLabel-root": { fontSize: "12px" },
+          "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
+        }}
+      >
+        <InputLabel>District</InputLabel>
+        <Select
+          value={selectedDistrict}
+          onChange={(e) => setSelectedDistrict(e.target.value)}
+          label="District"
+          sx={{ height: "34px", fontSize: "12px" }}
+        >
+          <MenuItem value="">All</MenuItem>
+          <MenuItem value="Central">Central</MenuItem>
+          <MenuItem value="North">North</MenuItem>
+          <MenuItem value="South">South</MenuItem>
+          <MenuItem value="East">East</MenuItem>
+          <MenuItem value="West">West</MenuItem>
+        </Select>
+      </FormControl>
 
-                {/* City */}
-                <FormControl sx={{ width: "100px" }} size="small">
-                  <InputLabel>City</InputLabel>
-                  <Select
-                    value={selectedCity}
-                    onChange={(e) => setSelectedCity(e.target.value)}
-                    label="City"
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="New York">New York</MenuItem>
-                    <MenuItem value="Brooklyn">Brooklyn</MenuItem>
-                    <MenuItem value="Queens">Queens</MenuItem>
-                    <MenuItem value="Manhattan">Manhattan</MenuItem>
-                    <MenuItem value="Bronx">Bronx</MenuItem>
-                  </Select>
-                </FormControl>
+      {/* City */}
+      <FormControl
+        size="small"
+        sx={{
+          width: "120px",
+          backgroundColor: "#f9f9f9",
+          borderRadius: "6px",
+          "& .MuiOutlinedInput-root": {
+            height: "34px",
+            fontSize: "12px",
+            borderRadius: "6px",
+            "& fieldset": { borderColor: "#d0d0d0" },
+            "&:hover fieldset": { borderColor: "#a1a1a1" },
+            "&.Mui-focused fieldset": { borderColor: "#029898" },
+          },
+          "& .MuiInputLabel-root": { fontSize: "12px" },
+          "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
+        }}
+      >
+        <InputLabel>City</InputLabel>
+        <Select
+          value={selectedCity}
+          onChange={(e) => setSelectedCity(e.target.value)}
+          label="City"
+          sx={{ height: "34px", fontSize: "12px" }}
+        >
+          <MenuItem value="">All</MenuItem>
+          <MenuItem value="New York">New York</MenuItem>
+          <MenuItem value="Brooklyn">Brooklyn</MenuItem>
+          <MenuItem value="Queens">Queens</MenuItem>
+          <MenuItem value="Manhattan">Manhattan</MenuItem>
+          <MenuItem value="Bronx">Bronx</MenuItem>
+        </Select>
+      </FormControl>
 
-                {/* Date */}
-                <FormControl
-                  sx={{ width: "100px", borderRadius: "10px" }}
-                  size="small"
-                >
-                  <InputLabel>Date</InputLabel>
-                  <Select
-                    value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
-                    label="Date"
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="today">Today</MenuItem>
-                    <MenuItem value="yesterday">Yesterday</MenuItem>
-                    <MenuItem value="last-7-days">Last 7 Days</MenuItem>
-                    <MenuItem value="last-30-days">Last 30 Days</MenuItem>
-                  </Select>
-                </FormControl>
+      {/* Date */}
+      <FormControl
+        size="small"
+        sx={{
+          width: "120px",
+          backgroundColor: "#f9f9f9",
+          borderRadius: "6px",
+          "& .MuiOutlinedInput-root": {
+            height: "34px",
+            fontSize: "12px",
+            borderRadius: "6px",
+            "& fieldset": { borderColor: "#d0d0d0" },
+            "&:hover fieldset": { borderColor: "#a1a1a1" },
+            "&.Mui-focused fieldset": { borderColor: "#029898" },
+          },
+          "& .MuiInputLabel-root": { fontSize: "12px" },
+          "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
+        }}
+      >
+        <InputLabel>Date</InputLabel>
+        <Select
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+          label="Date"
+          sx={{ height: "34px", fontSize: "12px" }}
+        >
+          <MenuItem value="">All</MenuItem>
+          <MenuItem value="today">Today</MenuItem>
+          <MenuItem value="yesterday">Yesterday</MenuItem>
+          <MenuItem value="last-7-days">Last 7 Days</MenuItem>
+          <MenuItem value="last-30-days">Last 30 Days</MenuItem>
+        </Select>
+      </FormControl>
 
-                {/* Search */}
-                <TextField
-                  sx={{ width: "200px" }}
-                  size="small"
-                  placeholder="Search tasks..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  InputProps={{
-                    startAdornment: <Search style={{ marginRight: 8 }} />,
-                  }}
-                />
-              </Box>
-            </CardContent>
-          </Card>
+      {/* Search */}
+      <TextField
+        size="small"
+        placeholder="Search tasks..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        sx={{
+          width: "200px",
+          "& .MuiOutlinedInput-root": {
+            height: "34px",
+            bgcolor: "#f9f9f9",
+            borderRadius: "6px",
+            "& fieldset": { borderColor: "#d0d0d0" },
+            "&:hover fieldset": { borderColor: "#a1a1a1" },
+            "&.Mui-focused fieldset": { borderColor: "#029898" },
+            "& input": { padding: "6px 10px", fontSize: "12px" },
+          },
+        }}
+        InputProps={{
+          startAdornment: <Search style={{ marginRight: 8 }} size={16} />,
+        }}
+      />
+    </Box>
+  </CardContent>
+</Card>
 
           {/* --- Table --- */}
-       <Card
+      <Card
   sx={{
     mt: 1,
     ml: 0,
     boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
     borderRadius: "10px",
     bgcolor: "#fff",
-    overflowX: "auto", // ✅ scroll enabled
+    overflowX: "auto",
   }}
 >
   <TableContainer
@@ -268,42 +331,55 @@ export default function ManageEnquiry() {
     sx={{
       borderRadius: "10px",
       minWidth: "1100px",
-      overflowX: "auto", // ✅ horizontal scroll
+      bgcolor: "#fafafa",
+      boxShadow: "none",
+      overflowX: "auto",
+      overflowY: "auto",       // ✅ vertical scrolling
+      maxHeight: "480px",      // ✅ fixed height like second table
+      whiteSpace: "nowrap",
     }}
   >
     <Table
+      stickyHeader                // ✅ header stays fixed
       sx={{
-         "td": {
-          whiteSpace: "nowrap", // ✅ single line only
+        minWidth: "100px",
+        width: "100%",
+        tableLayout: "auto",
+
+        td: {
+          whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
-          fontSize: "0.88rem",
-          padding: "8px 12px", // compact padding
+          fontSize: "12px",
+          padding: "4px 4px",
           textAlign: "center",
+          borderBottom: "1px solid #e0e0e0",
         },
-        "th":{
-            whiteSpace: "nowrap", // ✅ single line only
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          fontSize: "0.88rem",
-          padding: "12px 12px", // compact padding
+
+        th: {
+          whiteSpace: "nowrap",
+          border: "1px solid #e0e0e0",
+          fontSize: "12px",
+          padding: "6px 4px",
           textAlign: "center",
-        }
+          color: "#fff",
+          backgroundColor: "#029898",
+        },
       }}
     >
-      <TableHead sx={{ bgcolor: "#029898" }}>
+      <TableHead>
         <TableRow>
-          <TableCell sx={{ color: "white" }}>S.No</TableCell>
-          <TableCell sx={{ color: "white" }}>Task ID</TableCell>
-          <TableCell sx={{ color: "white" }}>Name</TableCell>
-          <TableCell sx={{ color: "white" }}>Address</TableCell>
-          <TableCell sx={{ color: "white" }}>Email</TableCell>
-          <TableCell sx={{ color: "white" }}>Mobile</TableCell>
-          <TableCell sx={{ color: "white" }}>District</TableCell>
-          <TableCell sx={{ color: "white" }}>City</TableCell>
-          <TableCell sx={{ color: "white" }}>Assign Date</TableCell>
-          <TableCell sx={{ color: "white" }}>Total Sq.Feet</TableCell>
-          <TableCell sx={{ color: "white" }}>Action</TableCell>
+          <TableCell>S.No</TableCell>
+          <TableCell>Task ID</TableCell>
+          <TableCell>Name</TableCell>
+          <TableCell>Address</TableCell>
+          <TableCell>Email</TableCell>
+          <TableCell>Mobile</TableCell>
+          <TableCell>District</TableCell>
+          <TableCell>City</TableCell>
+          <TableCell>Assign Date</TableCell>
+          <TableCell>Total Sq.Feet</TableCell>
+          <TableCell>Action</TableCell>
         </TableRow>
       </TableHead>
 
@@ -329,6 +405,7 @@ export default function ManageEnquiry() {
             <TableCell>{task.city}</TableCell>
             <TableCell>{task.assignDate}</TableCell>
             <TableCell>{task.totalSqFeet.toLocaleString()}</TableCell>
+
             <TableCell>
               <IconButton
                 onClick={(e) => {
@@ -350,6 +427,7 @@ export default function ManageEnquiry() {
     </Table>
   </TableContainer>
 </Card>
+
 
           {/* --- Task Details Dialog --- */}
           <Dialog
@@ -620,3 +698,4 @@ export default function ManageEnquiry() {
     </>
   );
 }
+  

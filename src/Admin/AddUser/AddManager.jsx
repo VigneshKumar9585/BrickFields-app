@@ -1,5 +1,5 @@
 // src/pages/Dashboard.js
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../../componts/AdminNavbar";
 import {
   Box,
@@ -12,25 +12,40 @@ import {
   MenuItem,
   IconButton,
 } from "@mui/material";
-import { Edit, Close } from "@mui/icons-material";
+import {
+  Edit,
+  Close,
+  CloudUpload as CloudUploadIcon,
+  Person as PersonIcon,
+  Email as EmailIcon,
+  Phone as PhoneIcon,
+  LocationOn as LocationOnIcon,
+  HomeWork as HomeWorkIcon,
+  MapsHomeWork as MapsHomeWorkIcon,
+  PushPin as PushPinIcon,
+  MyLocation as MyLocationIcon,
+  Instagram as InstagramIcon,
+  YouTube as YouTubeIcon,
+  LinkedIn as LinkedInIcon,
+} from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
 import logo from "../../assets/logo/logo.webp";
 
 function Dashboard() {
-  // ✅ Detect Edit Mode (from ManageEnquiry navigation)
   const location = useLocation();
   const taskData = location.state?.task;
   const isEditMode = !!taskData;
 
   const personalFields = [
-    "Name",
-    "Mobile No",
-    "Email ID",
-    "Address",
-    "Country",
-    "State",
-    "Region",
-    "District",
+    { label: "Name", icon: <PersonIcon sx={{ color: "#029898" }} /> },
+    { label: "Mobile No", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
+    { label: "Email ID", icon: <EmailIcon sx={{ color: "#029898" }} /> },
+    { label: "Address", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
+    { label: "Country", icon: <MapsHomeWorkIcon sx={{ color: "#029898" }} /> },
+    { label: "State", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
+    { label: "City", icon: <MyLocationIcon sx={{ color: "#029898" }} /> },
+    { label: "Region", icon: <PushPinIcon sx={{ color: "#029898" }} /> },
+    { label: "District", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
   ];
 
   const documentFields = [
@@ -40,19 +55,52 @@ function Dashboard() {
     "Experience Certificate",
   ];
 
-  const socialFields = ["Instagram", "Youtube", "Linkedin"];
+  const socialFields = [
+    { label: "Instagram", icon: <InstagramIcon sx={{ color: "#029898" }} /> },
+    { label: "Youtube", icon: <YouTubeIcon sx={{ color: "#029898" }} /> },
+    { label: "Linkedin", icon: <LinkedInIcon sx={{ color: "#029898" }} /> },
+  ];
+
+  const [uploadedDocs, setUploadedDocs] = useState({});
+
+  const handleFileSelect = (field, event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const fileUrl = URL.createObjectURL(file);
+
+    setUploadedDocs((prev) => ({
+      ...prev,
+      [field]: fileUrl,
+    }));
+  };
 
   const getTextFieldSx = (field, width = "170px") => ({
-    width: field === "Address" ? "320px" : width,
+    width: field === "Address" ? "353px" : width,
     "& .MuiOutlinedInput-root": {
-      height: "30px",
-      bgcolor: "#e0e0e0",
-      borderRadius: "4px",
-      "& input": {
-        padding: "4px 8px",
-        fontSize: "12px",
+      backgroundColor: "#f9fbfb",
+      borderRadius: "8px",
+      height: "32px",
+      transition: "all 0.2s ease",
+      "& fieldset": {
+        borderColor: "#e0e0e0",
       },
-      "& fieldset": { border: "none" },
+      "&:hover fieldset": {
+        borderColor: "#b2e0e0",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#029898",
+        borderWidth: "1px",
+      },
+      "&.Mui-focused": {
+        backgroundColor: "#fff",
+        boxShadow: "0 4px 12px rgba(2,152,152,0.15)",
+      },
+    },
+    "& .MuiOutlinedInput-input": {
+      fontSize: "14px",
+      padding: "10px 14px",
+      color: "#2d3748",
     },
   });
 
@@ -66,8 +114,8 @@ function Dashboard() {
           minHeight: "100%",
         }}
       >
-        {/* Sidebar spacing */}
-        <Box sx={{ width: "280px" }} />
+        {/* Sidebar */}
+        <Box sx={{ width: "280px", flexShrink: 0 }} />
 
         {/* Main Content */}
         <Box sx={{ flexGrow: 1 }}>
@@ -82,13 +130,12 @@ function Dashboard() {
             </Typography>
           </Box>
 
-          {/* Container */}
-          <Box sx={{ width: "100%", maxWidth: "1190px" }}>
-            {/* Personal Data Section */}
-            <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none" }}>
+          {/* Main Box */}
+          <Box sx={{ width: "100%", maxWidth: "1050px" }}>
+            {/* ------------------------------- PERSONAL DATA ------------------------------- */}
+            <Card sx={{ bgcolor: "#F0F6F6", boxShadow: "none",  }}>
               <CardContent sx={{ p: 3 }}>
                 <Typography
-                  variant="h6"
                   sx={{
                     fontWeight: 600,
                     fontSize: "14px",
@@ -100,12 +147,10 @@ function Dashboard() {
                 </Typography>
 
                 <Box sx={{ display: "flex", gap: 4 }}>
-                  {/* Left side - Fields */}
                   <Grid container spacing={2} sx={{ flex: 1 }}>
-                    {personalFields.map((field, i) => (
+                    {personalFields.map((fieldObj, i) => (
                       <Grid item xs={12} sm={6} md={3} key={i}>
                         <Typography
-                          variant="body2"
                           sx={{
                             mb: 1,
                             color: "#000",
@@ -113,33 +158,43 @@ function Dashboard() {
                             fontWeight: 500,
                           }}
                         >
-                          {field}
+                          {fieldObj.label}
                         </Typography>
+
                         {["Country", "State", "Region", "District"].includes(
-                          field
+                          fieldObj.label
                         ) ? (
                           <TextField
-                            select
-                            variant="outlined"
                             size="small"
-                            sx={getTextFieldSx(field)}
-                            defaultValue={taskData ? taskData[field] || "" : ""}
+                            sx={getTextFieldSx(fieldObj.label)}
+                            InputProps={{
+                              startAdornment: (
+                                <Box sx={{ mr: 1, display: "flex" }}>
+                                  {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
+                                </Box>
+                              ),
+                            }}
                           >
-                            <MenuItem value="">Select {field}</MenuItem>
+                            {/* <MenuItem value="">Select {fieldObj.label}</MenuItem> */}
                           </TextField>
                         ) : (
                           <TextField
-                            variant="outlined"
                             size="small"
-                            sx={getTextFieldSx(field)}
-                            defaultValue={taskData ? taskData[field] || "" : ""}
+                            sx={getTextFieldSx(fieldObj.label)}
+                            InputProps={{
+                              startAdornment: (
+                                <Box sx={{ mr: 1, display: "flex" }}>
+                                  {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
+                                </Box>
+                              ),
+                            }}
                           />
                         )}
                       </Grid>
                     ))}
                   </Grid>
 
-                  {/* Right side - Profile image & Add */}
+                  {/* Profile Right Side */}
                   <Box
                     display="flex"
                     flexDirection="column"
@@ -150,7 +205,6 @@ function Dashboard() {
                     <Box
                       component="img"
                       src={logo}
-                      alt="profile"
                       sx={{ width: 100, height: 100, borderRadius: "50%" }}
                     />
 
@@ -163,11 +217,10 @@ function Dashboard() {
               </CardContent>
             </Card>
 
-            {/* Document Data Section */}
-            <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none" }}>
+            {/* ------------------------------- DOCUMENT UPLOAD ------------------------------- */}
+            <Card sx={{ bgcolor: "#F0F6F6", boxShadow: "none" }}>
               <CardContent sx={{ p: 3 }}>
                 <Typography
-                  variant="h6"
                   sx={{
                     fontWeight: 600,
                     fontSize: "14px",
@@ -177,44 +230,112 @@ function Dashboard() {
                 >
                   Document Data
                 </Typography>
+
                 <Grid container spacing={2}>
                   {documentFields.map((field, i) => (
                     <Grid item xs={12} sm={6} md={3} key={i}>
                       <Typography
-                        variant="body2"
                         sx={{
                           mb: 1,
-                          color: "#222222ff",
+                          color: "#222",
                           fontSize: "12px",
                           fontWeight: 500,
                         }}
                       >
                         {field}
                       </Typography>
+
+                      {/* Hidden File Input */}
+                      <input
+                        type="file"
+                        id={`upload-${field}`}
+                        style={{ display: "none" }}
+                        onChange={(event) => handleFileSelect(field, event)}
+                      />
+
+                      {/* Upload Button with Icon */}
                       <Button
                         sx={{
+                          width: "210px",
+                          height: "32px",
                           textTransform: "none",
                           fontSize: "12px",
-                          width: "200px",
-                          color: "#000",
-                          bgcolor: "#e0e0e0",
-                          "&:hover": { bgcolor: "#d5d5d5" },
-                          height: 30,
+                          color: "#2d3748",
+                          backgroundColor: "#f9fbfb",
+                          borderRadius: "8px",
+                          border: "1px solid #e0e0e0",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          "&:hover": {
+                            backgroundColor: "#fff",
+                            borderColor: "#b2e0e0",
+                            boxShadow: "0 4px 12px rgba(2,152,152,0.15)",
+                          },
                         }}
+                        onClick={() =>
+                          document.getElementById(`upload-${field}`).click()
+                        }
                       >
-                        Upload
+                        <CloudUploadIcon sx={{ fontSize: 20, color: "#029898" }} />
                       </Button>
+
+                      {/* Preview below button */}
+                     {uploadedDocs[field] && (
+  <Box
+    mt={1}
+    sx={{ position: "relative", display: "inline-block" }}
+  >
+    {/* Delete Icon */}
+    <IconButton
+      size="small"
+      onClick={() => {
+        setUploadedDocs((prev) => {
+          const newDocs = { ...prev };
+          delete newDocs[field];
+          return newDocs;
+        });
+      }}
+      sx={{
+        position: "absolute",
+        top: -8,
+        right: -8,
+        bgcolor: "rgba(0,0,0,0.6)",
+        color: "#fff",
+        "&:hover": { bgcolor: "rgba(0,0,0,0.8)" },
+        width: 20,
+        height: 20,
+        padding: 0,
+      }}
+    >
+      <Close sx={{ fontSize: 14 }} />
+    </IconButton>
+
+    {/* Preview Image */}
+    <img
+      src={uploadedDocs[field]}
+      alt="preview"
+      style={{
+        width: "80px",
+        height: "80px",
+        objectFit: "cover",
+        borderRadius: "4px",
+        border: "1px solid #ccc",
+      }}
+    />
+  </Box>
+)}
+
                     </Grid>
                   ))}
                 </Grid>
               </CardContent>
             </Card>
 
-            {/* Social Media Section */}
-            <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none", mb: 2 }}>
+            {/* ------------------------------- SOCIAL MEDIA ------------------------------- */}
+            <Card sx={{ bgcolor: "#F0F6F6", boxShadow: "none", mb: 2 }}>
               <CardContent sx={{ p: 3 }}>
                 <Typography
-                  variant="h6"
                   sx={{
                     fontWeight: 600,
                     fontSize: "14px",
@@ -224,11 +345,11 @@ function Dashboard() {
                 >
                   Social Media Platforms
                 </Typography>
+
                 <Grid container spacing={2}>
-                  {socialFields.map((field, i) => (
+                  {socialFields.map((fieldObj, i) => (
                     <Grid item xs={12} sm={6} md={4} key={i}>
                       <Typography
-                        variant="body2"
                         sx={{
                           mb: 1,
                           color: "#000",
@@ -236,30 +357,39 @@ function Dashboard() {
                           fontWeight: 500,
                         }}
                       >
-                        {field}
+                        {fieldObj.label}
                       </Typography>
+
                       <TextField
                         fullWidth
-                        variant="outlined"
                         size="small"
                         sx={{
+                          
                           "& .MuiOutlinedInput-root": {
-                            height: "30px",
-                            bgcolor: "#e0e0e0",
-                            borderRadius: "4px",
-                            "& input": {
-                              padding: "4px 8px",
-                              fontSize: "12px",
+                            backgroundColor: "#f9fbfb",
+                            borderRadius: "8px",
+                            height: "32px",
+                            transition: "all 0.2s ease",
+                            "& fieldset": { borderColor: "#e0e0e0" },
+                            "&:hover fieldset": { borderColor: "#b2e0e0" },
+                            "&.Mui-focused fieldset": { borderColor: "#029898", borderWidth: "1px" },
+                            "&.Mui-focused": {
+                              backgroundColor: "#fff",
+                              boxShadow: "0 4px 12px rgba(2,152,152,0.15)",
                             },
-                            "& fieldset": { border: "none" },
                           },
                         }}
                         InputProps={{
-                          endAdornment: (
-                            <IconButton size="small">
-                              <Close sx={{ fontSize: 16, color: "#000" }} />
-                            </IconButton>
+                          startAdornment: (
+                            <Box sx={{ mr: 1, display: "flex" }}>
+                              {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
+                            </Box>
                           ),
+                          // endAdornment: (
+                          //   <IconButton size="small">
+                          //     <Close sx={{ fontSize: 16, color: "#000" }} />
+                          //   </IconButton>
+                          // ),
                         }}
                       />
                     </Grid>
@@ -268,7 +398,7 @@ function Dashboard() {
               </CardContent>
             </Card>
 
-            {/* Bottom Buttons */}
+            {/* ------------------------------- BOTTOM BUTTONS ------------------------------- */}
             <Box
               sx={{
                 display: "flex",
@@ -292,6 +422,7 @@ function Dashboard() {
               >
                 Clear
               </Button>
+
               <Button
                 variant="contained"
                 sx={{

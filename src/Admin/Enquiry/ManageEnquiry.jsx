@@ -39,6 +39,9 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Small helper to keep TextField styles consistent (matches NewEnquiry look)
+ */
 const getTextFieldSx = (field, width = "170px") => ({
   "& .MuiOutlinedInput-root": {
     height: "30px",
@@ -52,6 +55,9 @@ const getTextFieldSx = (field, width = "170px") => ({
   },
 });
 
+/**
+ * Sample data (your real app will fetch from API; this file preserves ManageEnquiry logic)
+ */
 const sampleTasks = [
   {
     id: "TSK001",
@@ -128,9 +134,10 @@ export default function ManageEnquiry() {
 
   const handleTabChange = (_, newValue) => setActiveTab(newValue);
 
+  // Pagination / data (keeps original ManageEnquiry behavior with sampleTasks)
   const itemsPerPage = 10;
   const totalItems = sampleTasks.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
   const currentItems = sampleTasks.slice(startIndex, endIndex);
@@ -144,9 +151,13 @@ export default function ManageEnquiry() {
     <>
       <Navbar />
 
-      <Box minHeight="100vh" bgcolor="#fff" display="flex" gap={3}>
+      {/* Page container — matches spacing & sidebar from NewEnquiry */}
+      <Box minHeight="100vh" bgcolor="#fff" display="flex" gap={3} ml={14}>
+        {/* Sidebar spacer to keep alignment consistent with NewEnquiry */}
         <Box sx={{ width: "250px", height: "100px" }} />
-        <Box sx={{ m: 0, p: 0 }}>
+
+        {/* Main content area — full width with parent horizontal scroll enabled */}
+        <Box sx={{ flexGrow: 1, m: 0, p: 0, pr: 3, overflowX: "auto" }}>
           <Typography
             color="rgb(0,0,0)"
             sx={{ fontSize: { xs: "20px", md: "24px" }, fontWeight: "500" }}
@@ -154,7 +165,7 @@ export default function ManageEnquiry() {
             Managing Tasks Details
           </Typography>
 
-          {/* Filter Bar */}
+          {/* ---- FILTER CARD (styled like NewEnquiry) ---- */}
           <Card elevation={0} sx={{ display: "flex", height: "60px", mt: 1 }}>
             <CardContent
               sx={{
@@ -167,12 +178,30 @@ export default function ManageEnquiry() {
               }}
             >
               <Box display="flex" gap={2} alignItems="center">
-                <FormControl sx={{ width: "120px" }} size="small">
+                <FormControl
+                  size="small"
+                  sx={{
+                    width: "120px",
+                    backgroundColor: "#f9f9f9",
+                    borderRadius: "6px",
+                    "& .MuiOutlinedInput-root": {
+                      height: "34px",
+                      fontSize: "12px",
+                      borderRadius: "6px",
+                      "& fieldset": { borderColor: "#d0d0d0" },
+                      "&:hover fieldset": { borderColor: "#a1a1a1" },
+                      "&.Mui-focused fieldset": { borderColor: "#029898" },
+                    },
+                    "& .MuiInputLabel-root": { fontSize: "12px" },
+                    "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
+                  }}
+                >
                   <InputLabel>LSP</InputLabel>
                   <Select
                     value={selectedLSP}
                     onChange={(e) => setSelectedLSP(e.target.value)}
                     label="LSP"
+                    sx={{ height: "34px", fontSize: "12px" }}
                   >
                     <MenuItem value="">All</MenuItem>
                     <MenuItem value="LSP-101">LSP-101</MenuItem>
@@ -180,12 +209,30 @@ export default function ManageEnquiry() {
                   </Select>
                 </FormControl>
 
-                <FormControl sx={{ width: "120px" }} size="small">
+                <FormControl
+                  size="small"
+                  sx={{
+                    width: "120px",
+                    backgroundColor: "#f9f9f9",
+                    borderRadius: "6px",
+                    "& .MuiOutlinedInput-root": {
+                      height: "34px",
+                      fontSize: "12px",
+                      borderRadius: "6px",
+                      "& fieldset": { borderColor: "#d0d0d0" },
+                      "&:hover fieldset": { borderColor: "#a1a1a1" },
+                      "&.Mui-focused fieldset": { borderColor: "#029898" },
+                    },
+                    "& .MuiInputLabel-root": { fontSize: "12px" },
+                    "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
+                  }}
+                >
                   <InputLabel>Status</InputLabel>
                   <Select
                     value={selectedStatus}
                     onChange={(e) => setSelectedStatus(e.target.value)}
                     label="Status"
+                    sx={{ height: "34px", fontSize: "12px" }}
                   >
                     <MenuItem value="">All</MenuItem>
                     <MenuItem value="Open">Open</MenuItem>
@@ -193,12 +240,30 @@ export default function ManageEnquiry() {
                   </Select>
                 </FormControl>
 
-                <FormControl sx={{ width: "120px" }} size="small">
+                <FormControl
+                  size="small"
+                  sx={{
+                    width: "120px",
+                    backgroundColor: "#f9f9f9",
+                    borderRadius: "6px",
+                    "& .MuiOutlinedInput-root": {
+                      height: "34px",
+                      fontSize: "12px",
+                      borderRadius: "6px",
+                      "& fieldset": { borderColor: "#d0d0d0" },
+                      "&:hover fieldset": { borderColor: "#a1a1a1" },
+                      "&.Mui-focused fieldset": { borderColor: "#029898" },
+                    },
+                    "& .MuiInputLabel-root": { fontSize: "12px" },
+                    "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
+                  }}
+                >
                   <InputLabel>City</InputLabel>
                   <Select
                     value={selectedCity}
                     onChange={(e) => setSelectedCity(e.target.value)}
                     label="City"
+                    sx={{ height: "34px", fontSize: "12px" }}
                   >
                     <MenuItem value="">All</MenuItem>
                     <MenuItem value="New York">New York</MenuItem>
@@ -206,12 +271,30 @@ export default function ManageEnquiry() {
                   </Select>
                 </FormControl>
 
-                <FormControl sx={{ width: "120px" }} size="small">
+                <FormControl
+                  size="small"
+                  sx={{
+                    width: "120px",
+                    backgroundColor: "#f9f9f9",
+                    borderRadius: "6px",
+                    "& .MuiOutlinedInput-root": {
+                      height: "34px",
+                      fontSize: "12px",
+                      borderRadius: "6px",
+                      "& fieldset": { borderColor: "#d0d0d0" },
+                      "&:hover fieldset": { borderColor: "#a1a1a1" },
+                      "&.Mui-focused fieldset": { borderColor: "#029898" },
+                    },
+                    "& .MuiInputLabel-root": { fontSize: "12px" },
+                    "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
+                  }}
+                >
                   <InputLabel>Date</InputLabel>
                   <Select
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
                     label="Date"
+                    sx={{ height: "34px", fontSize: "12px" }}
                   >
                     <MenuItem value="">All</MenuItem>
                     <MenuItem value="today">Today</MenuItem>
@@ -220,180 +303,192 @@ export default function ManageEnquiry() {
                   </Select>
                 </FormControl>
 
-                {/* Search field updated */}
+                {/* Search field — styled to match NewEnquiry */}
                 <TextField
-                  sx={getTextFieldSx("Search", "200px")}
+                  sx={{
+                    width: "200px",
+                    "& .MuiOutlinedInput-root": {
+                      height: "34px",
+                      bgcolor: "#f9f9f9",
+                      borderRadius: "6px",
+                      "& fieldset": { borderColor: "#d0d0d0" },
+                      "&:hover fieldset": { borderColor: "#a1a1a1" },
+                      "&.Mui-focused fieldset": { borderColor: "#029898" },
+                      "& input": { padding: "6px 10px", fontSize: "12px" },
+                    },
+                  }}
                   size="small"
                   placeholder="Search..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   InputProps={{
-                    startAdornment: (
-                      <Search style={{ marginRight: 8 }} size={18} />
-                    ),
+                    startAdornment: <Search style={{ marginRight: 8 }} size={16} />,
                   }}
                 />
               </Box>
             </CardContent>
           </Card>
 
-          <Card
-            sx={{
-              boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.08)",
-              bgcolor: "#fff",
-              borderRadius: "10px",
+          {/* ---- TABLE ---- */}
+       <Card
+      sx={{
+        boxShadow: "0px 2px 8px rgba(0,0,0,0.08)",
+        bgcolor: "#fff",
+        width: "100%",
+      }}
+    >
+      <TableContainer
+        component={Paper}
+        sx={{
+          bgcolor: "#fafafa",
+          boxShadow: "none",
+          width: "100%",
+          overflowX: "auto",
+          overflowY: "hidden",
+          whiteSpace: "nowrap",
+        }}
+      >
+        <Table
+          sx={{
+            minWidth: 2000,
+            tableLayout: "auto",
+            width: "100%",
+            td: {
+              whiteSpace: "nowrap",
               overflow: "hidden",
-              width: "1180px",
-            }}
-          >
-            <TableContainer
-              component={Paper}
-              sx={{
-                borderRadius: "10px",
-                overflowX: "auto",
-                whiteSpace: "nowrap",
-                bgcolor: "#fafafa",
-                boxShadow: "none",
-              }}
-            >
-              <Table
-                sx={{
-                  td: {
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    fontSize: "0.88rem",
-                    padding: "8px 12px",
-                    textAlign: "center",
-                  },
-                  th: {
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    fontSize: "0.88rem",
-                    padding: "12px 12px",
-                    textAlign: "center",
-                    color: "#fff",
-                  },
-                }}
-              >
-                <TableHead>
-                  <TableRow sx={{ bgcolor: "#029898" }}>
-                    {[
-                      "S.No",
-                      "Task Id",
-                      "Name",
-                      "Address",
-                      "Mobile",
-                      "Service",
-                      "Enquiry Date",
-                      "Verified Date",
-                      "Payment",
-                      "Assigned Manager",
-                      "LSP",
-                      "Status",
-                      "Action",
-                    ].map((head) => (
-                      <TableCell key={head}>{head}</TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
+              textOverflow: "ellipsis",
+              fontSize: "12px",
+              padding: "4px 4px",
+              textAlign: "center",
+            },
+            th: {
+              whiteSpace: "nowrap",
+              border: "1px solid #e0e0e0",
+              fontSize: "12px",
+              padding: "6px 4px",
+              textAlign: "center",
+              color: "#fff",
+            },
+          }}
+        >
+          <TableHead>
+            <TableRow sx={{ bgcolor: "#029898" }}>
+              {[
+                "S.No",
+                "Task Id",
+                "Name",
+                "Address",
+                "Mobile",
+                "Service",
+                "Enquiry Date",
+                "Verified Date",
+                "Payment",
+                "Assigned Manager",
+                "LSP",
+                "Status",
+                "Action",
+              ].map((head) => (
+                <TableCell key={head}>{head}</TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
 
-                <TableBody>
-                  {currentItems.map((task, idx) => (
-                    <TableRow key={task.id}>
-                      <TableCell>{startIndex + idx + 1}</TableCell>
-                      <TableCell>{task.id}</TableCell>
-                      <TableCell>{task.name}</TableCell>
-                      <TableCell align="left">{task.address}</TableCell>
-                      <TableCell>{task.email}</TableCell>
-                      <TableCell>{task.preferDate}</TableCell>
-                      <TableCell>{task.preferTime}</TableCell>
-                      <TableCell>{task.assignedLSP}</TableCell>
-                      <TableCell>{task.lspAssignDate}</TableCell>
-                      <TableCell>{task.city}</TableCell>
-                      <TableCell>{task.technicians}</TableCell>
-                      <TableCell>
-                        <Chip
-                          label={task.status}
-                          size="small"
-                          sx={{
-                            fontWeight: 500,
-                            color:
-                              task.status === "Open" ? "#0F5132" : "#0C5460",
-                            bgcolor:
-                              task.status === "Open" ? "#D1E7DD" : "#D1ECF1",
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Box display="flex" justifyContent="center" gap={0.5}>
-                          <IconButton onClick={() => handleOpenDialog(task)}>
-                            <Eye size={18} />
-                          </IconButton>
-                          <IconButton onClick={() => handleEditClick(task)}>
-                            <Pencil size={18} />
-                          </IconButton>
-                          <IconButton
-                            onClick={() => handleOpenDeleteDialog(task)}
-                          >
-                            <Trash2 size={18} />
-                          </IconButton>
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Card>
+          <TableBody>
+            {currentItems.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={13} style={{ textAlign: "center", padding: "20px" }}>
+                  No tasks found
+                </TableCell>
+              </TableRow>
+            ) : (
+              currentItems.map((task, idx) => (
+                <TableRow
+                  key={task.id}
+                  sx={{
+                    cursor: "pointer",
+                    "&:hover": { bgcolor: "#f5f5f5" },
+                  }}
+                  onClick={() => handleOpenDialog(task)}
+                >
+                  <TableCell>{startIndex + idx + 1}</TableCell>
+                  <TableCell>{task.id}</TableCell>
+                  <TableCell>{task.name}</TableCell>
+                  <TableCell align="left">{task.address}</TableCell>
+                  <TableCell>{task.email}</TableCell>
+                  <TableCell>{task.preferDate}</TableCell>
+                  <TableCell>{task.preferTime}</TableCell>
+                  <TableCell>{task.assignedLSP}</TableCell>
+                  <TableCell>{task.lspAssignDate}</TableCell>
+                  <TableCell>{task.city}</TableCell>
+                  <TableCell>{task.technicians}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={task.status}
+                      size="small"
+                      sx={{
+                        fontWeight: 500,
+                        color: task.status === "Open" ? "#0F5132" : "#0C5460",
+                        bgcolor: task.status === "Open" ? "#D1E7DD" : "#D1ECF1",
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Box display="flex" justifyContent="center" gap={0.5}>
+                      <IconButton onClick={(e) => { e.stopPropagation(); handleOpenDialog(task); }}>
+                        <Eye size={18} />
+                      </IconButton>
+                      <IconButton onClick={(e) => { e.stopPropagation(); handleEditClick(task); }}>
+                        <Pencil size={18} />
+                      </IconButton>
+                      <IconButton onClick={(e) => { e.stopPropagation(); handleOpenDeleteDialog(task); }}>
+                        <Trash2 size={18} />
+                      </IconButton>
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Card>
 
-          {/* Pagination */}
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mt={2}
-          >
+          {/* ---- PAGINATION ---- */}
+          <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
             <Typography variant="body2">
-              Showing {startIndex + 1} to {endIndex} of {totalItems} results
+              Showing {totalItems === 0 ? 0 : startIndex + 1} to {endIndex} of {totalItems} results
             </Typography>
+
             <Box display="flex" gap={1} alignItems="center">
-              <Button
-                onClick={handlePreviousPage}
-                disabled={currentPage === 1}
-              >
-                <ChevronLeft size={16} /> Previous
+              <Button variant="outlined" onClick={handlePreviousPage} disabled={currentPage === 1}>
+                <ChevronLeft /> Previous
               </Button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
-                  <Button
-                    key={page}
-                    variant={currentPage === page ? "contained" : "text"}
-                    onClick={() => setCurrentPage(page)}
-                    sx={{
-                      minWidth: "36px",
-                      color: currentPage === page ? "white" : "#029898",
-                      bgcolor:
-                        currentPage === page ? "#029898" : "transparent",
-                    }}
-                  >
-                    {page}
-                  </Button>
-                )
-              )}
-              <Button
-                onClick={handleNextPage}
-                disabled={currentPage === totalPages}
-              >
-                Next <ChevronRight size={16} />
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <Button
+                  key={page}
+                  variant={currentPage === page ? "contained" : "text"}
+                  onClick={() => setCurrentPage(page)}
+                  sx={{
+                    minWidth: "36px",
+                    mx: 0.5,
+                    color: currentPage === page ? "white" : "#029898",
+                    bgcolor: currentPage === page ? "#029898" : "transparent",
+                  }}
+                >
+                  {page}
+                </Button>
+              ))}
+
+              <Button variant="outlined" onClick={handleNextPage} disabled={currentPage === totalPages}>
+                Next <ChevronRight />
               </Button>
             </Box>
           </Box>
         </Box>
       </Box>
 
-      {/* View Popup */}
+      {/* ---- VIEW DIALOG (styled like NewEnquiry) ---- */}
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}
@@ -434,11 +529,7 @@ export default function ManageEnquiry() {
 
           <Box display="flex" alignItems="center" gap={1}>
             <Edit3 size={18} />
-            <Typography
-              sx={{ textDecoration: "underline", cursor: "pointer" }}
-            >
-              Edit
-            </Typography>
+            <Typography sx={{ textDecoration: "underline", cursor: "pointer" }}>Edit</Typography>
             <IconButton onClick={handleCloseDialog}>
               <X color="#ffffffff" />
             </IconButton>
@@ -452,12 +543,8 @@ export default function ManageEnquiry() {
               <Typography fontWeight="600" mb={1}>
                 Visitor Details
               </Typography>
-              <Box
-                display="grid"
-                gridTemplateColumns="repeat(6, 1fr)"
-                gap={2}
-                mb={2}
-              >
+
+              <Box display="grid" gridTemplateColumns="repeat(6, 1fr)" gap={2} mb={2}>
                 {[
                   "Enquiry ID",
                   "Name",
@@ -472,13 +559,7 @@ export default function ManageEnquiry() {
                   "Total Sq. Feet",
                   "Enquired Date",
                 ].map((label) => (
-                  <TextField
-                    key={label}
-                    label={label}
-                    size="small"
-                    fullWidth
-                    sx={getTextFieldSx(label)}
-                  />
+                  <TextField key={label} label={label} size="small" fullWidth sx={getTextFieldSx(label)} />
                 ))}
               </Box>
 
@@ -487,11 +568,8 @@ export default function ManageEnquiry() {
               <Typography fontWeight="600" mb={1}>
                 Conversion Details
               </Typography>
-              <Box
-                display="grid"
-                gridTemplateColumns="repeat(5, 1fr)"
-                gap={2}
-              >
+
+              <Box display="grid" gridTemplateColumns="repeat(5, 1fr)" gap={2}>
                 {[
                   "Task ID",
                   "Bg Verification Date",
@@ -501,13 +579,7 @@ export default function ManageEnquiry() {
                   "Preferred Time",
                   "Remarks",
                 ].map((label) => (
-                  <TextField
-                    key={label}
-                    label={label}
-                    size="small"
-                    fullWidth
-                    sx={getTextFieldSx(label)}
-                  />
+                  <TextField key={label} label={label} size="small" fullWidth sx={getTextFieldSx(label)} />
                 ))}
               </Box>
             </>
@@ -515,14 +587,7 @@ export default function ManageEnquiry() {
 
           {/* Payment Tab */}
           {activeTab === 1 && (
-            <TableContainer
-              component={Paper}
-              sx={{
-                mt: 2,
-                boxShadow: "0px 2px 6px rgba(0,0,0,0.1)",
-                borderRadius: "10px",
-              }}
-            >
+            <TableContainer component={Paper} sx={{ mt: 2, boxShadow: "0px 2px 6px rgba(0,0,0,0.1)", borderRadius: "10px" }}>
               <Table>
                 <TableHead sx={{ bgcolor: "#029898" }}>
                   <TableRow>
@@ -539,14 +604,7 @@ export default function ManageEnquiry() {
                       "Evidence",
                       "Action",
                     ].map((head) => (
-                      <TableCell
-                        key={head}
-                        sx={{
-                          color: "#fff",
-                          fontWeight: "600",
-                          textAlign: "center",
-                        }}
-                      >
+                      <TableCell key={head} sx={{ color: "#fff", fontWeight: "600", textAlign: "center" }}>
                         {head}
                       </TableCell>
                     ))}
@@ -582,30 +640,20 @@ export default function ManageEnquiry() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete Popup */}
-      <Dialog
-        open={openDeleteDialog}
-        onClose={handleCloseDeleteDialog}
-        PaperProps={{ sx: { borderRadius: "18px" } }}
-      >
+      {/* ---- DELETE DIALOG ---- */}
+      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog} PaperProps={{ sx: { borderRadius: "18px" } }}>
         <Box p={3} textAlign="center">
           <Trash2 size={40} />
           <Typography variant="h6" mt={2}>
             Delete Data
           </Typography>
-          <Typography>
-            Are you sure you want to delete this information?
-          </Typography>
+          <Typography>Are you sure you want to delete this information?</Typography>
           <Divider sx={{ my: 2 }} />
           <Box display="flex" justifyContent="center" gap={2}>
             <Button variant="outlined" onClick={handleCloseDeleteDialog}>
               Cancel
             </Button>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={handleConfirmDelete}
-            >
+            <Button variant="contained" color="error" onClick={handleConfirmDelete}>
               Delete
             </Button>
           </Box>

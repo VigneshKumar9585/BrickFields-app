@@ -58,6 +58,23 @@ export default function ManageEnquiry() {
         "Degree Certificate",
         "Experience Certificate",
       ],
+    }, {
+      _id: "1",
+      companyName: "TechVision Pvt Ltd",
+      businessType: "Software",
+      phone: "9876543210",
+      email: "info@techvision.com",
+      pointOfContact: "Rahul Mehta",
+      pointOfContactMobile: "9988776655",
+      district: "Bangalore Urban",
+      city: "Bangalore",
+      serviceableCities: ["Mysore", "Mangalore"],
+      status: "Open",
+      documents: [
+        "Aadhaar Card",
+        "Degree Certificate",
+        "Experience Certificate",
+      ],
     },
   ]);
 
@@ -131,189 +148,313 @@ export default function ManageEnquiry() {
           </Typography>
 
           {/* Filter Bar */}
-          <Card
-            elevation={0}
-            sx={{ display: "flex", height: "60px", mt: 1, boxShadow: "none" }}
-          >
-            <CardContent
-              sx={{
-                width: "1195px",
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-                p: 0,
-                "&:last-child": { pb: 0 },
-              }}
-            >
-              <Box display="flex" gap={2} alignItems="center">
-                <FormControl sx={{ width: "120px" }} size="small">
-                  <InputLabel>
-                    {selectedStaff ? selectedStaff : "Select Role"}
-                  </InputLabel>
-                  <Select
-                    value={selectedStaff}
-                    onChange={(e) => setSelectedStaff(e.target.value)}
-                    label={selectedStaff ? selectedStaff : "Select Role"}
-                  >
-                    <MenuItem value="Staff">Staff</MenuItem>
-                    <MenuItem value="Manager">Manager</MenuItem>
-                  </Select>
-                </FormControl>
+         <Card
+  elevation={0}
+  sx={{ display: "flex", height: "60px", mt: 1 }}
+>
+  <CardContent
+    sx={{
+      width: "1195px",
+      display: "flex",
+      justifyContent: "flex-end",
+      alignItems: "center",
+      p: 0,
+      "&:last-child": { pb: 0 },
+    }}
+  >
+    <Box display="flex" gap={2} alignItems="center">
 
-                <FormControl sx={{ width: "120px" }} size="small">
-                  <InputLabel>Country</InputLabel>
-                  <Select
-                    value={selectedStatus}
-                    onChange={(e) => setSelectedStatus(e.target.value)}
-                    label="Status"
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="Open">Open</MenuItem>
-                    <MenuItem value="Closed">Closed</MenuItem>
-                  </Select>
-                </FormControl>
+      {/* Role Select */}
+      <FormControl
+        size="small"
+        sx={{
+          width: "120px",
+          backgroundColor: "#f9f9f9",
+          borderRadius: "6px",
+          "& .MuiOutlinedInput-root": {
+            height: "34px",
+            fontSize: "12px",
+            borderRadius: "6px",
+            "& fieldset": { borderColor: "#d0d0d0" },
+            "&:hover fieldset": { borderColor: "#a1a1a1" },
+            "&.Mui-focused fieldset": { borderColor: "#029898" },
+          },
+          "& .MuiInputLabel-root": { fontSize: "12px" },
+          "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
+        }}
+      >
+        <InputLabel>{selectedStaff ? selectedStaff : "Select Role"}</InputLabel>
+        <Select
+          value={selectedStaff}
+          onChange={(e) => setSelectedStaff(e.target.value)}
+          label={selectedStaff ? selectedStaff : "Select Role"}
+          sx={{ height: "34px", fontSize: "12px" }}
+        >
+          <MenuItem value="Staff">Staff</MenuItem>
+          <MenuItem value="Manager">Manager</MenuItem>
+        </Select>
+      </FormControl>
 
-                <FormControl sx={{ width: "120px" }} size="small">
-                  <InputLabel>State</InputLabel>
-                  <Select
-                    value={selectedStatus}
-                    onChange={(e) => setSelectedStatus(e.target.value)}
-                    label="Status"
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="Open">Open</MenuItem>
-                    <MenuItem value="Closed">Closed</MenuItem>
-                  </Select>
-                </FormControl>
+      {/* Country */}
+      <FormControl
+        size="small"
+        sx={{
+          width: "120px",
+          backgroundColor: "#f9f9f9",
+          borderRadius: "6px",
+          "& .MuiOutlinedInput-root": {
+            height: "34px",
+            fontSize: "12px",
+            borderRadius: "6px",
+            "& fieldset": { borderColor: "#d0d0d0" },
+            "&:hover fieldset": { borderColor: "#a1a1a1" },
+            "&.Mui-focused fieldset": { borderColor: "#029898" },
+          },
+          "& .MuiInputLabel-root": { fontSize: "12px" },
+          "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
+        }}
+      >
+        <InputLabel>Country</InputLabel>
+        <Select
+          value={selectedStatus}
+          onChange={(e) => setSelectedStatus(e.target.value)}
+          label="Status"
+          sx={{ height: "34px", fontSize: "12px" }}
+        >
+          <MenuItem value="">All</MenuItem>
+          <MenuItem value="Open">Open</MenuItem>
+          <MenuItem value="Closed">Closed</MenuItem>
+        </Select>
+      </FormControl>
 
-                <FormControl sx={{ width: "120px" }} size="small">
-                  <InputLabel>Region</InputLabel>
-                  <Select
-                    value={selectedCity}
-                    onChange={(e) => setSelectedCity(e.target.value)}
-                    label="City"
-                  >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="New York">New York</MenuItem>
-                    <MenuItem value="Brooklyn">Brooklyn</MenuItem>
-                  </Select>
-                </FormControl>
+      {/* State */}
+      <FormControl
+        size="small"
+        sx={{
+          width: "120px",
+          backgroundColor: "#f9f9f9",
+          borderRadius: "6px",
+          "& .MuiOutlinedInput-root": {
+            height: "34px",
+            fontSize: "12px",
+            borderRadius: "6px",
+            "& fieldset": { borderColor: "#d0d0d0" },
+            "&:hover fieldset": { borderColor: "#a1a1a1" },
+            "&.Mui-focused fieldset": { borderColor: "#029898" },
+          },
+          "& .MuiInputLabel-root": { fontSize: "12px" },
+          "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
+        }}
+      >
+        <InputLabel>State</InputLabel>
+        <Select
+          value={selectedStatus}
+          onChange={(e) => setSelectedStatus(e.target.value)}
+          label="Status"
+          sx={{ height: "34px", fontSize: "12px" }}
+        >
+          <MenuItem value="">All</MenuItem>
+          <MenuItem value="Open">Open</MenuItem>
+          <MenuItem value="Closed">Closed</MenuItem>
+        </Select>
+      </FormControl>
 
-                <TextField
-                  sx={{ width: "200px" }}
-                  size="small"
-                  placeholder="Search..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <Search style={{ marginRight: 8 }} size={18} />
-                    ),
-                  }}
-                />
-              </Box>
-            </CardContent>
-          </Card>
+      {/* Region */}
+      <FormControl
+        size="small"
+        sx={{
+          width: "120px",
+          backgroundColor: "#f9f9f9",
+          borderRadius: "6px",
+          "& .MuiOutlinedInput-root": {
+            height: "34px",
+            fontSize: "12px",
+            borderRadius: "6px",
+            "& fieldset": { borderColor: "#d0d0d0" },
+            "&:hover fieldset": { borderColor: "#a1a1a1" },
+            "&.Mui-focused fieldset": { borderColor: "#029898" },
+          },
+          "& .MuiInputLabel-root": { fontSize: "12px" },
+          "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
+        }}
+      >
+        <InputLabel>Region</InputLabel>
+        <Select
+          value={selectedCity}
+          onChange={(e) => setSelectedCity(e.target.value)}
+          label="City"
+          sx={{ height: "34px", fontSize: "12px" }}
+        >
+          <MenuItem value="">All</MenuItem>
+          <MenuItem value="New York">New York</MenuItem>
+          <MenuItem value="Brooklyn">Brooklyn</MenuItem>
+        </Select>
+      </FormControl>
+
+      {/* Search */}
+      <TextField
+        sx={{
+          width: "200px",
+          "& .MuiOutlinedInput-root": {
+            height: "34px",
+            bgcolor: "#f9f9f9",
+            borderRadius: "6px",
+            "& fieldset": { borderColor: "#d0d0d0" },
+            "&:hover fieldset": { borderColor: "#a1a1a1" },
+            "&.Mui-focused fieldset": { borderColor: "#029898" },
+            "& input": { padding: "6px 10px", fontSize: "12px" },
+          },
+        }}
+        size="small"
+        placeholder="Search..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        InputProps={{
+          startAdornment: <Search style={{ marginRight: 8 }} size={16} />,
+        }}
+      />
+    </Box>
+  </CardContent>
+</Card>
 
           {/* Table */}
-          <Card
-            sx={{
-              boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.08)",
-              bgcolor: "#fff",
-              borderRadius: "10px",
-              overflow: "hidden",
-              width: "1180px",
-              mt: 2,
-            }}
-          >
-            <TableContainer
-              component={Paper}
+  <Card
+  sx={{
+    boxShadow: "0px 2px 8px rgba(0,0,0,0.08)",
+    bgcolor: "#fff",
+    width: "100%",
+    mt: 2,
+  }}
+>
+  <TableContainer
+    component={Paper}
+    sx={{
+      bgcolor: "#fafafa",
+      boxShadow: "none",
+      width: "100%",
+      overflowX: "auto",
+      overflowY: "auto",   // ✅ ENABLE VERTICAL SCROLL
+      maxHeight: "480px",  // ✅ SET TABLE HEIGHT FOR SCROLL
+      whiteSpace: "nowrap",
+    }}
+  >
+    <Table
+      stickyHeader    // ✅ MAKES HEADER FIXED WHILE SCROLLING
+      sx={{
+        minWidth: "100px",   // ✅ FIX TABLE WIDTH
+        width: "full",      // ✅ REMAINS SAME AS OTHER TABLE
+        tableLayout: "auto",
+
+        td: {
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          fontSize: "12px",
+          padding: "4px 4px",
+          textAlign: "center",
+          borderBottom: "1px solid #e0e0e0",
+        },
+
+        th: {
+          whiteSpace: "nowrap",
+          border: "1px solid #e0e0e0",
+          fontSize: "12px",
+          padding: "6px 4px",
+          textAlign: "center",
+          color: "#fff",
+          backgroundColor: "#029898",
+        },
+      }}
+    >
+      <TableHead>
+        <TableRow>
+          {[
+            "S.No",
+            "Name",
+            "Mobile",
+            "Address",
+            "Email",
+            "Country",
+            "State",
+            "District",
+            selectedStaff === "Manager" ? "Region" : "Role",
+            "Action",
+          ].map((head) => (
+            <TableCell key={head}>{head}</TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+
+      <TableBody>
+        {currentItems.length === 0 ? (
+          <TableRow>
+            <TableCell colSpan={10} style={{ textAlign: "center", padding: "20px" }}>
+              No data found
+            </TableCell>
+          </TableRow>
+        ) : (
+          currentItems.map((task, idx) => (
+            <TableRow
+              key={task._id}
               sx={{
-                borderRadius: "10px",
-                bgcolor: "#fafafa",
-                boxShadow: "none",
+                cursor: "pointer",
+                "&:hover": { bgcolor: "#f5f5f5" },
               }}
             >
-              <Table
-                sx={{
-                  "td, th": {
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    fontSize: "0.88rem",
-                    textAlign: "center",
-                    padding: "8px 12px",
-                  },
-                  th: {
-                    color: "#fff",
-                    bgcolor: "#029898",
-                  },
-                }}
-              >
-                <TableHead>
-                  <TableRow>
-                    {[
-                      "S.No",
-                      "Name",
-                      "Mobile",
-                      "Address",
-                      "Email",
-                      "Country",
-                      "State",
-                      "District",
-                      selectedStaff === "Manager" ? "Region" : "Role",
-                      "Action",
-                    ].map((head) => (
-                      <TableCell key={head}>{head}</TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
+              <TableCell>{startIndex + idx + 1}</TableCell>
+              <TableCell>{task.companyName}</TableCell>
+              <TableCell>{task.businessType}</TableCell>
+              <TableCell>{task.phone}</TableCell>
+              <TableCell>{task.email}</TableCell>
+              <TableCell>{task.pointOfContact}</TableCell>
+              <TableCell>{task.pointOfContactMobile}</TableCell>
+              <TableCell>{task.district}</TableCell>
+              <TableCell>
+                {selectedStaff === "Manager" ? "Developer" : task.city}
+              </TableCell>
 
-                <TableBody>
-                  {currentItems.map((task, idx) => (
-                    <TableRow
-                      key={task._id}
-                      sx={{ "&:hover": { backgroundColor: "#f5f5f5" } }}
-                    >
-                      <TableCell>{startIndex + idx + 1}</TableCell>
-                      <TableCell>{task.companyName}</TableCell>
-                      <TableCell>{task.businessType}</TableCell>
-                      <TableCell>{task.phone}</TableCell>
-                      <TableCell>{task.email}</TableCell>
-                      <TableCell>{task.pointOfContact}</TableCell>
-                      <TableCell>{task.pointOfContactMobile}</TableCell>
-                      <TableCell>{task.district}</TableCell>
-                      <TableCell>
-                        {selectedStaff === "Manager" ? "Developer" : task.city}
-                      </TableCell>
-                      <TableCell>
-                        <Box display="flex" justifyContent="center" gap={0.5}>
-                          <IconButton
-                            onClick={() => handleOpenViewDialog(task)}
-                            sx={{ color: "#00796B" }}
-                          >
-                            <Eye size={18} />
-                          </IconButton>
-                          <IconButton
-                            onClick={() => handleEditClick(task)}
-                            sx={{ color: "#0288d1" }}
-                          >
-                            <Pencil size={18} />
-                          </IconButton>
-                          <IconButton
-                            onClick={() => handleOpenDeleteDialog(task)}
-                            sx={{ color: "#d32f2f" }}
-                          >
-                            <Trash2 size={18} />
-                          </IconButton>
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Card>
+              <TableCell>
+                <Box display="flex" justifyContent="center" gap={0.5}>
+                  <IconButton
+                    sx={{ color: "#00796B" }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenViewDialog(task);
+                    }}
+                  >
+                    <Eye size={18} />
+                  </IconButton>
+
+                  <IconButton
+                    sx={{ color: "#0288d1" }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEditClick(task);
+                    }}
+                  >
+                    <Pencil size={18} />
+                  </IconButton>
+
+                  <IconButton
+                    sx={{ color: "#d32f2f" }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenDeleteDialog(task);
+                    }}
+                  >
+                    <Trash2 size={18} />
+                  </IconButton>
+                </Box>
+              </TableCell>
+            </TableRow>
+          ))
+        )}
+      </TableBody>
+    </Table>
+  </TableContainer>
+</Card>
+
+          
         </Box>
       </Box>
 

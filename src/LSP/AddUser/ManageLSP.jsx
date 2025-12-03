@@ -173,108 +173,143 @@ export default function ManageEnquiry() {
           </Card>
 
           {/* Table */}
-          <Card
+        <Card
+  sx={{
+    mt: 2,
+    boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
+    borderRadius: "10px",
+    bgcolor: "#fff",
+    overflow: "hidden",
+    width: "1180px",
+  }}
+>
+  <TableContainer
+    component={Paper}
+    sx={{
+      borderRadius: "10px",
+      minWidth: "1100px",
+      bgcolor: "#fafafa",
+      boxShadow: "none",
+      overflowX: "auto",  // horizontal scroll
+      overflowY: "auto",  // vertical scroll
+      maxHeight: "480px", // fixed height
+      whiteSpace: "nowrap",
+    }}
+  >
+    <Table
+      stickyHeader
+      sx={{
+        width: "100%",
+        tableLayout: "auto",
+        td: {
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          fontSize: "12px",
+          padding: "4px 8px", // compact padding
+          textAlign: "center",
+          borderBottom: "1px solid #e0e0e0",
+        },
+        th: {
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          fontSize: "12px",
+          padding: "6px 8px",
+          textAlign: "center",
+          color: "#fff",
+          backgroundColor: "#029898",
+          borderBottom: "1px solid #e0e0e0",
+        },
+        "& .MuiTableRow-root:hover": {
+          backgroundColor: "#f5f6f9", // row hover
+        },
+      }}
+    >
+      <TableHead>
+        <TableRow>
+          {[
+            "S.No",
+            "Employee id",
+            "Full Name",
+            "Year Of Exp",
+            "Address",
+            "Mobile No",
+            "Email ID",
+            "Category Of Service",
+            "City Of Operation",
+            "Active/Deactive",
+            "Action",
+          ].map((head) => (
+            <TableCell key={head}>{head}</TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+
+      <TableBody>
+        {currentItems.map((task, idx) => (
+          <TableRow
+            key={task._id}
             sx={{
-              boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.08)",
-              bgcolor: "#fff",
-              borderRadius: "10px",
-              overflow: "hidden",
-              width: "1180px",
-              mt: 2,
+              cursor: "pointer",
+              transition: "background 0.2s",
+              "&:hover": { backgroundColor: "#f5f6f9" },
             }}
           >
-            <TableContainer
-              component={Paper}
-              sx={{
-                borderRadius: "10px",
-                bgcolor: "#fafafa",
-                boxShadow: "none",
-              }}
-            >
-              <Table
-                sx={{
-                  "td, th": {
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    fontSize: "0.88rem",
-                    textAlign: "center",
-                    padding: "8px 12px",
-                  },
-                  th: {
-                    color: "#fff",
-                    bgcolor: "#029898",
-                  },
-                }}
-              >
-                <TableHead>
-                  <TableRow>
-                    {[
-                      "S.No",
-                      "Employee id",
-                      "Full Name",
-                      "Year Of Exp",
-                      "Address",
-                      "Mobile No",
-                      "Email ID",
-                      "Category Of Service",
-                      "City Of Operation",
-                      "Active/Deactive",
-                      "Action",
-                    ].map((head) => (
-                      <TableCell key={head}>{head}</TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
+            <TableCell>{startIndex + idx + 1}</TableCell>
+            <TableCell>{task.companyName}</TableCell>
+            <TableCell>{task.businessType}</TableCell>
+            <TableCell>{task.phone}</TableCell>
+            <TableCell>{task.email}</TableCell>
+            <TableCell>{task.pointOfContact}</TableCell>
+            <TableCell>{task.pointOfContactMobile}</TableCell>
+            <TableCell>{task.district}</TableCell>
+            <TableCell>{task.city}</TableCell>
+            <TableCell>{task.status}</TableCell>
 
-                <TableBody>
-                  {currentItems.map((task, idx) => (
-                    <TableRow
-                      key={task._id}
-                      sx={{ "&:hover": { backgroundColor: "#f5f5f5" } }}
-                    >
-                      <TableCell>{startIndex + idx + 1}</TableCell>
-                      <TableCell>{task.companyName}</TableCell>
-                      <TableCell>{task.businessType}</TableCell>
-                      <TableCell>{task.phone}</TableCell>
-                      <TableCell>{task.email}</TableCell>
-                      <TableCell>{task.pointOfContact}</TableCell>
-                      <TableCell>{task.pointOfContactMobile}</TableCell>
-                      <TableCell>{task.district}</TableCell>
-                      <TableCell>{task.city}</TableCell>
-                      <TableCell>{task.status}</TableCell>
+            <TableCell>
+              <Box display="flex" justifyContent="center" gap={0.5}>
+                <IconButton
+                  onClick={() => handleOpenViewDialog(task)}
+                  size="small"
+                  sx={{
+                    color: "#00796B",
+                    "&:hover": { bgcolor: "rgba(0,121,107,0.08)" },
+                  }}
+                >
+                  <Eye size={18} />
+                </IconButton>
 
-                      {/* Actions */}
-                      <TableCell>
-                        <Box display="flex" justifyContent="center" gap={0.5}>
-                          <IconButton
-                            onClick={() => handleOpenViewDialog(task)}
-                            sx={{ color: "#00796B" }}
-                          >
-                            <Eye size={18} />
-                          </IconButton>
+                <IconButton
+                  onClick={() => handleEditClick(task)}
+                  size="small"
+                  sx={{
+                    color: "#0288d1",
+                    "&:hover": { bgcolor: "rgba(2,136,209,0.08)" },
+                  }}
+                >
+                  <Pencil size={18} />
+                </IconButton>
 
-                          <IconButton
-                            onClick={() => handleEditClick(task)}
-                            sx={{ color: "#0288d1" }}
-                          >
-                            <Pencil size={18} />
-                          </IconButton>
+                <IconButton
+                  onClick={() => handleOpenDeleteDialog(task)}
+                  size="small"
+                  sx={{
+                    color: "#d32f2f",
+                    "&:hover": { bgcolor: "rgba(211,47,47,0.08)" },
+                  }}
+                >
+                  <Trash2 size={18} />
+                </IconButton>
+              </Box>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
+</Card>
 
-                          <IconButton
-                            onClick={() => handleOpenDeleteDialog(task)}
-                            sx={{ color: "#d32f2f" }}
-                          >
-                            <Trash2 size={18} />
-                          </IconButton>
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Card>
         </Box>
       </Box>
 
