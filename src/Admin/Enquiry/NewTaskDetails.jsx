@@ -140,35 +140,41 @@ function NewEnquiryDetails() {
 
     const services = ["Service A", "Service B", "Service C"];
 
-     const formatTime = (timeString) => {
-  if (!timeString) return "";
+    const formatTime = (timeString) => {
+        if (!timeString) return "";
 
-  const [hours, minutes] = timeString.split(":");
-  let h = parseInt(hours);
-  const ampm = h >= 12 ? "PM" : "AM";
+        const [hours, minutes] = timeString.split(":");
+        let h = parseInt(hours);
+        const ampm = h >= 12 ? "PM" : "AM";
 
-  h = h % 12;          // convert 0 → 12
-  h = h || 12;         // handle midnight (0 becomes 12)
+        h = h % 12;          // convert 0 → 12
+        h = h || 12;         // handle midnight (0 becomes 12)
 
-  return `${h}:${minutes} ${ampm}`;
-};
+        return `${h}:${minutes} ${ampm}`;
+    };
 
     useEffect(() => {
-        axios.get("https://bf-back.appblocky.com/api/get-enquiry")
+        axios.get(`https://bf-back.appblocky.com/api/get-enquiry-id/${id}`)
             .then((res) => {
-                setEnquiryData(res.data[0]);
-                setSqFeetEst(res.data[0].sqFeet || ""); // AUTO FILL ESTIMATION FIELD
+                console.log("Enquiry Data:", res.data);
+                setEnquiryData(res.data);
+                setSqFeetEst(res.data.sqFeet || ""); // AUTO FILL ESTIMATION FIELD
             })
             .catch((err) => console.log(err));
     }, [id]);
-
     useEffect(() => {
         const total = Number(sqFeetEst) * Number(amountPerSqFeetEst);
         setTotalAmountEst(total || "");
 
-        const grand = total - Number(discountEst);
-        setGrandAmountEst(grand || "");
+        // If discount > total → show "Invalid"
+        if (Number(discountEst) > total) {
+            setGrandAmountEst("Invalid");
+        } else {
+            const grand = total - Number(discountEst);
+            setGrandAmountEst(grand || "");
+        }
     }, [sqFeetEst, amountPerSqFeetEst, discountEst]);
+
 
     const sendPaymentEmail = async () => {
         try {
@@ -967,50 +973,50 @@ function NewEnquiryDetails() {
             </Box>
 
             {/* Enquiry Popup */}
-           <Dialog
-  open={openPopup}
-  onClose={handleClose}
-  maxWidth="lg"
-  fullWidth
-  PaperProps={{
-    style: {
-      backgroundColor: "#fff",
-      color: "#000",
-      borderRadius: "8px",
-      border: "1px solid #ddd",
-      boxShadow: "0px 4px 12px rgba(0,0,0,0.15)"
-    },
-  }}
->
-  {/* HEADER */}
-  <DialogTitle
-    sx={{
-      backgroundColor: "#029898",
-      color: "white",
-      fontWeight: 600,
-      fontSize: "1rem",
-      px: 3,
-      py: 1.5,
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-    }}
-  >
-    Enquiry Details
+            <Dialog
+                open={openPopup}
+                onClose={handleClose}
+                maxWidth="lg"
+                fullWidth
+                PaperProps={{
+                    style: {
+                        backgroundColor: "#fff",
+                        color: "#000",
+                        borderRadius: "8px",
+                        border: "1px solid #ddd",
+                        boxShadow: "0px 4px 12px rgba(0,0,0,0.15)"
+                    },
+                }}
+            >
+                {/* HEADER */}
+                <DialogTitle
+                    sx={{
+                        backgroundColor: "#029898",
+                        color: "white",
+                        fontWeight: 600,
+                        fontSize: "1rem",
+                        px: 3,
+                        py: 1.5,
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}
+                >
+                    Enquiry Details
 
-    {/* CLOSE BUTTON */}
-    <IconButton
-      onClick={handleClose}
-      sx={{
-        color: "white",
-        "&:hover": {
-          backgroundColor: "rgba(255, 255, 255, 0.15)",
-        },
-      }}
-    >
-      <CloseIcon sx={{ fontSize: "20px" }} />
-    </IconButton>
-  </DialogTitle>
+                    {/* CLOSE BUTTON */}
+                    <IconButton
+                        onClick={handleClose}
+                        sx={{
+                            color: "white",
+                            "&:hover": {
+                                backgroundColor: "rgba(255, 255, 255, 0.15)",
+                            },
+                        }}
+                    >
+                        <CloseIcon sx={{ fontSize: "20px" }} />
+                    </IconButton>
+                </DialogTitle>
 
                 {/* CONTENT */}
                 <DialogContent sx={{ px: 3, py: 1 }}>
@@ -1040,7 +1046,7 @@ function NewEnquiryDetails() {
 
 
                                 // DATE & TIME
-                                { label: "Preferred Date", field: "preferDate", type: "date" },
+                                { label: "Preferred Date", field: "preferDate", type: "date", min: new Date().toISOString().split("T")[0] },
                                 { label: "Preferred Time", field: "preferTime", type: "time" },
 
                             ].map((item, index) => (
@@ -1063,11 +1069,16 @@ function NewEnquiryDetails() {
                                         item.type === "date" ? (
                                             <StyledInput
                                                 type="date"
+                                                min={new Date().toISOString().split("T")[0]}    // ⬅️ Prevent past dates
                                                 value={formatDateForInput(enquiryData[item.field])}
                                                 onChange={(e) =>
-                                                    setEnquiryData({ ...enquiryData, [item.field]: e.target.value })
+                                                    setEnquiryData({
+                                                        ...enquiryData,
+                                                        [item.field]: e.target.value
+                                                    })
                                                 }
                                             />
+
                                         ) : item.type === "time" ? (
                                             <StyledInput
                                                 type="time"
@@ -1075,6 +1086,7 @@ function NewEnquiryDetails() {
                                                 onChange={(e) =>
                                                     setEnquiryData({ ...enquiryData, [item.field]: e.target.value })
                                                 }
+                                                min={item.min}
                                             />
 
                                         ) : (
@@ -1109,76 +1121,76 @@ function NewEnquiryDetails() {
                 </DialogContent>
 
 
-               
-  {/* FOOTER */}
-  <DialogActions sx={{ px: 3, pb: 2 }}>
-    <Button
-      variant="contained"
-      onClick={handleUpdateEnquiry}
-      sx={{
-        bgcolor: "#029898",
-        color: "#fff",
-        px: 4,
-        py: 0.8,
-        borderRadius: "6px",
-        textTransform: "none",
-        fontSize: "13px",
-        "&:hover": { bgcolor: "#027c7c" },
-      }}
-    >
-      Update
-    </Button>
-  </DialogActions>
-</Dialog>
+
+                {/* FOOTER */}
+                <DialogActions sx={{ px: 3, pb: 2 }}>
+                    <Button
+                        variant="contained"
+                        onClick={handleUpdateEnquiry}
+                        sx={{
+                            bgcolor: "#029898",
+                            color: "#fff",
+                            px: 4,
+                            py: 0.8,
+                            borderRadius: "6px",
+                            textTransform: "none",
+                            fontSize: "13px",
+                            "&:hover": { bgcolor: "#027c7c" },
+                        }}
+                    >
+                        Update
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
 
 
             {/* Estimation Popup */}
             <Dialog
-  open={openEstimatePopup}
-  onClose={() => setOpenEstimatePopup(false)}
-  maxWidth="md"
-  fullWidth
-  PaperProps={{
-      style: {
-          backgroundColor: "#fff",
-          color: "#000",
-          borderRadius: "6px",
-          border: "1px solid #ddd",
-          boxShadow: "0px 4px 10px rgba(0,0,0,0.2)",
-          padding: "2px",
-      },
-  }}
->
-  {/* HEADER */}
-  <DialogTitle
-    sx={{
-      backgroundColor: "#029898",
-      color: "white",
-      fontWeight: 600,
-      fontSize: "1rem",
-      px: 2.5,
-      py: 1.3,
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-    }}
-  >
-    Estimation Details
+                open={openEstimatePopup}
+                onClose={() => setOpenEstimatePopup(false)}
+                maxWidth="md"
+                fullWidth
+                PaperProps={{
+                    style: {
+                        backgroundColor: "#fff",
+                        color: "#000",
+                        borderRadius: "6px",
+                        border: "1px solid #ddd",
+                        boxShadow: "0px 4px 10px rgba(0,0,0,0.2)",
+                        padding: "2px",
+                    },
+                }}
+            >
+                {/* HEADER */}
+                <DialogTitle
+                    sx={{
+                        backgroundColor: "#029898",
+                        color: "white",
+                        fontWeight: 600,
+                        fontSize: "1rem",
+                        px: 2.5,
+                        py: 1.3,
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}
+                >
+                    Estimation Details
 
-    <IconButton
-      onClick={() => setOpenEstimatePopup(false)}
-      sx={{
-        color: "white",
-        "&:hover": {
-          backgroundColor: "rgba(255,255,255,0.15)",
-        },
-      }}
-    >
-      <CloseIcon sx={{ fontSize: "20px" }} />
-    </IconButton>
-  </DialogTitle>
-              
+                    <IconButton
+                        onClick={() => setOpenEstimatePopup(false)}
+                        sx={{
+                            color: "white",
+                            "&:hover": {
+                                backgroundColor: "rgba(255,255,255,0.15)",
+                            },
+                        }}
+                    >
+                        <CloseIcon sx={{ fontSize: "20px" }} />
+                    </IconButton>
+                </DialogTitle>
+
 
                 <DialogContent sx={{ px: 2.5, pt: 1.9, pb: 0.9 }}>
                     <Grid display={"flex"} spacing={1.5} mt={1} gap={3}>
@@ -1213,20 +1225,20 @@ function NewEnquiryDetails() {
                                 size="small"
                                 value={amountPerSqFeetEst}
                                 disabled
-                               sx={{
-  "& .MuiOutlinedInput-root": {
-    height: "36px",
-    bgcolor: "#f1f1f1",
-    borderRadius: "6px",
-    "& input": { 
-      padding: "8px", 
-      fontSize: "13px",
-      color: "#000",           // 🔥 TEXT COLOR BLACK
-      fontWeight: 600          // 🔥 TEXT BOLD
-    },
-    "& fieldset": { border: "none" },
-  }
-}}
+                                sx={{
+                                    "& .MuiOutlinedInput-root": {
+                                        height: "36px",
+                                        bgcolor: "#f1f1f1",
+                                        borderRadius: "6px",
+                                        "& input": {
+                                            padding: "8px",
+                                            fontSize: "13px",
+                                            color: "#000",           // 🔥 TEXT COLOR BLACK
+                                            fontWeight: 600          // 🔥 TEXT BOLD
+                                        },
+                                        "& fieldset": { border: "none" },
+                                    }
+                                }}
                             />
                         </Box>
 
@@ -1239,20 +1251,20 @@ function NewEnquiryDetails() {
                                 size="small"
                                 value={totalAmountEst}
                                 disabled
-                               sx={{
-  "& .MuiOutlinedInput-root": {
-    height: "36px",
-    bgcolor: "#f1f1f1",
-    borderRadius: "6px",
-    "& input": { 
-      padding: "8px", 
-      fontSize: "13px",
-      color: "#000",           // 🔥 TEXT COLOR BLACK
-      fontWeight: 600          // 🔥 TEXT BOLD
-    },
-    "& fieldset": { border: "none" },
-  }
-}}
+                                sx={{
+                                    "& .MuiOutlinedInput-root": {
+                                        height: "36px",
+                                        bgcolor: "#f1f1f1",
+                                        borderRadius: "6px",
+                                        "& input": {
+                                            padding: "8px",
+                                            fontSize: "13px",
+                                            color: "#000",           // 🔥 TEXT COLOR BLACK
+                                            fontWeight: 600          // 🔥 TEXT BOLD
+                                        },
+                                        "& fieldset": { border: "none" },
+                                    }
+                                }}
                             />
                         </Box>
 
@@ -1263,6 +1275,7 @@ function NewEnquiryDetails() {
                             </Typography>
                             <TextField
                                 size="small"
+                                type="number"
                                 value={discountEst}
                                 onChange={(e) => setDiscountEst(e.target.value)}
                                 sx={{
@@ -1286,20 +1299,20 @@ function NewEnquiryDetails() {
                                 size="small"
                                 value={grandAmountEst}
                                 disabled
-                                  sx={{
-  "& .MuiOutlinedInput-root": {
-    height: "36px",
-    bgcolor: "#f1f1f1",
-    borderRadius: "6px",
-    "& input": { 
-      padding: "8px", 
-      fontSize: "13px",
-      color: "#000",           // 🔥 TEXT COLOR BLACK
-      fontWeight: 600          // 🔥 TEXT BOLD
-    },
-    "& fieldset": { border: "none" },
-  }
-}}
+                                sx={{
+                                    "& .MuiOutlinedInput-root": {
+                                        height: "36px",
+                                        bgcolor: "#f1f1f1",
+                                        borderRadius: "6px",
+                                        "& input": {
+                                            padding: "8px",
+                                            fontSize: "13px",
+                                            color: "#000",           // 🔥 TEXT COLOR BLACK
+                                            fontWeight: 600          // 🔥 TEXT BOLD
+                                        },
+                                        "& fieldset": { border: "none" },
+                                    }
+                                }}
                             />
                         </Box>
 
@@ -1309,26 +1322,30 @@ function NewEnquiryDetails() {
                     <Divider sx={{ my: 1.5 }} />
                 </DialogContent>
 
-             
-  {/* FOOTER */}
-  <DialogActions sx={{ px: 2.5, pb: 1.5 }}>
-    <Button
-      variant="contained"
-      onClick={() => sendPaymentEmail()}
-      sx={{
-        bgcolor: "#029898",
-        color: "#fff",
-        px: 3,
-        py: 0.6,
-        textTransform: "none",
-        borderRadius: "4px",
-        fontSize: "13px",
-        "&:hover": { bgcolor: "#036d6dff" },
-      }}
-    >
-      Send Payment Link
-    </Button>
-  </DialogActions>
+
+                {/* FOOTER */}
+                <DialogActions sx={{ px: 2.5, pb: 1.5 }}>
+                    <Button
+                        variant="contained"
+                        onClick={() => sendPaymentEmail()}
+                        disabled={grandAmountEst === "Invalid"}   // ⬅️ Disable when invalid
+                        sx={{
+                            bgcolor: grandAmountEst === "Invalid" ? "#cccccc" : "#029898",
+                            color: "#fff",
+                            px: 3,
+                            py: 0.6,
+                            textTransform: "none",
+                            borderRadius: "4px",
+                            fontSize: "13px",
+                            "&:hover": {
+                                bgcolor: grandAmountEst === "Invalid" ? "#cccccc" : "#036d6dff",
+                            },
+                        }}
+                    >
+                        Send Payment Link
+                    </Button>
+
+                </DialogActions>
             </Dialog>
 
             {/* Add Payment Details Popup */}
