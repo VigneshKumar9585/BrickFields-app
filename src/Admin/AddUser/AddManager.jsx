@@ -31,6 +31,8 @@ import {
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import logo from "../../assets/logo/logo.webp";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 
 function Dashboard() {
   const location = useLocation();
@@ -113,20 +115,21 @@ function Dashboard() {
 
   // ---------------- SUBMIT TO BACKEND ----------------
   const handleSubmit = async () => {
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/api/manager/add",
-        formData
-      );
+  try {
+    const response = await axios.post(
+      `${BACKEND_URL}/api/manager/add`,
+      formData
+    );
 
-      alert("User added successfully!");
-      console.log(response.data);
+    alert("User added successfully!");
+    console.log(response.data);
 
-    } catch (error) {
-      console.error(error);
-      alert("Error while adding user");
-    }
-  };
+  } catch (error) {
+    console.error(error);
+    alert("Error while adding user");
+  }
+};
+
 
   // ---------------- FIELD ARRAYS ----------------
   const personalFields = [
