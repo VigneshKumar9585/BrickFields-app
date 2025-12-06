@@ -1,4 +1,4 @@
-// src/pages/AddLsp.jsx
+// UPDATED AddLsp.jsx (Styled like Dashboard.js)
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../../componts/LspNavbar";
@@ -14,10 +14,23 @@ import {
   TextField,
   Button,
   Divider,
+  InputAdornment,
 } from "@mui/material";
 
-import { Edit } from "@mui/icons-material";
-import logo from "../../assets/logo/logo.webp";
+import {
+  Person,
+  CalendarMonth,
+  Numbers,
+  Favorite,
+  LocationOn,
+  Phone,
+  Email,
+  Work,
+  LocationCity,
+  Translate,
+  AutoAwesome,
+  UploadFile,
+} from "@mui/icons-material";
 
 const API_BASE = "http://localhost:2444";
 
@@ -25,14 +38,8 @@ function AddLsp() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // ---------------------------------------------------------
-  // 🔥 Edit Mode — Receive Data
-  // ---------------------------------------------------------
   const taskData = location.state?.task || null;
 
-  // ---------------------------------------------------------
-  // 🔥 Form State
-  // ---------------------------------------------------------
   const [formData, setFormData] = useState({
     companyName: "",
     businessType: "",
@@ -49,9 +56,6 @@ function AddLsp() {
     companyDocument: "",
   });
 
-  // ---------------------------------------------------------
-  // 🔥 Prefill in Edit Mode
-  // ---------------------------------------------------------
   useEffect(() => {
     if (taskData) {
       setFormData({
@@ -72,26 +76,16 @@ function AddLsp() {
     }
   }, [taskData]);
 
-  // ---------------------------------------------------------
-  // 🔥 Error Handling
-  // ---------------------------------------------------------
   const [errors, setErrors] = useState({});
 
-  // ---------------------------------------------------------
-  // 🔥 Handle Input Change
-  // ---------------------------------------------------------
   const handleChange = (field, value) => {
     if (field === "phone" || field === "pointOfContactMobile") {
       if (!/^\d{0,10}$/.test(value)) return;
     }
-
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: "" }));
+    setFormData((p) => ({ ...p, [field]: value }));
+    setErrors((p) => ({ ...p, [field]: "" }));
   };
 
-  // ---------------------------------------------------------
-  // 🔥 File Inputs (Document Section)
-  // ---------------------------------------------------------
   const adhaarFileRef = useRef(null);
   const gstFileRef = useRef(null);
 
@@ -101,25 +95,20 @@ function AddLsp() {
     }
   };
 
-  // ---------------------------------------------------------
-  // 🔥 Submit Form
-  // ---------------------------------------------------------
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async () => {
     const newErrors = {};
     Object.keys(formData).forEach((key) => {
-      if (!formData[key]) newErrors[key] = "This field is required";
+      if (!formData[key]) newErrors[key] = "Required field";
     });
 
     if (formData.phone && formData.phone.length !== 10)
-      newErrors.phone = "Must be 10 digits";
+      newErrors.phone = "10 digits required";
 
     if (
       formData.pointOfContactMobile &&
       formData.pointOfContactMobile.length !== 10
     )
-      newErrors.pointOfContactMobile = "Must be 10 digits";
+      newErrors.pointOfContactMobile = "10 digits required";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -131,296 +120,213 @@ function AddLsp() {
         await axios.put(`${API_BASE}/lsp-update/${taskData._id}`, formData);
 
         Swal.fire({
-          title: "LSP Updated",
-          text: "Technician updated successfully.",
+          title: "Success",
+          text: "Technician updated successfully",
           icon: "success",
-          timer: 2000,
+          timer: 1800,
           showConfirmButton: false,
         });
       } else {
         await axios.post(`${API_BASE}/lsp-form`, formData);
 
         Swal.fire({
-          title: "LSP Added",
-          text: "Technician added successfully.",
+          title: "Added",
+          text: "Technician added successfully",
           icon: "success",
-          timer: 2000,
+          timer: 1800,
           showConfirmButton: false,
         });
       }
 
       navigate("/user/manageLSP");
     } catch (err) {
-      console.error("❌ Error saving LSP:", err);
       Swal.fire("Error", "Something went wrong!", "error");
     }
   };
 
-  // ---------------------------------------------------------
-  // 🔥 Field Lists
-  // ---------------------------------------------------------
   const personalFields = [
-    { label: "Employee ID", key: "companyName" },
-    { label: "Full Name", key: "businessType" },
-    { label: "Gender", key: "phone" },
-    { label: "Date Of Birth", key: "email" },
-    { label: "Age", key: "pointOfContact" },
-    { label: "Marital Status", key: "pointOfContactMobile" },
-    { label: "Address", key: "district" },
-    { label: "Mobile Number", key: "city" },
-    { label: "Email ID", key: "serviceableCities" },
-    { label: "Category Of Service", key: "address" },
-    { label: "Area/City Of Operation", key: "serviceableCities" },
-    { label: "Year Of Experience", key: "serviceableCities" },
-    { label: "Language Spoken", key: "serviceableCities" },
-    { label: "Emergency Phone No", key: "serviceableCities" },
+    { label: "Employee ID", key: "companyName", icon: <Person /> },
+    { label: "Full Name", key: "businessType", icon: <Person /> },
+    { label: "Gender", key: "phone", icon: <Person /> },
+    { label: "Date Of Birth", key: "email", icon: <CalendarMonth /> },
+    { label: "Age", key: "pointOfContact", icon: <Numbers /> },
+    { label: "Marital Status", key: "pointOfContactMobile", icon: <Favorite /> },
+    { label: "Address", key: "district", icon: <LocationOn /> },
+    { label: "Mobile Number", key: "city", icon: <Phone /> },
+    { label: "Email ID", key: "serviceableCities", icon: <Email /> },
+    { label: "Category Of Service", key: "address", icon: <Work /> },
+    { label: "Area/City Of Operation", key: "serviceableCities", icon: <LocationCity /> },
+    { label: "Year Of Experience", key: "serviceableCities", icon: <AutoAwesome /> },
+    { label: "Language Spoken", key: "serviceableCities", icon: <Translate /> },
+    { label: "Emergency Phone No", key: "serviceableCities", icon: <Phone /> },
   ];
 
   const documentFields = [
-    { label: "ID Proof", key: "adhaarCard" },
-    { label: "Upload", key: "gstDocument" },
+    { label: "ID Proof", key: "adhaarCard", ref: adhaarFileRef },
+    { label: "Upload Document", key: "gstDocument", ref: gstFileRef },
   ];
 
-  const getTextFieldSx = (field, width = "165px") => ({
-    width:
-      field === "Address" ||
-      field === "Category Of Service" ||
-      field === "Area/City Of Operation"
-        ? "346px"
-        : width,
+  // Shared TextField styles like Dashboard.js
+  const getTextFieldSx = () => ({
     "& .MuiOutlinedInput-root": {
-      height: "30px",
-      bgcolor: "#e0e0e0",
-      borderRadius: "4px",
-      "& input": {
-        padding: "4px 8px",
-        fontSize: "12px",
+      backgroundColor: "#ffffff",
+      borderRadius: "8px",
+      height: "40px",
+      "& fieldset": { borderColor: "#d1d5db" },
+      "&:hover fieldset": { borderColor: "#029898" },
+      "&.Mui-focused fieldset": { borderColor: "#029898", borderWidth: 2 },
+      "&.Mui-focused": {
+        backgroundColor: "#fff",
+        boxShadow: "0 0 0 3px rgba(2,152,152,0.1)",
       },
-      "& fieldset": { border: "none" },
+      "& input": { fontSize: 13, padding: "10px 14px" },
     },
   });
 
-  // ---------------------------------------------------------
-  // 🔥 JSX
-  // ---------------------------------------------------------
   return (
     <>
       <Navbar />
-
-      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
-        <Box sx={{ width: "280px" }} />
-
-        <Box sx={{ flexGrow: 1 }}>
-          <Typography sx={{ fontSize: "20px", fontWeight: 600, mb: 2 }}>
+      <Box sx={{ display: "flex" }}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            p: { xs: 1, sm: 2 },
+            ml: { xs: 0, md: "260px" },
+            transition: "0.3s",
+          }}
+        >
+          <Typography sx={{ fontSize: 16, fontWeight: 700, mb: 2 }}>
             {taskData ? "Edit Technician" : "Add Technician"}
           </Typography>
 
-          <Box sx={{ width: "100%", maxWidth: "1190px" }}>
-            {/* --------------------------------------------------- */}
-            {/* 🔹 Personal Data Section */}
-            {/* --------------------------------------------------- */}
-            <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none" }}>
-              <CardContent sx={{ p: 3 }}>
-                <Typography sx={{ fontSize: "14px", fontWeight: 600, mb: 2 }}>
-                  Personal Data
-                </Typography>
+          <Card sx={{ bgcolor: "#F0F6F6", boxShadow: "none", mb: 3 }}>
+            <CardContent>
+              <Typography sx={{ mb: 2, fontWeight: 600, fontSize: 14 }}>
+                Personal Details
+              </Typography>
 
-                <Box sx={{ display: "flex", gap: 4 }}>
-                  <Grid container spacing={2} sx={{ flex: 1 }}>
-                    {personalFields.map((field, index) => (
-                      <Grid item xs={12} sm={6} md={3} key={index}>
-                        <Typography
-                          sx={{
-                            mb: 1,
-                            fontSize: "12px",
-                            fontWeight: 500,
-                            color: "#000",
-                          }}
-                        >
-                          {field.label}
-                        </Typography>
+              <Grid container spacing={2}>
+                {personalFields.map((field, i) => (
+                  <Grid item xs={12} sm={6} md={4} key={i}>
+                    <Typography sx={{ fontSize: 13, mb: 1, fontWeight: 600 }}>
+                      {field.label}
+                    </Typography>
 
-                        <TextField
-                          value={formData[field.key]}
-                          onChange={(e) =>
-                            handleChange(field.key, e.target.value)
-                          }
-                          variant="outlined"
-                          size="small"
-                          error={!!errors[field.key]}
-                          helperText={errors[field.key] || ""}
-                          sx={getTextFieldSx(field.label)}
-                          inputProps={
-                            field.key === "phone" ||
-                            field.key === "pointOfContactMobile"
-                              ? { maxLength: 10, inputMode: "numeric" }
-                              : {}
-                          }
-                        />
-                      </Grid>
-                    ))}
-                  </Grid>
-
-                  {/* Profile Image */}
-                  <Box display="flex" flexDirection="column" alignItems="center">
-                    <Box
-                      component="img"
-                      src={logo}
-                      alt="profile"
-                      sx={{ width: 100, height: 100, borderRadius: "50%" }}
+                    <TextField
+                      fullWidth
+                      value={formData[field.key]}
+                      onChange={(e) => handleChange(field.key, e.target.value)}
+                      size="small"
+                      error={!!errors[field.key]}
+                      helperText={errors[field.key]}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start" sx={{ color: "#029898" }}>
+                            {React.cloneElement(field.icon, { sx: { color: "#029898" } })}
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={getTextFieldSx()}
                     />
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <Edit sx={{ fontSize: 16 }} />
-                      <Typography sx={{ fontSize: 14 }}>Edit</Typography>
+                  </Grid>
+                ))}
+              </Grid>
+            </CardContent>
+          </Card>
+
+          <Card sx={{ bgcolor: "#F0F6F6", boxShadow: "none" }}>
+            <CardContent>
+              <Typography sx={{ mb: 2, fontWeight: 600, fontSize: 14 }}>
+                Documents
+              </Typography>
+
+              <Grid container spacing={2}>
+                {documentFields.map((df, i) => (
+                  <Grid item xs={12} sm={6} md={4} key={i}>
+                    <Typography sx={{ fontSize: 13, mb: 1, fontWeight: 600 }}>
+                      {df.label}
+                    </Typography>
+
+                    <input
+                      type="file"
+                      ref={df.ref}
+                      accept=".jpg,.jpeg,.png,.pdf,.webp"
+                      style={{ display: "none" }}
+                      onChange={(e) => handleFileSelect(df.key, e.target.files[0])}
+                    />
+
+                    <Box
+                      onClick={() => df.ref.current.click()}
+                      sx={{
+                        height: 40,
+                        bgcolor: "#fff",
+                        borderRadius: "8px",
+                        display: "flex",
+                        alignItems: "center",
+                        px: 1.5,
+                        cursor: "pointer",
+                        border: "1px solid #d1d5db",
+                        "&:hover": { borderColor: "#029898", boxShadow: "0 0 0 3px rgba(2,152,152,0.1)" },
+                      }}
+                    >
+                      <UploadFile sx={{ mr: 1, color: "#029898" }} />
+                      <span style={{ fontSize: 13 }}>{formData[df.key] || "Choose File"}</span>
                     </Box>
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            </CardContent>
+          </Card>
 
-            {/* --------------------------------------------------- */}
-            {/* 🔹 Document Section */}
-            {/* --------------------------------------------------- */}
-            <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none" }}>
-              <CardContent sx={{ p: 3 }}>
-                <Typography sx={{ fontSize: "14px", fontWeight: 600, mb: 2 }}>
-                  Document Data
-                </Typography>
 
-                <Grid container spacing={2}>
-                  {documentFields.map((field, index) => (
-                    <Grid item xs={12} sm={6} md={4} key={index}>
-                      <Typography
-                        sx={{
-                          mb: 1,
-                          fontSize: "12px",
-                          fontWeight: 500,
-                          color: "#000",
-                        }}
-                      >
-                        {field.label}
-                      </Typography>
-
-                      {/* Hidden File Inputs */}
-                      {field.key === "adhaarCard" && (
-                        <input
-                          type="file"
-                          ref={adhaarFileRef}
-                          accept=".jpg,.jpeg,.png,.webp,.pdf,.doc,.docx"
-                          style={{ display: "none" }}
-                          onChange={(e) =>
-                            handleFileSelect(
-                              "adhaarCard",
-                              e.target.files[0]
-                            )
-                          }
-                        />
-                      )}
-
-                      {field.key === "gstDocument" && (
-                        <input
-                          type="file"
-                          ref={gstFileRef}
-                          accept=".jpg,.jpeg,.png,.webp,.pdf,.doc,.docx"
-                          style={{ display: "none" }}
-                          onChange={(e) =>
-                            handleFileSelect(
-                              "gstDocument",
-                              e.target.files[0]
-                            )
-                          }
-                        />
-                      )}
-
-                      {/* Clickable TextField to open file picker */}
-                      <TextField
-                        value={formData[field.key]}
-                        onClick={() => {
-                          if (field.key === "adhaarCard") adhaarFileRef.current.click();
-                          if (field.key === "gstDocument") gstFileRef.current.click();
-                        }}
-                        variant="outlined"
-                        size="small"
-                        fullWidth
-                        error={!!errors[field.key]}
-                        helperText={errors[field.key] || ""}
-                        sx={{
-                          "& .MuiOutlinedInput-root": {
-                            height: "30px",
-                            bgcolor: "#e0e0e0",
-                            borderRadius: "4px",
-                            "& input": {
-                              padding: "4px 8px",
-                              fontSize: "12px",
-                              cursor: "pointer",
-                            },
-                            "& fieldset": { border: "none" },
-                          },
-                        }}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </Grid>
-                  ))}
-                </Grid>
-              </CardContent>
-            </Card>
-
-            {/* --------------------------------------------------- */}
-            {/* 🔹 Buttons */}
-            {/* --------------------------------------------------- */}
-            <Divider />
-
-            <Box
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 ,mt:3}}>
+            <Button
+              variant="outlined"
               sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                gap: 2,
-                p: 2,
+                width: 150,
+                textTransform: "none",
+                fontSize: 13,
+                fontWeight: 600,
+                borderRadius: "8px",
+                borderColor: "#d1d5db",
+                "&:hover": { borderColor: "#029898" },
               }}
+              onClick={() =>
+                setFormData({
+                  companyName: "",
+                  businessType: "",
+                  phone: "",
+                  email: "",
+                  pointOfContact: "",
+                  pointOfContactMobile: "",
+                  district: "",
+                  city: "",
+                  address: "",
+                  serviceableCities: "",
+                  adhaarCard: "",
+                  gstDocument: "",
+                  companyDocument: "",
+                })
+              }
             >
-              <Button
-                variant="outlined"
-                sx={{
-                  textTransform: "none",
-                  width: "170px",
-                  fontSize: "14px",
-                }}
-                onClick={() =>
-                  setFormData({
-                    companyName: "",
-                    businessType: "",
-                    phone: "",
-                    email: "",
-                    pointOfContact: "",
-                    pointOfContactMobile: "",
-                    district: "",
-                    city: "",
-                    address: "",
-                    serviceableCities: "",
-                    adhaarCard: "",
-                    gstDocument: "",
-                    companyDocument: "",
-                  })
-                }
-              >
-                Clear
-              </Button>
+              Clear
+            </Button>
 
-              <Button
-                variant="contained"
-                sx={{
-                  textTransform: "none",
-                  width: "170px",
-                  fontSize: "14px",
-                  bgcolor: "#029898",
-                }}
-                onClick={handleSubmit}
-              >
-                {taskData ? "Update" : "Add"}
-              </Button>
-            </Box>
+            <Button
+              variant="contained"
+              sx={{
+                width: 150,
+                bgcolor: "#029898",
+                textTransform: "none",
+                fontSize: 13,
+                fontWeight: 600,
+                borderRadius: "8px",
+                "&:hover": { bgcolor: "#027d7d" },
+              }}
+              onClick={handleSubmit}
+            >
+              {taskData ? "Update" : "Add"}
+            </Button>
           </Box>
         </Box>
       </Box>

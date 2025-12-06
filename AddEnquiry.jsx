@@ -128,46 +128,46 @@ export default function EnquiryForm() {
         district: "",
         street: "",
         // country:"",
-        city:"",
-        landmark:"",
+        city: "",
+        landmark: "",
         sqFeet: "",
         preferDate: "",
         preferTime: "",
     });
-const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState({});
 
     const [images, setImages] = useState([]);
-const validateForm = () => {
-    const newErrors = {};
+    const validateForm = () => {
+        const newErrors = {};
 
-    if (!formData.name.trim()) newErrors.name = "Full Name is required";
+        if (!formData.name.trim()) newErrors.name = "Full Name is required";
 
-    if (!formData.phoneNumber.trim()) {
-        newErrors.phoneNumber = "Phone Number is required";
-    } else if (!/^[0-9]{10}$/.test(formData.phoneNumber)) {
-        newErrors.phoneNumber = "Phone Number must be 10 digits";
-    }
+        if (!formData.phoneNumber.trim()) {
+            newErrors.phoneNumber = "Phone Number is required";
+        } else if (!/^[0-9]{10}$/.test(formData.phoneNumber)) {
+            newErrors.phoneNumber = "Phone Number must be 10 digits";
+        }
 
-    if (!formData.email.trim()) {
-        newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-        newErrors.email = "Invalid Email format";
-    }
+        if (!formData.email.trim()) {
+            newErrors.email = "Email is required";
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            newErrors.email = "Invalid Email format";
+        }
 
-    if (!formData.state) newErrors.state = "State is required";
-    if (!formData.district) newErrors.district = "District is required";
-    if (!formData.city) newErrors.city = "City is required";
-    if (!formData.street) newErrors.street = "Street is required";
-    if (!formData.landmark) newErrors.landmark = "Landmark is required";
+        if (!formData.state) newErrors.state = "State is required";
+        if (!formData.district) newErrors.district = "District is required";
+        if (!formData.city) newErrors.city = "City is required";
+        if (!formData.street) newErrors.street = "Street is required";
+        if (!formData.landmark) newErrors.landmark = "Landmark is required";
 
-    if (!formData.sqFeet || formData.sqFeet <= 0)
-        newErrors.sqFeet = "Area is required";
+        if (!formData.sqFeet || formData.sqFeet <= 0)
+            newErrors.sqFeet = "Area is required";
 
-    if (!formData.preferDate) newErrors.preferDate = "Preferred date is required";
-    if (!formData.preferTime) newErrors.preferTime = "Preferred time is required";
+        if (!formData.preferDate) newErrors.preferDate = "Preferred date is required";
+        if (!formData.preferTime) newErrors.preferTime = "Preferred time is required";
 
-    return newErrors;
-};
+        return newErrors;
+    };
 
 
 
@@ -185,100 +185,104 @@ const validateForm = () => {
         setImages(images.filter((_, index) => index !== indexToRemove));
     };
 
- const handleSubmit = async () => {
-    const validationErrors = validateForm();
+    const handleSubmit = async () => {
+        const validationErrors = validateForm();
 
-    if (Object.keys(validationErrors).length > 0) {
-        setErrors(validationErrors);
-        return; // do NOT show toast here
-    }
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return; // do NOT show toast here
+        }
 
-    // prepare form-data
-    const sendData = new FormData();
-    Object.keys(formData).forEach(key => sendData.append(key, formData[key]));
-    images.forEach(img => sendData.append("siteImage", img));
+        // prepare form-data
+        const sendData = new FormData();
+        Object.keys(formData).forEach(key => sendData.append(key, formData[key]));
+        images.forEach(img => sendData.append("siteImage", img));
 
-    try {
-        await axios.post(
-            "https://bf-back.appblocky.com/api/create-enquiry",
-            sendData,
-            { headers: { "Content-Type": "multipart/form-data" } }
-        );
+        try {
+            await axios.post(
+                "https://bf-back.appblocky.com/api/create-enquiry",
+                sendData,
+                { headers: { "Content-Type": "multipart/form-data" } }
+            );
 
-        toast.success("Enquiry submitted successfully!");
+            toast.success("Enquiry submitted successfully!");
 
-        // Reset form
-        setFormData({
-            name: "",
-            email: "",
-            phoneNumber: "",
-            state: "",
-            district: "",
-            street: "",
-            city: "",
-            landmark: "",
-            sqFeet: "",
-            preferDate: "",
-            preferTime: "",
-        });
+            // Reset form
+            setFormData({
+                name: "",
+                email: "",
+                phoneNumber: "",
+                state: "",
+                district: "",
+                street: "",
+                city: "",
+                landmark: "",
+                sqFeet: "",
+                preferDate: "",
+                preferTime: "",
+            });
 
-        setImages([]);
-        setErrors({}); // clear errors
+            setImages([]);
+            setErrors({}); // clear errors
 
-    } catch (err) {
-        toast.error("Failed to submit enquiry!");
-    }
-};
+        } catch (err) {
+            toast.error("Failed to submit enquiry!");
+        }
+    };
 
 
 
     // Component Helper
-   const InputField = ({ label, field, icon, type = "text", xs = 12, sm = 6 }) => {
-    return (
-        <Grid item xs={xs} sm={sm}>
-            <Typography fontSize="13px" fontWeight={600} color="#555" mb={0.8} ml={0.5}>
-                {label}
-            </Typography>
+    const InputField = ({ label, field, icon, type = "text", xs = 12, sm = 6 }) => {
+        return (
+            <Grid item xs={xs} sm={sm}>
+                <Typography fontSize="13px" fontWeight={600} color="#555" mb={0.8} ml={0.5}>
+                    {label}
+                </Typography>
 
-            <CustomTextField
-                fullWidth
-                type={type}
-                placeholder={label}
-                value={formData[field]}
-                onChange={(e) => {
-                    handleChange(field, e.target.value);
-                    setErrors({ ...errors, [field]: "" }); // clear error while typing
-                }}
-                error={Boolean(errors[field])}
-                helperText={errors[field] || ""}
-                InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start" sx={{ color: "#029898", opacity: 0.7 }}>
-                            {icon}
-                        </InputAdornment>
-                    ),
-                }}
-            />
-        </Grid>
-    );
-};
+                <CustomTextField
+                    fullWidth
+                    type={type}
+                    placeholder={label}
+                    value={formData[field]}
+                    onChange={(e) => {
+                        handleChange(field, e.target.value);
+                        setErrors({ ...errors, [field]: "" });
+                    }}
+                    error={Boolean(errors[field])}
+                    helperText={errors[field] || ""}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start" sx={{ color: "#029898", opacity: 0.7 }}>
+                                {icon}
+                            </InputAdornment>
+                        ),
+                    }}
+                    inputProps={{
+                        min: type === "date" ? new Date().toISOString().split("T")[0] : undefined,
+                    }}
+                />
+
+            </Grid>
+        );
+    };
 
 
 
     return (
         <Box sx={{ minHeight: "100vh", bgcolor: "#f4f7f8", py: 5, px: 2 }}>
-        <ToastContainer 
-    position="top-right"
-    theme="colored"
-    autoClose={2000}
-    hideProgressBar={true}
-    pauseOnHover={true}
-/>
+            <ToastContainer
+                position="top-right"
+                theme="colored"
+                autoClose={2000}
+                hideProgressBar={true}
+                pauseOnHover={true}
+            />
 
 
 
             <Box sx={{ maxWidth: "850px", margin: "0 auto" }}>
-                
+
                 {/* Header */}
                 <Box textAlign="center" mb={5}>
                     <Typography variant="h4" fontWeight={800} color="#029898">
@@ -290,7 +294,7 @@ const validateForm = () => {
                 </Box>
 
                 <FormPaper elevation={0}>
-                    
+
                     {/* SECTION 1: Personal Details */}
                     <Box p={4}>
                         <SectionHeader>
@@ -299,7 +303,7 @@ const validateForm = () => {
                         </SectionHeader>
                         <Grid container spacing={3}>
                             {InputField({ label: "Full Name", field: "name", icon: <PersonIcon />, sm: 6 })}
-                            {InputField({ label: "Phone Number  ", field: "phoneNumber", icon: <PhoneIcon />, type: "tel", sm: 6 })}
+                            {InputField({ label: "Phone Number  ", field: "phoneNumber", icon: <PhoneIcon />, type: "number", sm: 6 })}
                             {InputField({ label: "Email Address", field: "email", icon: <EmailIcon />, type: "email", sm: 12 })}
                         </Grid>
                     </Box>
@@ -312,13 +316,13 @@ const validateForm = () => {
                             <Box className="icon-wrapper"><HomeWorkIcon fontSize="small" /></Box>
                             <Typography className="title">Location Details</Typography>
                         </SectionHeader>
-                        
+
                         <Grid container spacing={3}>
                             {/* Row 1: State & District */}
                             {InputField({ label: "State", field: "state", icon: <MapIcon />, sm: 6 })}
                             {InputField({ label: "District", field: "district", icon: <LocationOnIcon />, sm: 6 })}
                             {InputField({ label: "City", field: "city", icon: <MyLocationIcon />, sm: 6 })}
-                            {InputField({ label: "Street", field: "street", icon: <MapsHomeWorkIcon />, sm: 8, xs:12 })}
+                            {InputField({ label: "Street", field: "street", icon: <MapsHomeWorkIcon />, sm: 8, xs: 12 })}
                             {InputField({ label: "Landmark", field: "landmark", icon: <PushPinIcon />, sm: 6 })}
                         </Grid>
                     </Box>
@@ -333,7 +337,14 @@ const validateForm = () => {
                         </SectionHeader>
                         <Grid container spacing={3}>
                             {InputField({ label: "Total Area (Sq. Ft)", field: "sqFeet", icon: <SquareFootIcon />, type: "number", sm: 4 })}
-                            {InputField({ label: "Preferred Date", field: "preferDate", icon: <CalendarTodayIcon />, type: "date", sm: 4 })}
+                            {InputField({
+                                label: "Preferred Date",
+                                field: "preferDate",
+                                icon: <CalendarTodayIcon />,
+                                type: "date",
+                                sm: 4,
+                                min: new Date().toISOString().split("T")[0]
+                            })}
                             {InputField({ label: "Preferred Time", field: "preferTime", icon: <AccessTimeIcon />, type: "time", sm: 4 })}
                         </Grid>
                     </Box>
@@ -359,7 +370,7 @@ const validateForm = () => {
                                         Max size: 5MB per file
                                     </Typography>
                                 </DropBox>
-                                <input id="imageUpload" type="file" accept="image/*" multiple hidden onChange={handleImageUpload} width="100%"/>
+                                <input id="imageUpload" type="file" accept="image/*" multiple hidden onChange={handleImageUpload} width="100%" />
                             </Grid>
 
                             {/* PREVIEWS - BELOW DROPBOX */}

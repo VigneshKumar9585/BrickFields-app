@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect,useState } from "react";
 import Navbar from "../../componts/AdminNavbar";
 import {
   Box,
@@ -27,6 +27,7 @@ import { Search, Eye, Pencil, Trash2, Pen, FileImage, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export default function ManageEnquiry() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,43 +41,19 @@ export default function ManageEnquiry() {
 
   const navigate = useNavigate();
 
-  const [tasks, setTasks] = useState([
-    {
-      _id: "1",
-      companyName: "TechVision Pvt Ltd",
-      businessType: "Software",
-      phone: "9876543210",
-      email: "info@techvision.com",
-      pointOfContact: "Rahul Mehta",
-      pointOfContactMobile: "9988776655",
-      district: "Bangalore Urban",
-      city: "Bangalore",
-      serviceableCities: ["Mysore", "Mangalore"],
-      status: "Open",
-      documents: [
-        "Aadhaar Card",
-        "Degree Certificate",
-        "Experience Certificate",
-      ],
-    }, {
-      _id: "1",
-      companyName: "TechVision Pvt Ltd",
-      businessType: "Software",
-      phone: "9876543210",
-      email: "info@techvision.com",
-      pointOfContact: "Rahul Mehta",
-      pointOfContactMobile: "9988776655",
-      district: "Bangalore Urban",
-      city: "Bangalore",
-      serviceableCities: ["Mysore", "Mangalore"],
-      status: "Open",
-      documents: [
-        "Aadhaar Card",
-        "Degree Certificate",
-        "Experience Certificate",
-      ],
-    },
-  ]);
+   const [tasks, setTasks] = useState([]);
+   useEffect(() => {
+    fetchManagers();
+  }, []);
+
+  const fetchManagers = async () => {
+    try {
+      const response = await axios.get(`${BACKEND_URL}/api/manager/all`);
+      setTasks(response.data.data); // data.data comes from your backend structure
+    } catch (error) {
+      console.error("Error fetching managers:", error);
+    }
+  };
 
   const handleEditClick = (task) => {
     if (selectedStaff === "Staff") {
@@ -402,12 +379,12 @@ export default function ManageEnquiry() {
               }}
             >
               <TableCell>{startIndex + idx + 1}</TableCell>
-              <TableCell>{task.companyName}</TableCell>
-              <TableCell>{task.businessType}</TableCell>
-              <TableCell>{task.phone}</TableCell>
+              <TableCell>{task.name}</TableCell>
+              <TableCell>{task.mobile}</TableCell>
+              <TableCell>{task.address}</TableCell>
               <TableCell>{task.email}</TableCell>
-              <TableCell>{task.pointOfContact}</TableCell>
-              <TableCell>{task.pointOfContactMobile}</TableCell>
+              <TableCell>{task.country}</TableCell>
+              <TableCell>{task.state}</TableCell>
               <TableCell>{task.district}</TableCell>
               <TableCell>
                 {selectedStaff === "Manager" ? "Developer" : task.city}
