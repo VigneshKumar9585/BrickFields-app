@@ -43,7 +43,7 @@ function Dashboard() {
     "Name": "name",
     "Mobile No": "phoneNumber",
     "Email ID": "email",
-    "Address": "street",
+    "Street": "street",
     "State": "state",
     "District": "district",
     "City": "city",
@@ -57,7 +57,7 @@ function Dashboard() {
     "Linkedin": "linkedinLink",
 
     "Degree Certificate": "degreeCertificate",
-    "Adhaar Card": "adhaarCard",
+    "Adhaar Card": "aadhaarCard",
     "Provisional Certificate": "provisionalCertificate",
     "Experience Certificate": "experienceCertificate",
   };
@@ -142,12 +142,13 @@ function Dashboard() {
 
   const handleSubmit = async () => {
     const formData = new FormData();
-
+    
     // PERSONAL FIELDS
     personalFields.forEach((f) => {
       const key = fieldKeyMap[f.label];
       const el = document.querySelector(`input[name="${f.label}"]`);
       if (el && key !== "country") formData.append(key, el.value);
+      console.log('Appending personal field:', key, el ? el.value : 'N/A');
     });
 
     // SOCIAL FIELDS
@@ -165,13 +166,11 @@ function Dashboard() {
           formData.append(key, d.file);
         });
       }
+      console.log('Appending document:', key, uploadedDocs[label]);
     });
 
-    // await axios.post("https://bf-back.appblocky.com/api/create-manager", formData, {
-    //   headers: { "Content-Type": "multipart/form-data" },
-    // });
-    console.log(formData);
-
+    console.log(documentFields);
+    console.log(formData)
     await axios.post("http://localhost:2424/api/create-manager", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
