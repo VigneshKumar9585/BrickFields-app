@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import Navbar from "../../componts/AdminNavbar";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import {
   Box,
   Card,
@@ -29,8 +31,8 @@ import {
   YouTube as YouTubeIcon,
   LinkedIn as LinkedInIcon,
 } from "@mui/icons-material";
-import { useLocation } from "react-router-dom";
 import logo from "../../assets/logo/logo.webp";
+import { useLocation, useNavigate } from "react-router-dom";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 
@@ -38,6 +40,7 @@ function Dashboard() {
   const location = useLocation();
   const taskData = location.state?.task;
   const isEditMode = !!taskData;
+const navigate = useNavigate();
 
   const fieldKeyMap = {
     "Name": "name",
@@ -109,6 +112,39 @@ function Dashboard() {
       [field]: prev[field] ? [...prev[field], ...mapped] : [...mapped]
     }));
   };
+  const [formValues, setFormValues] = useState({
+  name: "",
+  phoneNumber: "",
+  email: "",
+  street: "",
+  state: "",
+  district: "",
+  city: "",
+  region: "",
+  country: "",
+  instagramLink: "",
+  youtubeLink: "",
+  linkedinLink: "",
+});
+React.useEffect(() => {
+  if (!isEditMode || !taskData) return;
+
+  setFormValues({
+    name: taskData.name || "",
+    phoneNumber: taskData.phoneNumber || "",
+    email: taskData.email || "",
+    street: taskData.street || "",
+    state: taskData.state || "",
+    district: taskData.district || "",
+    city: taskData.city || "",
+    region: taskData.region || "",
+    country: taskData.country || "",
+    instagramLink: taskData.instagramLink || "",
+    youtubeLink: taskData.youtubeLink || "",
+    linkedinLink: taskData.linkedinLink || "",
+  });
+}, [taskData]);
+
 
 
   const getTextFieldSx = (field, width = "100%") => ({
@@ -140,45 +176,92 @@ function Dashboard() {
     },
   });
 
-  const handleSubmit = async () => {
+const handleSubmit = async () => {
+  if (!isEditMode && !taskData) {
+    // Create new manager
     const formData = new FormData();
-    
+
     // PERSONAL FIELDS
     personalFields.forEach((f) => {
       const key = fieldKeyMap[f.label];
-      const el = document.querySelector(`input[name="${f.label}"]`);
-      if (el && key !== "country") formData.append(key, el.value);
-      console.log('Appending personal field:', key, el ? el.value : 'N/A');
+      // if (key !== "country") 
+        formData.append(key, formValues[key]);
     });
 
     // SOCIAL FIELDS
     socialFields.forEach((f) => {
       const key = fieldKeyMap[f.label];
-      const el = document.querySelector(`input[name="${f.label}"]`);
-      if (el) formData.append(key, el.value);
+      formData.append(key, formValues[key]);
     });
 
     // DOCUMENTS
     documentFields.forEach((label) => {
       const key = fieldKeyMap[label];
       if (uploadedDocs[label]) {
-        uploadedDocs[label].forEach((d) => {
-          formData.append(key, d.file);
-        });
+        uploadedDocs[label].forEach((d) => formData.append(key, d.file));
       }
-      console.log('Appending document:', key, uploadedDocs[label]);
     });
 
-    console.log(documentFields);
-    console.log(formData)
-    await axios.post("http://localhost:2424/api/create-manager", formData, {
+    try {
+      await axios.post(`${BACKEND_URL}/api/create-manager`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      toast.success("Manager Added Successfully!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to add manager.");
+    }
+
+  } else if (isEditMode && taskData?._id) {
+    // Update existing manager
+    const formData = new FormData();
+
+    // PERSONAL FIELDS
+    personalFields.forEach((f) => {
+      const key = fieldKeyMap[f.label];
+      // if (key !== "country") 
+        formData.append(key, formValues[key]);
+    });
+
+    // SOCIAL FIELDS
+    socialFields.forEach((f) => {
+      const key = fieldKeyMap[f.label];
+      formData.append(key, formValues[key]);
+    });
+
+    // DOCUMENTS (append if any new uploaded)
+    documentFields.forEach((label) => {
+      const key = fieldKeyMap[label];
+      if (uploadedDocs[label]) {
+        uploadedDocs[label].forEach((d) => formData.append(key, d.file));
+      }
+    });
+
+   try {
+  if (!isEditMode && !taskData) {
+    await axios.post(`${BACKEND_URL}/api/create-manager`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
+    toast.success("Manager Added Successfully!");
+  } else if (isEditMode && taskData?._id) {
+    await axios.put(`${BACKEND_URL}/api/update-manager/${taskData._id}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    toast.success("Manager Updated Successfully!");
+  }
 
-    
-    alert("Manager Added");
-  };
+  // Redirect after 1 second to allow toast to show
+  setTimeout(() => {
+    navigate("/admin-manage-user");
+  }, 1000);
 
+} catch (error) {
+  console.error(error);
+  toast.error("Failed to save manager.");
+}
+
+  }
+};
 
   return (
     <>
@@ -240,6 +323,13 @@ function Dashboard() {
        <TextField
   name={fieldObj.label}
   size="small"
+  value={formValues[fieldKeyMap[fieldObj.label]] || ""}
+  onChange={(e) =>
+    setFormValues({ 
+      ...formValues, 
+      [fieldKeyMap[fieldObj.label]]: e.target.value 
+    })
+  }
   placeholder={
     ["Country", "State", "Region", "District"].includes(fieldObj.label)
       ? ""
@@ -247,7 +337,7 @@ function Dashboard() {
   }
   sx={{
     ...getTextFieldSx(fieldObj.label),
-    width: fieldObj.label === "Street" ? "390px" : "100%",   
+    width: fieldObj.label === "Street" ? "390px" : "100%",
   }}
   InputProps={{
     startAdornment: (
@@ -258,6 +348,7 @@ function Dashboard() {
     ),
   }}
 />
+
 
       </Grid>
     ))}
@@ -417,8 +508,16 @@ function Dashboard() {
                       </Typography>
 
                       <TextField
-                        fullWidth
-                        size="small"
+                         fullWidth
+  size="small"
+  name={fieldObj.label}
+  value={formValues[fieldKeyMap[fieldObj.label]] || ""}
+  onChange={(e) =>
+    setFormValues({
+      ...formValues,
+      [fieldKeyMap[fieldObj.label]]: e.target.value,
+    })
+  }
                         placeholder={`Enter ${fieldObj.label} URL`}
                         sx={{
 
@@ -513,6 +612,25 @@ function Dashboard() {
           </Box>
         </Box>
       </Box>
+      {/* <ToastContainer
+    position="top-right"
+    autoClose={3000}
+    hideProgressBar={false}
+    newestOnTop={false}
+    closeOnClick
+    rtl={false}
+    pauseOnFocusLoss
+    draggable
+    pauseOnHover
+  /> */}
+   <ToastContainer
+                  position="top-right"
+                  theme="colored"
+                  autoClose={2000}
+                  hideProgressBar={true}
+                  pauseOnHover={true}
+              />
+  
     </>
   );
 }

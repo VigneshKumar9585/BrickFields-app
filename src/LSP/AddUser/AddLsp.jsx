@@ -1,4 +1,4 @@
-// UPDATED AddLsp.jsx (Styled like Dashboard.js)
+// AddLsp.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../../componts/LspNavbar";
@@ -32,14 +32,15 @@ import {
   UploadFile,
 } from "@mui/icons-material";
 
-const API_BASE = "http://localhost:2444";
+const API_BASE = "http://localhost:2444/api";
 
 function AddLsp() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const taskData = location.state?.task || null;
+  const taskData = location.state?.task || null; // if editing, data comes here
 
+  // ------------------- Form Data -------------------
   const [formData, setFormData] = useState({
     companyName: "",
     businessType: "",
@@ -56,6 +57,9 @@ function AddLsp() {
     companyDocument: "",
   });
 
+  const [errors, setErrors] = useState({});
+
+  // ------------------- Prefill Form if Editing -------------------
   useEffect(() => {
     if (taskData) {
       setFormData({
@@ -76,18 +80,19 @@ function AddLsp() {
     }
   }, [taskData]);
 
-  const [errors, setErrors] = useState({});
-
+  // ------------------- Form Change -------------------
   const handleChange = (field, value) => {
     if (field === "phone" || field === "pointOfContactMobile") {
-      if (!/^\d{0,10}$/.test(value)) return;
+      if (!/^\d{0,10}$/.test(value)) return; // allow max 10 digits
     }
-    setFormData((p) => ({ ...p, [field]: value }));
-    setErrors((p) => ({ ...p, [field]: "" }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
+  // ------------------- File Upload -------------------
   const adhaarFileRef = useRef(null);
   const gstFileRef = useRef(null);
+  const companyFileRef = useRef(null);
 
   const handleFileSelect = (field, file) => {
     if (file) {
@@ -95,6 +100,7 @@ function AddLsp() {
     }
   };
 
+  // ------------------- Submit Handler -------------------
   const handleSubmit = async () => {
     const newErrors = {};
     Object.keys(formData).forEach((key) => {
@@ -104,10 +110,7 @@ function AddLsp() {
     if (formData.phone && formData.phone.length !== 10)
       newErrors.phone = "10 digits required";
 
-    if (
-      formData.pointOfContactMobile &&
-      formData.pointOfContactMobile.length !== 10
-    )
+    if (formData.pointOfContactMobile && formData.pointOfContactMobile.length !== 10)
       newErrors.pointOfContactMobile = "10 digits required";
 
     if (Object.keys(newErrors).length > 0) {
@@ -116,7 +119,8 @@ function AddLsp() {
     }
 
     try {
-      if (taskData) {
+      if (taskData?._id) {
+        // Update existing technician
         await axios.put(`${API_BASE}/lsp-update/${taskData._id}`, formData);
 
         Swal.fire({
@@ -127,6 +131,7 @@ function AddLsp() {
           showConfirmButton: false,
         });
       } else {
+        // Add new technician
         await axios.post(`${API_BASE}/lsp-form`, formData);
 
         Swal.fire({
@@ -140,10 +145,12 @@ function AddLsp() {
 
       navigate("/user/manageLSP");
     } catch (err) {
+      console.error(err);
       Swal.fire("Error", "Something went wrong!", "error");
     }
   };
 
+  // ------------------- Personal Fields -------------------
   const personalFields = [
     { label: "Employee ID", key: "companyName", icon: <Person /> },
     { label: "Full Name", key: "businessType", icon: <Person /> },
@@ -163,10 +170,10 @@ function AddLsp() {
 
   const documentFields = [
     { label: "ID Proof", key: "adhaarCard", ref: adhaarFileRef },
-    { label: "Upload Document", key: "gstDocument", ref: gstFileRef },
+    { label: "GST Document", key: "gstDocument", ref: gstFileRef },
+    { label: "Company Document", key: "companyDocument", ref: companyFileRef },
   ];
 
-  // Shared TextField styles like Dashboard.js
   const getTextFieldSx = () => ({
     "& .MuiOutlinedInput-root": {
       backgroundColor: "#ffffff",
@@ -175,10 +182,7 @@ function AddLsp() {
       "& fieldset": { borderColor: "#d1d5db" },
       "&:hover fieldset": { borderColor: "#029898" },
       "&.Mui-focused fieldset": { borderColor: "#029898", borderWidth: 2 },
-      "&.Mui-focused": {
-        backgroundColor: "#fff",
-        boxShadow: "0 0 0 3px rgba(2,152,152,0.1)",
-      },
+      "&.Mui-focused": { backgroundColor: "#fff", boxShadow: "0 0 0 3px rgba(2,152,152,0.1)" },
       "& input": { fontSize: 13, padding: "10px 14px" },
     },
   });
@@ -199,6 +203,7 @@ function AddLsp() {
             {taskData ? "Edit Technician" : "Add Technician"}
           </Typography>
 
+          {/* Personal Details */}
           <Card sx={{ bgcolor: "#F0F6F6", boxShadow: "none", mb: 3 }}>
             <CardContent>
               <Typography sx={{ mb: 2, fontWeight: 600, fontSize: 14 }}>
@@ -234,6 +239,7 @@ function AddLsp() {
             </CardContent>
           </Card>
 
+          {/* Documents */}
           <Card sx={{ bgcolor: "#F0F6F6", boxShadow: "none" }}>
             <CardContent>
               <Typography sx={{ mb: 2, fontWeight: 600, fontSize: 14 }}>
@@ -278,8 +284,8 @@ function AddLsp() {
             </CardContent>
           </Card>
 
-
-          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 ,mt:3}}>
+          {/* Buttons */}
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 3 }}>
             <Button
               variant="outlined"
               sx={{
