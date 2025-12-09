@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../../componts/LspNavbar.jsx";
 import {
   Box,
@@ -39,22 +39,24 @@ export default function ManageEnquiry() {
 
   const navigate = useNavigate();
 
-  const [tasks, setTasks] = useState([
-    {
-      _id: "1",
-      companyName: "ComfortLiv",
-      businessType: "Owner",
-      phone: "9876543210",
-      email: "info@techvision.com",
-      pointOfContact: "Rahul Mehta",
-      pointOfContactMobile: "9988776655",
-      district: "Bangalore Urban",
-      city: "Bangalore",
-      serviceableCities: ["Mysore", "Mangalore"],
-      status: "Open",
-      documents: ["Aadhaar Card", "Degree Certificate", "Experience Certificate"],
-    },
-  ]);
+  const [tasks, setTasks] = useState([]);
+
+useEffect(() => {
+  fetchLspData();
+}, []);
+
+const fetchLspData = async () => {
+  try {
+    const res = await axios.get("http://localhost:2424/api/get-lsp");
+    console.log(res.data); // Should log an array of LSP objects
+    setTasks(res.data); // Assuming res.data is an array
+  } catch (err) {
+    console.error(err);
+    Swal.fire("Error", "Failed to load technicians", "error");
+  }
+};
+
+
 
   const handleEditClick = (task) => {
     navigate(`/lsp-addLSP`, { state: { task } });
@@ -80,18 +82,28 @@ export default function ManageEnquiry() {
     setSelectedTask(null);
   };
 
-  const handleConfirmDelete = () => {
-    if (selectedTask) {
-      setTasks((prev) => prev.filter((t) => t._id !== selectedTask._id));
-      Swal.fire({
-        icon: "success",
-        title: "Deleted Successfully",
-        showConfirmButton: false,
-        timer: 1200,
-      });
-    }
-    handleCloseDeleteDialog();
-  };
+ const handleConfirmDelete = async () => {
+  if (!selectedTask) return;
+
+  try {
+await axios.delete(`http://localhost:2424/api/delete-lsp/${selectedTask._id}`);
+
+
+    setTasks((prev) => prev.filter((t) => t._id !== selectedTask._id));
+
+    Swal.fire({
+      icon: "success",
+      title: "Deleted Successfully",
+      timer: 1200,
+      showConfirmButton: false,
+    });
+  } catch (err) {
+    Swal.fire("Error", "Failed to delete", "error");
+  }
+
+  handleCloseDeleteDialog();
+};
+
 
   const itemsPerPage = 10;
   const totalItems = tasks.length;
@@ -256,16 +268,17 @@ export default function ManageEnquiry() {
               "&:hover": { backgroundColor: "#f5f6f9" },
             }}
           >
+            
             <TableCell>{startIndex + idx + 1}</TableCell>
-            <TableCell>{task.companyName}</TableCell>
-            <TableCell>{task.businessType}</TableCell>
-            <TableCell>{task.phone}</TableCell>
-            <TableCell>{task.email}</TableCell>
-            <TableCell>{task.pointOfContact}</TableCell>
-            <TableCell>{task.pointOfContactMobile}</TableCell>
-            <TableCell>{task.district}</TableCell>
-            <TableCell>{task.city}</TableCell>
-            <TableCell>{task.status}</TableCell>
+      <TableCell>{task.empId}</TableCell>
+      <TableCell>{task.fullName}</TableCell>
+      <TableCell>{task.yearOfExperience}</TableCell>
+      <TableCell>{task.address}</TableCell>
+      <TableCell>{task.phoneNumber}</TableCell>
+      <TableCell>{task.email}</TableCell>
+      <TableCell>{task.categoryOfService}</TableCell>
+      <TableCell>{task.areaOfOperation}</TableCell>
+      <TableCell>{task.status || "Active"}</TableCell> {/* Optional */}
 
             <TableCell>
               <Box display="flex" justifyContent="center" gap={0.5}>
