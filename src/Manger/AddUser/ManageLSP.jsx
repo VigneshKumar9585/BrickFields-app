@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import Navbar from "../../componts/Navbar.jsx";
 import {
   Box,
@@ -27,6 +27,7 @@ import { Search, Eye, Pencil, Trash2, Pen, FileImage } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+const API = "http://localhost:2424/api";
 
 export default function ManageEnquiry() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -60,9 +61,10 @@ export default function ManageEnquiry() {
     },
   ]);
 
-  const handleEditClick = (task) => {
-    navigate(`/user/addLSP`, { state: { task } });
-  };
+ const handleEditClick = (task) => {
+  navigate(`/user/addLSP`, { state: { task } });
+};
+
 
   const handleOpenViewDialog = (task) => {
     setSelectedTask(task);
@@ -84,25 +86,71 @@ export default function ManageEnquiry() {
     setSelectedTask(null);
   };
 
-  const handleConfirmDelete = () => {
-    if (selectedTask) {
-      setTasks((prev) => prev.filter((t) => t._id !== selectedTask._id));
-      Swal.fire({
-        icon: "success",
-        title: "Deleted Successfully",
-        showConfirmButton: false,
-        timer: 1200,
-      });
-    }
+const handleConfirmDelete = async () => {
+  if (!selectedTask) return;
+
+  try {
+    await axios.delete(`${API}/lsp-delete/${selectedTask._id}`);
+
+    Swal.fire({
+      icon: "success",
+      title: "Deleted Successfully",
+      timer: 1200,
+      showConfirmButton: false,
+    });
+
+    fetchLsps(); // refresh table
     handleCloseDeleteDialog();
-  };
+  } catch (err) {
+    console.log("Delete Error:", err);
+    Swal.fire({
+      icon: "error",
+      title: "Failed to delete",
+    });
+  }
+};
 
   const itemsPerPage = 10;
-  const totalItems = tasks.length;
+ const totalItems = tasks?.length || 0;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-  const currentItems = tasks.slice(startIndex, endIndex);
+ const currentItems = Array.isArray(tasks)
+  ? tasks.slice(startIndex, endIndex)
+  : [];
+
+useEffect(() => {
+  fetchLsps();
+}, []);
+
+const fetchLsps = async () => {
+  try {
+    const res = await axios.get(`${API}/lsp-get`);
+    console.log("API Response:", res.data);
+
+    setTasks(Array.isArray(res.data) ? res.data : []);
+  } catch (error) {
+    console.error("Fetch LSP error:", error);
+  }
+};
+
+const serviceableCitiesArray = Array.isArray(selectedTask?.serviceableCities)
+  ? selectedTask.serviceableCities
+  : typeof selectedTask?.serviceableCities === "string"
+  ? selectedTask.serviceableCities.split(",").map((c) => c.trim())
+  : [];
+
+
+const documentList = selectedTask
+  ? [
+      ...(selectedTask.adhaarCard || []),
+      ...(selectedTask.gstDocument || []),
+      ...(selectedTask.companyDocument || []),
+    ]
+  : [];
+
+
+
 
   return (
     <>
@@ -407,9 +455,14 @@ export default function ManageEnquiry() {
                   Serviceable Cities
                 </Typography>
                 <Box display="flex" gap={1.5}>
-                  {selectedTask.serviceableCities.map((city, i) => (
-                    <TextField key={i} size="small" value={city} />
-                  ))}
+                {serviceableCitiesArray.length > 0 ? (
+  serviceableCitiesArray.map((city, i) => (
+    <TextField key={i} size="small" value={city} />
+  ))
+) : (
+  <Typography>No Serviceable Cities</Typography>
+)}
+
                 </Box>
 
                 <Divider sx={{my:1}} />
@@ -418,28 +471,28 @@ export default function ManageEnquiry() {
                 <Typography fontWeight="600" >
                   Document Data
                 </Typography>
-                <Box display="flex" gap={3}>
-                  {selectedTask.documents.map((doc, i) => (
-                    <Box
-                      key={i}
-                      display="flex"
-                      alignItems="center"
-                      gap={0.5}
-                    >
-                      <Typography
-                        sx={{
-                          color: "#0077b6",
-                          fontSize: "14px",
-                          textDecoration: "underline",
-                          cursor: "pointer",
-                        }}
-                      >
-                        {doc}
-                      </Typography>
-                      <FileImage size={16} />
-                    </Box>
-                  ))}
-                </Box>
+              <Box display="flex" gap={3}>
+  {documentList.length > 0 ? (
+  documentList.map((doc, i) => (
+    <Box key={i} display="flex" alignItems="center" gap={0.5}>
+      <Typography
+        sx={{
+          color: "#0077b6",
+          fontSize: "14px",
+          textDecoration: "underline",
+          cursor: "pointer",
+        }}
+      >
+        {doc}
+      </Typography>
+    </Box>
+  ))
+) : (
+  <Typography>No Documents Uploaded</Typography>
+)}
+
+</Box>
+
               </Box>
             </Box>
           </Box>

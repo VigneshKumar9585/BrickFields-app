@@ -17,7 +17,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import logo from "../../assets/logo/logo.webp";
 
-const API_BASE = "http://localhost:2424";
+const API_BASE = "http://localhost:2424/api";
 
 
 
@@ -136,15 +136,19 @@ const handleSubmit = async (e) => {
 
     if (taskData) {
       // UPDATE
-      await axios.put(`${API_BASE}/lsp-update/${taskData._id}`, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+    await axios.put(`${API_BASE}/lsp-update/${taskData._id}`, data, {
+  headers: { "Content-Type": "multipart/form-data" }
+});
+
+
       Swal.fire("Updated!", "LSP updated successfully", "success");
     } else {
       // CREATE
-      await axios.post(`${API_BASE}/api/lsp-form`, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+     await axios.post(`${API_BASE}/lsp-form`, data, {
+  headers: { "Content-Type": "multipart/form-data" }
+});
+
+
       Swal.fire("Added!", "LSP added successfully", "success");
     }
 
