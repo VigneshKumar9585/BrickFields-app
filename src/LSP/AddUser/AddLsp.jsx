@@ -177,14 +177,14 @@ export default function AddLsp() {
 
       if (taskData && taskData._id) {
         // Update
-        await axios.put(`${API_BASE}/update-lsp/${taskData._id}`, fd, {
+        await axios.put(`${API_BASE}/update-technician/${taskData._id}`, fd, {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
         Swal.fire({ title: "Updated", text: "Technician updated", icon: "success", timer: 1500, showConfirmButton: false });
       } else {
         // Create
-        await axios.post(`${API_BASE}/create-lsp`, fd, {
+        await axios.post(`${API_BASE}/create-technician`, fd, {
           headers: { "Content-Type": "multipart/form-data" },
         });
 

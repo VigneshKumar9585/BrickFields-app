@@ -17,11 +17,16 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import logo from "../../assets/logo/logo.webp";
 
-const API_BASE = "http://localhost:2444";
+const API_BASE = "http://localhost:2424";
+
+
 
 function AddLsp() {
   const navigate = useNavigate();
   const location = useLocation();
+const [adhaarFile, setAdhaarFile] = useState(null);
+const [gstFile, setGstFile] = useState(null);
+const [companyFile, setCompanyFile] = useState(null);
 
   // ✅ Read task data if we came from edit
   const taskData = location.state?.task || null;
@@ -42,6 +47,19 @@ function AddLsp() {
     gstDocument: "",
     companyDocument: "",
   });
+
+  const handleChange = (key, value) => {
+  setFormData((prev) => ({
+    ...prev,
+    [key]: value,
+  }));
+
+  setErrors((prev) => ({
+    ...prev,
+    [key]: "",
+  }));
+};
+
 
   // ✅ Prefill if edit mode
   useEffect(() => {
@@ -67,69 +85,77 @@ function AddLsp() {
   // ✅ Manage errors
   const [errors, setErrors] = useState({});
 
-  // ✅ Handle input change
-  const handleChange = (field, value) => {
-    if (field === "phone" || field === "pointOfContactMobile") {
-      if (!/^\d{0,10}$/.test(value)) return; // allow only numbers, max 10
-    }
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: "" })); // clear error on change
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-  // ✅ Handle submit with validation
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const newErrors = {};
 
-    const newErrors = {};
-    Object.keys(formData).forEach((key) => {
-      if (!formData[key]) {
-        newErrors[key] = "This field is required";
-      }
+  // Validate ONLY text fields
+  const textFields = [
+    "companyName",
+    "businessType",
+    "phone",
+    "email",
+    "pointOfContact",
+    "pointOfContactMobile",
+    "district",
+    "city",
+    "address",
+    "serviceableCities",
+  ];
+
+  textFields.forEach((key) => {
+    if (!formData[key]) newErrors[key] = "This field is required";
+  });
+
+  // Validate file uploads
+  if (!taskData && !adhaarFile)
+    newErrors.adhaarCard = "Upload required";
+  if (!taskData && !gstFile)
+    newErrors.gstDocument = "Upload required";
+  if (!taskData && !companyFile)
+    newErrors.companyDocument = "Upload required";
+
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    return;
+  }
+
+  try {
+    const data = new FormData();
+
+    // Append text fields
+    textFields.forEach((key) => {
+      data.append(key, formData[key]);
     });
 
-    if (formData.phone && formData.phone.length !== 10) {
-      newErrors.phone = "Must be exactly 10 digits";
-    }
-    if (
-      formData.pointOfContactMobile &&
-      formData.pointOfContactMobile.length !== 10
-    ) {
-      newErrors.pointOfContactMobile = "Must be exactly 10 digits";
+    // Append files ONLY if newly uploaded
+    if (adhaarFile) data.append("adhaarCard", adhaarFile);
+    if (gstFile) data.append("gstDocument", gstFile);
+    if (companyFile) data.append("companyDocument", companyFile);
+
+    if (taskData) {
+      // UPDATE
+      await axios.put(`${API_BASE}/lsp-update/${taskData._id}`, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      Swal.fire("Updated!", "LSP updated successfully", "success");
+    } else {
+      // CREATE
+      await axios.post(`${API_BASE}/api/lsp-form`, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      Swal.fire("Added!", "LSP added successfully", "success");
     }
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+    navigate("/user/manageLSP");
+  } catch (err) {
+    console.log(err);
+    Swal.fire("Error", "Something went wrong!", "error");
+  }
+};
 
-    try {
-      if (taskData) {
-        // ✅ UPDATE
-        await axios.put(`${API_BASE}/lsp-update/${taskData._id}`, formData);
-        Swal.fire({
-          title: "LSP Updated",
-          text: "Your LSP has been successfully updated.",
-          icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-        });
-      } else {
-        // ✅ CREATE
-        await axios.post(`${API_BASE}/lsp-form`, formData);
-        Swal.fire({
-          title: "LSP Added",
-          text: "Your LSP has been successfully saved.",
-          icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-        });
-      }
-      navigate("/user/manageLSP");
-    } catch (err) {
-      console.error("❌ Error saving LSP", err);
-      Swal.fire("Error", "Something went wrong!", "error");
-    }
-  };
+
 
   const personalFields = [
     { label: "Company Name", key: "companyName" },
@@ -271,44 +297,100 @@ function AddLsp() {
                 </Typography>
 
                 <Grid container spacing={2}>
-                  {documentFields.map((field, i) => (
-                    <Grid item xs={12} sm={6} md={4} key={i}>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          mb: 1,
-                          pr: 3,
-                          color: "#000",
-                          fontSize: "12px",
-                          fontWeight: 500,
-                        }}
-                      >
-                        {field.label}
-                      </Typography>
-                      <TextField
-                        value={formData[field.key]}
-                        onChange={(e) => handleChange(field.key, e.target.value)}
-                        fullWidth
-                        variant="outlined"
-                        size="small"
-                        error={!!errors[field.key]}
-                        helperText={errors[field.key] || ""}
-                        sx={{
-                          "& .MuiOutlinedInput-root": {
-                            height: "30px",
-                            bgcolor: "#e0e0e0",
-                            borderRadius: "4px",
-                            "& input": {
-                              padding: "4px 8px",
-                              fontSize: "12px",
-                            },
-                            "& fieldset": { border: "none" },
-                          },
-                        }}
-                      />
-                    </Grid>
-                  ))}
-                </Grid>
+  <Grid item xs={12} sm={6} md={4}>
+    <Typography
+      variant="body2"
+      sx={{
+        mb: 1,
+        pr: 3,
+        color: "#000",
+        fontSize: "12px",
+        fontWeight: 500,
+      }}
+    >
+      Adhaar Card
+    </Typography>
+
+    <input
+      type="file"
+      onChange={(e) => setAdhaarFile(e.target.files[0])}
+      style={{
+        width: "100%",
+        fontSize: "12px",
+        padding: "6px 0",
+      }}
+    />
+
+    {errors.adhaarCard && (
+      <p style={{ color: "red", fontSize: "10px", marginTop: "2px" }}>
+        {errors.adhaarCard}
+      </p>
+    )}
+  </Grid>
+
+  <Grid item xs={12} sm={6} md={4}>
+    <Typography
+      variant="body2"
+      sx={{
+        mb: 1,
+        pr: 3,
+        color: "#000",
+        fontSize: "12px",
+        fontWeight: 500,
+      }}
+    >
+      GST Document
+    </Typography>
+
+    <input
+      type="file"
+      onChange={(e) => setGstFile(e.target.files[0])}
+      style={{
+        width: "100%",
+        fontSize: "12px",
+        padding: "6px 0",
+      }}
+    />
+
+    {errors.gstDocument && (
+      <p style={{ color: "red", fontSize: "10px", marginTop: "2px" }}>
+        {errors.gstDocument}
+      </p>
+    )}
+  </Grid>
+
+  <Grid item xs={12} sm={6} md={4}>
+    <Typography
+      variant="body2"
+      sx={{
+        mb: 1,
+        pr: 3,
+        color: "#000",
+        fontSize: "12px",
+        fontWeight: 500,
+      }}
+    >
+      Company Document
+    </Typography>
+
+    <input
+      type="file"
+      onChange={(e) => setCompanyFile(e.target.files[0])}
+      style={{
+        width: "100%",
+        fontSize: "12px",
+        padding: "6px 0",
+      }}
+    />
+
+    {errors.companyDocument && (
+      <p style={{ color: "red", fontSize: "10px", marginTop: "2px" }}>
+        {errors.companyDocument}
+      </p>
+    )}
+  </Grid>
+</Grid>
+
               </CardContent>
             </Card>
 

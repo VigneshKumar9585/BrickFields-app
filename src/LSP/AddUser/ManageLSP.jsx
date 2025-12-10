@@ -47,7 +47,7 @@ useEffect(() => {
 
 const fetchLspData = async () => {
   try {
-    const res = await axios.get("http://localhost:2424/api/get-lsp");
+    const res = await axios.get("http://localhost:2424/api/get-technician");
     console.log(res.data); // Should log an array of LSP objects
     setTasks(res.data); // Assuming res.data is an array
   } catch (err) {
@@ -86,7 +86,7 @@ const fetchLspData = async () => {
   if (!selectedTask) return;
 
   try {
-await axios.delete(`http://localhost:2424/api/delete-lsp/${selectedTask._id}`);
+await axios.delete(`http://localhost:2424/api/delete-technician/${selectedTask._id}`);
 
 
     setTasks((prev) => prev.filter((t) => t._id !== selectedTask._id));
