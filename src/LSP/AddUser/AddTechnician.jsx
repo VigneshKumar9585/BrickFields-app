@@ -1,6 +1,6 @@
 // src/pages/Dashboard.js
 import React, { useState } from "react";
-import Navbar from "../../componts/AdminNavbar";
+import Navbar from "../../componts/LspNavbar.jsx";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -31,14 +31,13 @@ import {
   YouTube as YouTubeIcon,
   LinkedIn as LinkedInIcon,
   Lock as LockIcon,
-  Public as PublicIcon
 } from "@mui/icons-material";
 import logo from "../../assets/logo/logo.webp";
 import { useLocation, useNavigate } from "react-router-dom";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 
-function Dashboard() {
+function AddTechnician() {
   const location = useLocation();
   const taskData = location.state?.task;
   const [errors, setErrors] = useState({});
@@ -53,6 +52,8 @@ function Dashboard() {
     "Password": "password",
     "Age": "age",
     "Email ID": "email",
+    "Category Of Service" : "categoryOfService",
+    // "Gender":"gender",s
     "Street": "street",
     "State": "state",
     "District": "district",
@@ -62,7 +63,7 @@ function Dashboard() {
     "Instagram": "instagramLink",
     "Youtube": "youtubeLink",
     "Linkedin": "linkedinLink",
-
+    "Year Of Experience" :"yearOfExperience",
     "Degree Certificate": "degreeCertificate",
     "Adhaar Card": "aadhaarCard",
     "Provisional Certificate": "provisionalCertificate",
@@ -93,6 +94,14 @@ const validateForm = () => {
     newErrors.password = "Password is required";
   }
 
+   if (!formValues.categoryOfService.trim()) {
+    newErrors.categoryOfService = "Category Of Service is required";
+  }
+
+   if (!formValues.yearOfExperience.trim()) {
+    newErrors.yearOfExperience = "Year Of Experience is required";
+  }
+
   // Email
   if (!formValues.email.trim()) {
     newErrors.email = "Email is required";
@@ -108,6 +117,8 @@ const validateForm = () => {
     }
   });
 
+
+  // -------------------- SOCIAL MEDIA (OPTIONAL BUT MUST BE VALID IF ENTERED) --------------------
   const socialFields = ["instagramLink", "youtubeLink", "linkedinLink"];
 
   const urlRegex = /^(https?:\/\/)?([\w\d\-]+\.)+\w{2,}(\/.*)?$/;
@@ -147,13 +158,16 @@ const validateForm = () => {
     { label: "Age", icon: <PersonIcon sx={{ color: "#029898" }} /> },
     { label: "Mobile No", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
     { label: "Email ID", icon: <EmailIcon sx={{ color: "#029898" }} /> },
-    { label: "Country", icon: <PublicIcon sx={{ color: "#029898" }} /> },
+    { label: "Country", icon: <MapsHomeWorkIcon sx={{ color: "#029898" }} /> },
     { label: "District", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
     { label: "Region", icon: <PushPinIcon sx={{ color: "#029898" }} /> },
     { label: "City", icon: <MyLocationIcon sx={{ color: "#029898" }} /> },
     { label: "State", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
     { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
     { label: "Password", icon: <LockIcon sx={{ color: "#029898" }} /> },
+    { label: "Year Of Experience", icon: <LockIcon sx={{ color: "#029898" }} /> },
+    { label: "Category Of Service", icon: <LockIcon sx={{ color: "#029898" }} /> },
+
   ];
 
   const documentFields = [
@@ -185,6 +199,8 @@ const validateForm = () => {
     instagramLink: "",
     youtubeLink: "",
     linkedinLink: "",
+    yearOfExperience: "",
+    categoryOfService: ""
   });
 
   setUploadedDocs({});
@@ -229,6 +245,7 @@ const validateForm = () => {
     email: "",
     street: "",
     state: "",
+    age:"",
     district: "",
     city: "",
     region: "",
@@ -237,7 +254,8 @@ const validateForm = () => {
     youtubeLink: "",
     linkedinLink: "",
     password: "",
-    age:""
+     yearOfExperience: "",
+    categoryOfService: ""
   });
   React.useEffect(() => {
     if (!isEditMode || !taskData) return;
@@ -256,7 +274,9 @@ const validateForm = () => {
       youtubeLink: taskData.youtubeLink || "",
       linkedinLink: taskData.linkedinLink || "",
       password: taskData.password || "",
-      age: taskData.age || ""
+      age: taskData.age || "",
+      yearOfExperience: taskData.yearOfExperience,
+    categoryOfService: taskData.categoryOfService
     });
   }, [taskData]);
 
@@ -294,7 +314,7 @@ const validateForm = () => {
   const handleSubmit = async () => {
     if (!validateForm()) return;
     if (!isEditMode && !taskData) {
-      // Create new manager
+      // Create new technician
       const formData = new FormData();
 
       // PERSONAL FIELDS
@@ -319,18 +339,18 @@ const validateForm = () => {
       });
 
       try {
-        await axios.post(`${BACKEND_URL}/api/create-manager`, formData, {
+        await axios.post(`${BACKEND_URL}/api/create-technician`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
-        toast.success("Manager Added Successfully!");
+        toast.success("Technician Added Successfully!");
         resetForm();
       } catch (error) {
         console.error(error);
-        toast.error("Failed to add manager.");
+        toast.error("Failed to add technician.");
       }
 
     } else if (isEditMode && taskData?._id) {
-      // Update existing manager
+      // Update existing technician
       const formData = new FormData();
 
       // PERSONAL FIELDS
@@ -356,15 +376,15 @@ const validateForm = () => {
 
       try {
         if (!isEditMode && !taskData) {
-          await axios.post(`${BACKEND_URL}/api/create-manager`, formData, {
+          await axios.post(`${BACKEND_URL}/api/create-technician`, formData, {
             headers: { "Content-Type": "multipart/form-data" },
           });
-          toast.success("Manager Added Successfully!");
+          toast.success("Technician Added Successfully!");
         } else if (isEditMode && taskData?._id) {
-          await axios.put(`${BACKEND_URL}/api/update-manager/${taskData._id}`, formData, {
+          await axios.put(`${BACKEND_URL}/api/update-technician/${taskData._id}`, formData, {
             headers: { "Content-Type": "multipart/form-data" },
           });
-          toast.success("Manager Updated Successfully!");
+          toast.success("technician Updated Successfully!");
         }
 
         // Redirect after 1 second to allow toast to show
@@ -374,7 +394,7 @@ const validateForm = () => {
 
       } catch (error) {
         console.error(error);
-        toast.error("Failed to save manager.");
+        toast.error("Failed to save technician.");
       }
 
     }
@@ -400,7 +420,7 @@ const validateForm = () => {
             </Typography>
             <Typography sx={{ color: "#9ca3af", fontSize: "15px" }}>|</Typography>
             <Typography sx={{ color: "#6b7280", fontSize: "15px", cursor: "pointer" }}>
-              {isEditMode ? "Edit Manager" : "Add Manager"}
+              {isEditMode ? "Edit technician" : "Add technician"}
             </Typography>
           </Box>
 
@@ -792,4 +812,4 @@ const validateForm = () => {
   );
 }
 
-export default Dashboard;
+export default AddTechnician;

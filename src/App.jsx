@@ -20,6 +20,7 @@ import AdminManageEnquiry from "./Admin/Enquiry/ManageEnquiry.jsx"
 import AdminAddManager from "./Admin/AddUser/AddManager.jsx"
 import AdminAddStaff from "./Admin/AddUser/AddStaff.jsx"
 import AdminManagerUser from "./Admin/AddUser/ManageUser.jsx"
+import AdminEditManager from "./Admin/AddUser/editManager.jsx"
 
 
 // Manager
@@ -34,11 +35,14 @@ import NewTask from "./Manger/Enquiry/NewTaskDetails.jsx"
 import EditProfile from "./Manger/ProfileEdit.jsx"
 import ChangePasswored from "./Manger/ChangePasswored.jsx"
 import AssignEdit from "./Manger/Enquiry/EditAssign.jsx";
+// import AddLSP from "./Manger/AddUser/AddLSP.jsx"
+// import ManageLSP from "./Manger/AddUser/ManageLSP.jsx"
 import AddLSP from "./Manger/AddUser/AddLSP.jsx"
 import ManageLSP from "./Manger/AddUser/ManageLSP.jsx"
 import Report from './Manger/Report/Report.jsx'
 import Inspection from './Manger/Inspection/Inspection.jsx'
 import InspectionDetails from './Manger/Inspection/InspectionDetails.jsx'
+
 
 
 
@@ -50,6 +54,7 @@ import TechnicianNewEnquiry from "./Tachnician/Enquiry/NewEnquiry.jsx"
 import TechnicianLiveUpdate from "./Tachnician/LiveUpdate/Liveupadate.jsx"
 import TechnicianInspectionGeneral from "./Tachnician/Inaspection/General.jsx"
 import TechnicianInspectionCheacklist from "./Tachnician/Inaspection/CheakList.jsx"
+
 // import TechnicianCurrentEnquiry from "./Tachnician/Enquiry/CurrentEnquiry.jsx"
 
 
@@ -57,14 +62,17 @@ import TechnicianInspectionCheacklist from "./Tachnician/Inaspection/CheakList.j
 // LSP
 import LspDashboard from "./LSP/Dashborad/Dashboard.jsx"
 import LspReport from "./LSP/Report/Report.jsx"
-import LspAddLsp from "./LSP/AddUser/AddLsp.jsx"
-import LspManageLsp from "./LSP/AddUser/ManageLSP.jsx"
+// import LspAddLsp from "./LSP/AddUser/AddLsp.jsx"
+// import LspManageLsp from "./LSP/AddUser/ManageLSP.jsx"
+import ManageTechnician from './LSP/AddUser/ManageTechnician';
 import LspNewEnquiry from "./LSP/Enquiry/NewEnquiry.jsx"
 import LspManageEnquiry from "./LSP/Enquiry/MangeEnquiry.jsx"
 import LspNewEditAssgin from "./LSP/Enquiry/NewTaskDetails.jsx"
 import LspEditAssign from "./LSP/Enquiry/EditAssign.jsx";
 import LspProfile from "./LSP/Dashborad/Profile.jsx"
-
+import AddTechnician from "./LSP/AddUser/AddTechnician"
+import EditTechnician from './LSP/AddUser/EditTechnician.jsx';
+import EditLsp from './Manger/Adduser/EditLsp.jsx';
 //customer
 import EnquiryForm from "../AddEnquiry.jsx"
 
@@ -104,6 +112,7 @@ function App() {
       <Route path='/admin-new-enquiry-Details/:id' element={<AdminNewTaskDetails/>} />
       <Route path='/admin-manage-enquiry' element={<AdminManageEnquiry/>} />
       <Route path='/admin-add-manager' element={<AdminAddManager/>} />
+      <Route path='/admin-edit-manager/:id' element={<AdminEditManager />} />
       <Route path='/admin-add-Staff' element={<AdminAddStaff/>} />
       <Route path='/admin-manage-user' element={<AdminManagerUser/>} />
       
@@ -125,6 +134,8 @@ function App() {
       <Route path='/report' element={<Report/>}/>
       <Route path='/inspection' element={<Inspection/>}/>
       <Route path='/inspection-Details' element={<InspectionDetails/>}/>
+      <Route path='/edit-lsp/:id' element={<EditLsp/>}/>
+
 
 
 {/* Tachnician */}
@@ -141,8 +152,12 @@ function App() {
     {/* LSP */}
       <Route path='/lsp-Dashboard' element={<LspDashboard/>}/>
       <Route path='/lsp-report' element={<LspReport/>}/>
-      <Route path='/lsp-addLSP' element={<LspAddLsp/>}/>
-      <Route path='/lsp-manageLSP' element={<LspManageLsp/>}/>
+      <Route path='/lsp-addLSP' element={<AddTechnician/>}/>
+      {/* <Route path='/lsp-manageLSP' element={<LspManageLsp/>}/> */}
+      <Route path='/lsp-manageLSP' element={<ManageTechnician/>}/>
+      <Route path='/edit-technician/:id' element={<EditTechnician/>}/>
+
+
       <Route path='/lsp-new-enquiry' element={<LspNewEnquiry/>}/>
       <Route path='/lsp-manage-enquiry' element={<LspManageEnquiry/>}/>
       <Route path='/lsp-new-edit-assgin' element={<LspNewEditAssgin/>} />

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Navbar from "../../componts/AdminNavbar";
+import Navbar from "../../componts/LspNavbar";
 import {
   Box,
   Card,
@@ -56,7 +56,7 @@ const InfoItem = ({ icon: Icon, label, value }) => (
     </Typography>
   </Box>
 );
-export default function ManageEnquiry() {
+export default function ManageTechnician() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -75,7 +75,7 @@ export default function ManageEnquiry() {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    fetchManagers();
+    fetchtechnicians();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -101,14 +101,14 @@ export default function ManageEnquiry() {
   };
 
   // -------------------------
-  // Fetch all managers and normalize
+  // Fetch all technicians and normalize
   // -------------------------
-  const fetchManagers = async () => {
+  const fetchtechnicians = async () => {
     try {
-      const res = await axios.get(`${BACKEND_URL}/api/get-managers`);
-      const managers = Array.isArray(res.data) ? res.data : res.data?.data || [];
+      const res = await axios.get(`${BACKEND_URL}/api/get-technician`);
+      const technicians = Array.isArray(res.data) ? res.data : res.data?.data || [];
 
-      const normalized = managers.map((m) => ({
+      const normalized = technicians.map((m) => ({
         ...m,
         mobile: m.phoneNumber || m.mobile || "",
         address:
@@ -123,34 +123,34 @@ export default function ManageEnquiry() {
         city: m.city || "",
         region: m.region || "",
         degreeCertificateUrls: (m.degreeCertificate || []).map(
-          (fname) => `${BACKEND_URL}/upload-manager-images/${fname}`
+          (fname) => `${BACKEND_URL}/upload-technician-images/${fname}`
         ),
         aadhaarCardUrls: (m.aadhaarCard || []).map(
-          (fname) => `${BACKEND_URL}/upload-manager-images/${fname}`
+          (fname) => `${BACKEND_URL}/upload-technician-images/${fname}`
         ),
         provisionalCertificateUrls: (m.provisionalCertificate || []).map(
-          (fname) => `${BACKEND_URL}/upload-manager-images/${fname}`
+          (fname) => `${BACKEND_URL}/upload-technician-images/${fname}`
         ),
         experienceCertificateUrls: (m.experienceCertificate || []).map(
-          (fname) => `${BACKEND_URL}/upload-manager-images/${fname}`
+          (fname) => `${BACKEND_URL}/upload-technician-images/${fname}`
         ),
       }));
 
       setTasks(normalized);
     } catch (error) {
-      console.error("Error fetching managers:", error);
-      Swal.fire({ icon: "error", title: "Failed to load managers" });
+      console.error("Error fetching technicians:", error);
+      Swal.fire({ icon: "error", title: "Failed to load technicians" });
     }
   };
 
   console.log(selectedTask)
 
   // -------------------------
-  // Open View dialog (fetch single manager)
+  // Open View dialog (fetch single technician)
   // -------------------------
   const handleOpenViewDialog = async (task) => {
     try {
-      const res = await axios.get(`${BACKEND_URL}/api/get-manager/${task._id}`);
+      const res = await axios.get(`${BACKEND_URL}/api/get-technician/${task._id}`);
       const m = res.data && !Array.isArray(res.data) ? res.data : res.data?.data || task;
       console.log(m);
       const normalized = {
@@ -164,23 +164,23 @@ export default function ManageEnquiry() {
           "",
         companyName: m.name || m.companyName || task.companyName || "",
         degreeCertificateUrls: (m.degreeCertificate || []).map(
-          (fname) => `${BACKEND_URL}/upload-manager-images/${fname}`
+          (fname) => `${BACKEND_URL}/upload-technician-images/${fname}`
         ),
         aadhaarCardUrls: (m.aadhaarCard || []).map(
-          (fname) => `${BACKEND_URL}/upload-manager-images/${fname}`
+          (fname) => `${BACKEND_URL}/upload-technician-images/${fname}`
         ),
         provisionalCertificateUrls: (m.provisionalCertificate || []).map(
-          (fname) => `${BACKEND_URL}/upload-manager-images/${fname}`
+          (fname) => `${BACKEND_URL}/upload-technician-images/${fname}`
         ),
         experienceCertificateUrls: (m.experienceCertificate || []).map(
-          (fname) => `${BACKEND_URL}/upload-manager-images/${fname}`
+          (fname) => `${BACKEND_URL}/upload-technician-images/${fname}`
         ),
       };
 
       setSelectedTask(normalized);
       setOpenViewDialog(true);
     } catch (err) {
-      console.error("Failed to fetch manager:", err);
+      console.error("Failed to fetch technician:", err);
       Swal.fire({ icon: "error", title: "Failed to load details" });
     }
   };
@@ -212,7 +212,7 @@ export default function ManageEnquiry() {
     if (!selectedTask) return;
 
     try {
-      await axios.delete(`${BACKEND_URL}/api/delete-manager/${selectedTask._id}`);
+      await axios.delete(`${BACKEND_URL}/api/delete-technician/${selectedTask._id}`);
 
       setTasks((prev) => prev.filter((t) => t._id !== selectedTask._id));
 
@@ -234,7 +234,7 @@ export default function ManageEnquiry() {
   // Edit navigation
   // -------------------------
   const handleEditClick = (task) => {
-    navigate(`/admin-edit-manager/${task._id}`);
+    navigate(`/edit-technician/${task._id}`);
   };
 
   // -------------------------
@@ -289,7 +289,7 @@ export default function ManageEnquiry() {
             color="rgb(0,0,0)"
             sx={{ fontSize: { xs: "20px", md: "24px" }, fontWeight: "500", mb: 1 }}
           >
-            Manage Managers
+            Manage technicians
           </Typography>
 
           {/* Filter Bar */}
@@ -689,7 +689,7 @@ export default function ManageEnquiry() {
               <User size={20} color="white" />
             </Box>
             <Typography sx={{ fontSize: "18px", fontWeight: 600, letterSpacing: "0.5px" }}>
-              Manager Details
+              technician Details
             </Typography>
           </Box>
           <IconButton
@@ -761,11 +761,11 @@ export default function ManageEnquiry() {
                 </Box>
 
                 <Typography variant="h6" fontWeight={700} color="#1e293b" gutterBottom>
-                  {selectedTask?.companyName || selectedTask?.name || "Unknown Manager"}
+                  {selectedTask?.companyName || selectedTask?.name || "Unknown technician"}
                 </Typography>
 
                 <Chip
-                  label="Active Manager"
+                  label="Active technician"
                   size="small"
                   sx={{
                     mb: 3,
@@ -800,6 +800,30 @@ export default function ManageEnquiry() {
                       <Typography fontSize="11px" color="#64748b" fontWeight={500}>Phone Number</Typography>
                       <Typography fontSize="13px" fontWeight={600} color="#334155">
                         {selectedTask?.mobile || selectedTask?.phoneNumber || "-"}
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  <Box display="flex" alignItems="center" gap={2}>
+                    <Box p={1} borderRadius="10px" bgcolor="#F0F6F6" color="#029898">
+                      <Phone size={18} />
+                    </Box>
+                    <Box>
+                      <Typography fontSize="11px" color="#64748b" fontWeight={500}>Year Of Experience</Typography>
+                      <Typography fontSize="13px" fontWeight={600} color="#334155">
+                        {selectedTask?.yearOfExperience || "-"}
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                   <Box display="flex" alignItems="center" gap={2}>
+                    <Box p={1} borderRadius="10px" bgcolor="#F0F6F6" color="#029898">
+                      <Phone size={18} />
+                    </Box>
+                    <Box>
+                      <Typography fontSize="11px" color="#64748b" fontWeight={500}>Category</Typography>
+                      <Typography fontSize="13px" fontWeight={600} color="#334155">
+                        {selectedTask?.categoryOfService || "-"}
                       </Typography>
                     </Box>
                   </Box>

@@ -1,7 +1,9 @@
-// src/pages/addLsp.js
-import React, { useState, useEffect } from "react";
+// src/pages/Dashboard.js
+import React, { useState } from "react";
 import Navbar from "../../componts/Navbar.jsx";
-import Swal from "sweetalert2";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import {
   Box,
   Card,
@@ -10,192 +12,426 @@ import {
   Grid,
   TextField,
   Button,
-  Divider,
+  MenuItem,
+  IconButton,
 } from "@mui/material";
-import { Edit } from "@mui/icons-material";
-import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import {
+  Edit,
+  Close,
+  CloudUpload as CloudUploadIcon,
+  Person as PersonIcon,
+  Email as EmailIcon,
+  Phone as PhoneIcon,
+  LocationOn as LocationOnIcon,
+  HomeWork as HomeWorkIcon,
+  MapsHomeWork as MapsHomeWorkIcon,
+  PushPin as PushPinIcon,
+  MyLocation as MyLocationIcon,
+  Instagram as InstagramIcon,
+  YouTube as YouTubeIcon,
+  LinkedIn as LinkedInIcon,
+  Lock as LockIcon,
+} from "@mui/icons-material";
 import logo from "../../assets/logo/logo.webp";
-
-const API_BASE = "http://localhost:2424/api";
-
+import { useLocation, useNavigate } from "react-router-dom";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 
 function AddLsp() {
-  const navigate = useNavigate();
   const location = useLocation();
-const [adhaarFile, setAdhaarFile] = useState(null);
-const [gstFile, setGstFile] = useState(null);
-const [companyFile, setCompanyFile] = useState(null);
-
-  // ✅ Read task data if we came from edit
-  const taskData = location.state?.task || null;
-
-  // ✅ Manage form state
-  const [formData, setFormData] = useState({
-    companyName: "",
-    businessType: "",
-    phone: "",
-    email: "",
-    pointOfContact: "",
-    pointOfContactMobile: "",
-    district: "",
-    city: "",
-    address: "",
-    serviceableCities: "",
-    adhaarCard: "",
-    gstDocument: "",
-    companyDocument: "",
-  });
-
-  const handleChange = (key, value) => {
-  setFormData((prev) => ({
-    ...prev,
-    [key]: value,
-  }));
-
-  setErrors((prev) => ({
-    ...prev,
-    [key]: "",
-  }));
-};
-
-
-  // ✅ Prefill if edit mode
-  useEffect(() => {
-    if (taskData) {
-      setFormData({
-        companyName: taskData.companyName || "",
-        businessType: taskData.businessType || "",
-        phone: taskData.phone || "",
-        email: taskData.email || "",
-        pointOfContact: taskData.pointOfContact || "",
-        pointOfContactMobile: taskData.pointOfContactMobile || "",
-        district: taskData.district || "",
-        city: taskData.city || "",
-        address: taskData.address || "",
-        serviceableCities: taskData.serviceableCities || "",
-        adhaarCard: taskData.adhaarCard || "",
-        gstDocument: taskData.gstDocument || "",
-        companyDocument: taskData.companyDocument || "",
-      });
-    }
-  }, [taskData]);
-
-  // ✅ Manage errors
+  const taskData = location.state?.task;
   const [errors, setErrors] = useState({});
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  // console.log("Task Data:", taskData);
+  const isEditMode = !!taskData;
+  const navigate = useNavigate();
 
+  const fieldKeyMap = {
+    "Company Name": "companyName",
+    "Business Type": "businessType",
+    "Company Phone NO": "companyPhoneNumber",
+
+    "Point Of Contact person": "contactPerson",
+    "Point Of Contact Number": "pointOfContactNumber",
+    "Serviceable Cities": "serviceableCities",
+    "Password": "password",
+    "Email ID": "email",
+    "Street": "street",
+    "State": "state",
+    "District": "district",
+    "City": "city",
+    "Region": "region",
+    "Country": "country",
+    "Adhaar Card": "aadhaarCard",
+    "Gst Document": "gstDocument",
+    "Company Document": "companyDocument",
+  };
+
+const validateForm = () => {
   const newErrors = {};
 
-  // Validate ONLY text fields
-  const textFields = [
-    "companyName",
-    "businessType",
-    "phone",
-    "email",
-    "pointOfContact",
-    "pointOfContactMobile",
-    "district",
-    "city",
-    "address",
-    "serviceableCities",
-  ];
+  // -------------------- PERSONAL FIELDS --------------------
+  // Name
+  if (!formValues.companyName.trim()) {
+    newErrors.companyName = "Company Name is required";
+  }
 
-  textFields.forEach((key) => {
-    if (!formData[key]) newErrors[key] = "This field is required";
+  // Phone
+  if (!formValues.pointOfContactNumber.trim()) {
+    newErrors.pointOfContactNumber = "Mobile number is required";
+  } else if (!/^\d{10}$/.test(formValues.pointOfContactNumber)) {
+    newErrors.pointOfContactNumber = "Mobile number must be 10 digits";
+  }
+
+
+  if (!formValues.password.trim()) {
+    newErrors.password = "Password is required";
+  }
+
+  
+  if (!formValues.pointOfContactNumber.trim()) {
+    newErrors.pointOfContactNumber = "Point of contact number is required";
+  }
+
+   if (!formValues.companyPhoneNumber.trim()) {
+    newErrors.companyPhoneNumber = "Company phone number is required";
+  }
+
+  
+  if (!formValues.businessType.trim()) {
+    newErrors.businessType = "Business Type is required";
+  }
+
+
+  if (!formValues.serviceableCities.trim()) {
+    newErrors.serviceableCities = "Serviceable Cities is required";
+  }
+
+  // Email
+  if (!formValues.email.trim()) {
+    newErrors.email = "Email is required";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.email)) {
+    newErrors.email = "Invalid email format";
+  }
+
+  // Address fields
+  const addressFields = ["country", "state", "district", "region", "city", "street"];
+  addressFields.forEach((key) => {
+    if (!formValues[key] || !formValues[key].trim()) {
+      newErrors[key] = `${key.charAt(0).toUpperCase() + key.slice(1)} is required`;
+    }
   });
 
-  // Validate file uploads
-  if (!taskData && !adhaarFile)
-    newErrors.adhaarCard = "Upload required";
-  if (!taskData && !gstFile)
-    newErrors.gstDocument = "Upload required";
-  if (!taskData && !companyFile)
-    newErrors.companyDocument = "Upload required";
 
-  if (Object.keys(newErrors).length > 0) {
-    setErrors(newErrors);
-    return;
-  }
+  // -------------------- SOCIAL MEDIA (OPTIONAL BUT MUST BE VALID IF ENTERED) --------------------
+  // const socialFields = ["instagramLink", "youtubeLink", "linkedinLink"];
 
-  try {
-    const data = new FormData();
+  // const urlRegex = /^(https?:\/\/)?([\w\d\-]+\.)+\w{2,}(\/.*)?$/;
 
-    // Append text fields
-    textFields.forEach((key) => {
-      data.append(key, formData[key]);
-    });
-
-    // Append files ONLY if newly uploaded
-    if (adhaarFile) data.append("adhaarCard", adhaarFile);
-    if (gstFile) data.append("gstDocument", gstFile);
-    if (companyFile) data.append("companyDocument", companyFile);
-
-    if (taskData) {
-      // UPDATE
-    await axios.put(`${API_BASE}/lsp-update/${taskData._id}`, data, {
-  headers: { "Content-Type": "multipart/form-data" }
-});
+  // socialFields.forEach((key) => {
+  //   if (formValues[key] && formValues[key].trim() !== "") {
+  //     if (!urlRegex.test(formValues[key])) {
+  //       newErrors[key] = "Invalid URL format";
+  //     }
+  //   }
+  // });
 
 
-      Swal.fire("Updated!", "LSP updated successfully", "success");
-    } else {
-      // CREATE
-     await axios.post(`${API_BASE}/lsp-form`, data, {
-  headers: { "Content-Type": "multipart/form-data" }
-});
+  // -------------------- DOCUMENT VALIDATION --------------------
+  documentFields.forEach((label) => {
+    const key = fieldKeyMap[label];
 
-
-      Swal.fire("Added!", "LSP added successfully", "success");
+    // Check if user uploaded at least 1 file
+    if (!uploadedDocs[label] || uploadedDocs[label].length === 0) {
+      newErrors[key] = `${label} is required`;
     }
+  });
 
-    navigate("/user/manageLSP");
-  } catch (err) {
-    console.log(err);
-    Swal.fire("Error", "Something went wrong!", "error");
-  }
+
+  // Set errors to state
+  setErrors(newErrors);
+
+  // Return TRUE if no errors exist
+  return Object.keys(newErrors).length === 0;
 };
 
 
 
-  const personalFields = [
-    { label: "Company Name", key: "companyName" },
-    { label: "Business Type", key: "businessType" },
-    { label: "Company Phone No", key: "phone" },
-    { label: "Company Email", key: "email" },
-    { label: "Point of Contact Name", key: "pointOfContact" },
-    { label: "Point of Contact Mobile", key: "pointOfContactMobile" },
-    { label: "District", key: "district" },
-    { label: "City", key: "city" },
-    { label: "Address", key: "address" },
-    { label: "Serviceable Cities", key: "serviceableCities" },
-  ];
+
+const personalFields = [
+  { label: "Company Name", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
+  { label: "Business Type", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
+  { label: "Company Phone NO", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
+  { label: "Point Of Contact person", icon: <PersonIcon sx={{ color: "#029898" }} /> },
+  { label: "Point Of Contact Number", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
+  { label: "Serviceable Cities", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
+
+  { label: "Email ID", icon: <EmailIcon sx={{ color: "#029898" }} /> },
+  { label: "Password", icon: <LockIcon sx={{ color: "#029898" }} /> },
+
+
+  // Address fields
+  { label: "Country", icon: <MapsHomeWorkIcon sx={{ color: "#029898" }} /> },
+  { label: "State", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
+  { label: "District", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
+  { label: "City", icon: <MyLocationIcon sx={{ color: "#029898" }} /> },
+  { label: "Region", icon: <PushPinIcon sx={{ color: "#029898" }} /> },
+  { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
+];
+
 
   const documentFields = [
-    { label: "Adhaar Card", key: "adhaarCard" },
-    { label: "GST Document", key: "gstDocument" },
-    { label: "Company Document", key: "companyDocument" },
+    "Adhaar Card",
+    "Gst Document",
+    "Company Document",
   ];
 
-  const getTextFieldSx = (field, width = "200px") => ({
-    width:
-      field === "Address" || field === "Serviceable Cities"
-        ? "416px"
-        : width,
+  const socialFields = [
+    { label: "Instagram", icon: <InstagramIcon sx={{ color: "#029898" }} /> },
+    { label: "Youtube", icon: <YouTubeIcon sx={{ color: "#029898" }} /> },
+    { label: "Linkedin", icon: <LinkedInIcon sx={{ color: "#029898" }} /> },
+  ];
+
+  const resetForm = () => {
+ setFormValues({
+  companyName: "",
+  businessType: "",
+  companyPhoneNumber: "",
+  companyEmail: "",
+  contactPerson: "",
+  pointOfContactNumber: "",
+  serviceableCities: "",
+
+  email: "",
+  password: "",
+
+  // Address fields
+  street: "",
+  state: "",
+  district: "",
+  city: "",
+  region: "",
+  country: "",
+
+  // Social media (optional if needed)
+  // instagramLink: "",
+  // youtubeLink: "",
+  // linkedinLink: "",
+
+  // Documents (file inputs remain in uploadedDocs state)
+  gstDocument: "",
+  companyDocument: "",
+  aadhaarCard: "",
+});
+
+  setUploadedDocs({});
+  setErrors({});
+};
+
+
+  const [uploadedDocs, setUploadedDocs] = useState({});
+
+  const [docTexts, setDocTexts] = useState({});
+
+  const handleDocTextChange = (field, value) => {
+    setDocTexts((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleFileSelect = (field, event) => {
+    const files = Array.from(event.target.files);
+
+    const validFiles = files.filter((file) => {
+      if (file.size > 1024 * 1024) {
+        toast.error(`File ${file.name} is too large. Max 1MB allowed.`);
+        return false;
+      }
+      return true;
+    });
+
+    if (validFiles.length === 0) return;
+
+    const mapped = validFiles.map((file) => ({
+      file,
+      url: URL.createObjectURL(file)
+    }));
+
+    setUploadedDocs((prev) => ({
+      ...prev,
+      [field]: prev[field] ? [...prev[field], ...mapped] : [...mapped]
+    }));
+  };
+  const [formValues, setFormValues] = useState({
+     companyName: "",
+  businessType: "",
+  companyPhoneNumber: "",
+  companyEmail: "",
+  contactPerson: "",
+  pointOfContactNumber: "",
+  serviceableCities: "",
+
+  email: "",
+  password: "",
+
+  // Address fields
+  street: "",
+  state: "",
+  district: "",
+  city: "",
+  region: "",
+  country: "",
+
+  // Social media (optional if needed)
+  // instagramLink: "",
+  // youtubeLink: "",
+  // linkedinLink: "",
+
+  // Documents (file inputs remain in uploadedDocs state)
+  gstDocument: "",
+  companyDocument: "",
+  aadhaarCard: "",
+  });
+  React.useEffect(() => {
+    if (!isEditMode || !taskData) return;
+
+    setFormValues({
+      name: taskData.name || "",
+      phoneNumber: taskData.phoneNumber || "",
+      email: taskData.email || "",
+      street: taskData.street || "",
+      state: taskData.state || "",
+      district: taskData.district || "",
+      city: taskData.city || "",
+      region: taskData.region || "",
+      country: taskData.country || "",
+      instagramLink: taskData.instagramLink || "",
+      youtubeLink: taskData.youtubeLink || "",
+      linkedinLink: taskData.linkedinLink || "",
+      password: taskData.password || "",
+      age: taskData.age || "",
+      yearOfExperience: taskData.yearOfExperience,
+    categoryOfService: taskData.categoryOfService
+    });
+  }, [taskData]);
+
+
+
+  const getTextFieldSx = (field, width = "100%") => ({
+    width: width,
     "& .MuiOutlinedInput-root": {
-      height: "30px",
-      bgcolor: "#e0e0e0",
-      borderRadius: "4px",
-      "& input": {
-        padding: "4px 8px",
-        fontSize: "12px",
+      backgroundColor: "#ffffff",
+      borderRadius: "8px",
+      height: "40px",
+      transition: "all 0.2s ease",
+      "& fieldset": {
+        borderColor: "#d1d5db",
       },
-      "& fieldset": { border: "none" },
+      "&:hover fieldset": {
+        borderColor: "#029898",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#029898",
+        borderWidth: "2px",
+      },
+      "&.Mui-focused": {
+        backgroundColor: "#fff",
+        boxShadow: "0 0 0 3px rgba(2,152,152,0.1)",
+      },
+    },
+    "& .MuiOutlinedInput-input": {
+      fontSize: "13px",
+      padding: "10px 14px",
+      color: "#1a202c",
     },
   });
+
+  const handleSubmit = async () => {
+    if (!validateForm()) return;
+    if (!isEditMode && !taskData) {
+      // Create new lsp
+      const formData = new FormData();
+
+      // PERSONAL FIELDS
+      personalFields.forEach((f) => {
+        const key = fieldKeyMap[f.label];
+        // if (key !== "country") 
+        formData.append(key, formValues[key]);
+      });
+
+      // SOCIAL FIELDS
+      socialFields.forEach((f) => {
+        const key = fieldKeyMap[f.label];
+        formData.append(key, formValues[key]);
+      });
+
+      // DOCUMENTS
+      documentFields.forEach((label) => {
+        const key = fieldKeyMap[label];
+        if (uploadedDocs[label]) {
+          uploadedDocs[label].forEach((d) => formData.append(key, d.file));
+        }
+      });
+
+      try {
+        await axios.post(`${BACKEND_URL}/api/create-lsp`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        toast.success("lsp Added Successfully!");
+        resetForm();
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to add lsp.");
+      }
+
+    } else if (isEditMode && taskData?._id) {
+      // Update existing lsp
+      const formData = new FormData();
+
+      // PERSONAL FIELDS
+      personalFields.forEach((f) => {
+        const key = fieldKeyMap[f.label];
+        // if (key !== "country") 
+        formData.append(key, formValues[key]);
+      });
+
+      // SOCIAL FIELDS
+      socialFields.forEach((f) => {
+        const key = fieldKeyMap[f.label];
+        formData.append(key, formValues[key]);
+      });
+
+      // DOCUMENTS (append if any new uploaded)
+      documentFields.forEach((label) => {
+        const key = fieldKeyMap[label];
+        if (uploadedDocs[label]) {
+          uploadedDocs[label].forEach((d) => formData.append(key, d.file));
+        }
+      });
+
+      try {
+        if (!isEditMode && !taskData) {
+          await axios.post(`${BACKEND_URL}/api/create-lsp`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+          toast.success("lsp Added Successfully!");
+        } else if (isEditMode && taskData?._id) {
+          await axios.put(`${BACKEND_URL}/api/update-lsp/${taskData._id}`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+          toast.success("lsp Updated Successfully!");
+        }
+
+        // Redirect after 1 second to allow toast to show
+        setTimeout(() => {
+          navigate("/admin-manage-user");
+        }, 1000);
+
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to save lsp.");
+      }
+
+    }
+  };
 
   return (
     <>
@@ -207,258 +443,393 @@ const handleSubmit = async (e) => {
           minHeight: "100%",
         }}
       >
-        <Box sx={{ width: "280px" }} />
-        <Box sx={{ flexGrow: 1 }}>
-          <Typography
-            color="rgb(0,0,0)"
-            sx={{
-              fontSize: "20px",
-              fontWeight: "600",
-              textAlign: "left",
-              mb: 2,
-            }}
-          >
-            {taskData ? "Edit LSP" : "Add LSP"}
-          </Typography>
 
-          <Box sx={{ width: "100%", maxWidth: "1190px" }}>
-            {/* Personal Data Section */}
-            <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none" }}>
-              <CardContent sx={{ p: 3 }}>
+        {/* Main Content */}<Box sx={{ flexGrow: 1, p: 3, ml: { xs: 0, md: "280px" } }}>
+
+          {/* Tabs */}
+          <Box sx={{ display: "flex", gap: 2, mb: 3, alignItems: "center" }}>
+            <Typography sx={{ fontWeight: 600, fontSize: "15px", color: "#1a202c", cursor: "pointer" }}>
+              Add User
+            </Typography>
+            <Typography sx={{ color: "#9ca3af", fontSize: "15px" }}>|</Typography>
+            <Typography sx={{ color: "#6b7280", fontSize: "15px", cursor: "pointer" }}>
+              {isEditMode ? "Edit lsp" : "Add lsp"}
+            </Typography>
+          </Box>
+
+          {/* Main Box */}
+          <Box sx={{ width: "100%", maxWidth: "1200px" }}>
+            {/* ------------------------------- PERSONAL DATA ------------------------------- */}
+            <Card sx={{ bgcolor: "#F0F6F6", boxShadow: "none", mb: 3 }}>
+              <CardContent sx={{ p: 4 }}>
                 <Typography
-                  variant="h6"
-                  sx={{ fontWeight: 600, fontSize: "14px", color: "#000000ff", mb: 2 }}
+                  sx={{
+                    fontWeight: 600,
+                    fontSize: "16px",
+                    color: "#1a202c",
+                    mb: 3,
+                    letterSpacing: "0.3px",
+                  }}
                 >
                   Personal Data
                 </Typography>
 
-                <Box sx={{ display: "flex", alignItems: "flex-start", gap: 4 }}>
-                  <Grid container spacing={2} sx={{ flex: 1 }}>
-                    {personalFields.map((field, i) => (
-                      <Grid item xs={12} sm={6} md={3} key={i}>
+                <Box sx={{ width: "90%" }}> {/* Center and 90% width */}
+                  <Grid container spacing={3}>
+                    {personalFields.map((fieldObj, i) => (
+                      <Grid item xs={12} sm={6} md={4} key={i}>
+                        {/* Each takes 4/12 → 3 per row */}
                         <Typography
-                          variant="body1"
                           sx={{
-                            mb: 1,
-                            pr: 3,
-                            color: "#000",
-                            fontSize: "12px",
-                            fontWeight: 500,
+                            mb: 1.5,
+                            color: "#2d3748",
+                            fontSize: "13px",
+                            fontWeight: 600,
                           }}
                         >
-                          {field.label}
+                          {fieldObj.label}
                         </Typography>
+
                         <TextField
-                          value={formData[field.key]}
-                          onChange={(e) => handleChange(field.key, e.target.value)}
-                          variant="outlined"
+                          name={fieldObj.label}
                           size="small"
-                          error={!!errors[field.key]}
-                          helperText={errors[field.key] || ""}
-                          sx={getTextFieldSx(field.label)}
-                          inputProps={
-                            field.key === "phone" ||
-                            field.key === "pointOfContactMobile"
-                              ? { maxLength: 10, inputMode: "numeric" }
-                              : {}
+                          value={formValues[fieldKeyMap[fieldObj.label]] || ""}
+                          onChange={(e) => {
+                            setFormValues({
+                              ...formValues,
+                              [fieldKeyMap[fieldObj.label]]: e.target.value,
+                            });
+
+                            // Clear error while typing
+                            setErrors({
+                              ...errors,
+                              [fieldKeyMap[fieldObj.label]]: "",
+                            });
+                          }}
+                          placeholder={
+                            ["country", "state", "region", "district"].includes(fieldObj.label)
+                              ? ""
+                              : `Enter ${fieldObj.label}`
                           }
+                          sx={{
+                            ...getTextFieldSx(fieldObj.label),
+                            width: fieldObj.label === "Street" ? "490px" : "100%",
+                          }}
+                          InputProps={{
+                            startAdornment: (
+                              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
+                                <Box sx={{ width: "1px", height: "20px", bgcolor: "#e5e7eb" }} />
+                              </Box>
+                            ),
+                          }}
                         />
+
+                        {/* 🔴 ERROR MESSAGE BELOW INPUT */}
+                        {errors[fieldKeyMap[fieldObj.label]] && (
+                          <Typography sx={{ color: "red", fontSize: "12px", mt: 0.5 }}>
+                            {errors[fieldKeyMap[fieldObj.label]]}
+                          </Typography>
+                        )}
                       </Grid>
+
                     ))}
                   </Grid>
-
-                  {/* Profile Image */}
-                  <Box
-                    display="flex"
-                    flexDirection="column"
-                    alignItems="center"
-                    gap={1}
-                    sx={{ pr: "100px" }}
-                  >
-                    <Box
-                      component="img"
-                      src={logo}
-                      alt="profile"
-                      sx={{ width: 100, height: 100, borderRadius: "50%" }}
-                    />
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <Edit sx={{ fontSize: 16 }} />
-                      <Typography sx={{ fontSize: 14 }}>Edit</Typography>
-                    </Box>
-                  </Box>
                 </Box>
+
+
               </CardContent>
             </Card>
 
-            {/* Document Data Section */}
-            <Card sx={{ bgcolor: "#f5f5f5", boxShadow: "none" }}>
-              <CardContent sx={{ p: 3, pt: 0 }}>
+            {/* ------------------------------- DOCUMENT UPLOAD ------------------------------- */}
+            <Card sx={{ bgcolor: "#F0F6F6", boxShadow: "none", mb: 3 }}>
+              <CardContent sx={{ p: 4 }}>
                 <Typography
-                  variant="h6"
-                  sx={{ fontWeight: 600, fontSize: "14px", color: "#000", mb: 2 }}
+                  sx={{
+                    fontWeight: 600,
+                    fontSize: "16px",
+                    color: "#1a202c",
+                    mb: 3,
+                    letterSpacing: "0.3px",
+                  }}
                 >
                   Document Data
                 </Typography>
 
-                <Grid container spacing={2}>
-  <Grid item xs={12} sm={6} md={4}>
-    <Typography
-      variant="body2"
-      sx={{
-        mb: 1,
-        pr: 3,
-        color: "#000",
-        fontSize: "12px",
-        fontWeight: 500,
-      }}
-    >
-      Adhaar Card
-    </Typography>
+                <Grid container spacing={3}>
+                  {documentFields.map((field, i) => (
+                    <Grid item xs={12} sm={6} md={4} key={i}>
+                      <Typography
+                        sx={{
+                          mb: 1.5,
+                          color: "#2d3748",
+                          fontSize: "13px",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {field}
+                      </Typography>
 
-    <input
-      type="file"
-      onChange={(e) => setAdhaarFile(e.target.files[0])}
-      style={{
-        width: "100%",
-        fontSize: "12px",
-        padding: "6px 0",
-      }}
-    />
+                      {/* Hidden File Input */}
+                      <input
+                        type="file"
+                        id={`upload-${field}`}
+                        multiple
+                        accept="image/*"
+                        aria-label={`Upload Image for ${field}`}
+                        style={{ display: "none" }}
+                        onChange={(event) => {
+                          handleFileSelect(field, event);
 
-    {errors.adhaarCard && (
-      <p style={{ color: "red", fontSize: "10px", marginTop: "2px" }}>
-        {errors.adhaarCard}
-      </p>
-    )}
-  </Grid>
+                          // clear error on upload
+                          setErrors({
+                            ...errors,
+                            [fieldKeyMap[field]]: "",
+                          });
+                        }}
+                      />
 
-  <Grid item xs={12} sm={6} md={4}>
-    <Typography
-      variant="body2"
-      sx={{
-        mb: 1,
-        pr: 3,
-        color: "#000",
-        fontSize: "12px",
-        fontWeight: 500,
-      }}
-    >
-      GST Document
-    </Typography>
+                      {/* Upload Button */}
+                      <Button
+                        sx={{
+                          width: "100%",
+                          height: "40px",
+                          textTransform: "none",
+                          fontSize: "13px",
+                          color: "#029898",
+                          backgroundColor: "#ffffff",
+                          borderRadius: "8px",
+                          border: "1px solid #d1d5db",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          "&:hover": {
+                            backgroundColor: "#f0fdfd",
+                            borderColor: "#029898",
+                            boxShadow: "0 0 0 3px rgba(2,152,152,0.1)",
+                          },
+                        }}
+                        onClick={() =>
+                          document.getElementById(`upload-${field}`).click()
+                        }
+                        aria-label={`Upload Image for ${field}`}
+                      >
+                        <CloudUploadIcon sx={{ fontSize: 22, color: "#029898" }} />
+                        <Box component="span" sx={{ ml: 1, fontSize: 13, color: "#029898", fontWeight: 600 }}>
+                          Upload Image
+                        </Box>
+                      </Button>
 
-    <input
-      type="file"
-      onChange={(e) => setGstFile(e.target.files[0])}
-      style={{
-        width: "100%",
-        fontSize: "12px",
-        padding: "6px 0",
-      }}
-    />
+                      {/* 🔴 INLINE ERROR BELOW BUTTON */}
+                      {errors[fieldKeyMap[field]] && (
+                        <Typography sx={{ color: "red", fontSize: "12px", mt: 0.5 }}>
+                          {errors[fieldKeyMap[field]]}
+                        </Typography>
+                      )}
 
-    {errors.gstDocument && (
-      <p style={{ color: "red", fontSize: "10px", marginTop: "2px" }}>
-        {errors.gstDocument}
-      </p>
-    )}
-  </Grid>
+                      {/* Preview below button */}
+                      {uploadedDocs[field]?.map((doc, idx) => (
+                        <Box key={idx} mt={1} sx={{ position: "relative", display: "inline-block", mr: 1 }}>
+                          <IconButton
+                            size="small"
+                            onClick={() => {
+                              setUploadedDocs((prev) => {
+                                const arr = [...prev[field]];
+                                arr.splice(idx, 1);
+                                return { ...prev, [field]: arr };
+                              });
+                            }}
+                            sx={{
+                              position: "absolute",
+                              top: -8,
+                              right: -8,
+                              bgcolor: "rgba(0,0,0,0.6)",
+                              color: "#fff",
+                              width: 20,
+                              height: 20,
+                              padding: 0
+                            }}
+                          >
+                            <Close sx={{ fontSize: 14 }} />
+                          </IconButton>
 
-  <Grid item xs={12} sm={6} md={4}>
-    <Typography
-      variant="body2"
-      sx={{
-        mb: 1,
-        pr: 3,
-        color: "#000",
-        fontSize: "12px",
-        fontWeight: 500,
-      }}
-    >
-      Company Document
-    </Typography>
+                          <img
+                            src={doc.url}
+                            alt="preview"
+                            style={{
+                              width: "80px",
+                              height: "80px",
+                              objectFit: "cover",
+                              borderRadius: "4px",
+                              border: "1px solid #ccc",
+                            }}
+                          />
+                        </Box>
+                      ))}
 
-    <input
-      type="file"
-      onChange={(e) => setCompanyFile(e.target.files[0])}
-      style={{
-        width: "100%",
-        fontSize: "12px",
-        padding: "6px 0",
-      }}
-    />
-
-    {errors.companyDocument && (
-      <p style={{ color: "red", fontSize: "10px", marginTop: "2px" }}>
-        {errors.companyDocument}
-      </p>
-    )}
-  </Grid>
-</Grid>
+                    </Grid>
+                  ))}
+                </Grid>
 
               </CardContent>
             </Card>
 
-            {/* Bottom Buttons */}
-            <Divider />
+            {/* ------------------------------- SOCIAL MEDIA ------------------------------- */}
+            {/* <Card sx={{ bgcolor: "#F0F6F6", boxShadow: "none", mb: 3 }}>
+              <CardContent sx={{ p: 4 }}>
+                <Typography
+                  sx={{
+                    fontWeight: 600,
+                    fontSize: "16px",
+                    color: "#1a202c",
+                    mb: 3,
+                    letterSpacing: "0.3px",
+                  }}
+                >
+                  Social Media Platforms
+                </Typography>
+
+                <Grid container spacing={3}>
+  {socialFields.map((fieldObj, i) => (
+    <Grid item xs={12} sm={6} md={4} key={i}>
+      <Typography
+        sx={{
+          mb: 1.5,
+          color: "#2d3748",
+          fontSize: "13px",
+          fontWeight: 600,
+        }}
+      >
+        {fieldObj.label}
+      </Typography>
+
+      <TextField
+        fullWidth
+        size="small"
+        name={fieldObj.label}
+        value={formValues[fieldKeyMap[fieldObj.label]] || ""}
+        onChange={(e) => {
+          setFormValues({
+            ...formValues,
+            [fieldKeyMap[fieldObj.label]]: e.target.value,
+          });
+
+          // ⬅ clear error on typing
+          setErrors({
+            ...errors,
+            [fieldKeyMap[fieldObj.label]]: "",
+          });
+        }}
+        placeholder={`Enter ${fieldObj.label} URL`}
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            backgroundColor: "#ffffff",
+            borderRadius: "8px",
+            height: "40px",
+            transition: "all 0.2s ease",
+            "& fieldset": { borderColor: "#d1d5db" },
+            "&:hover fieldset": { borderColor: "#029898" },
+            "&.Mui-focused fieldset": { borderColor: "#029898", borderWidth: "2px" },
+            "&.Mui-focused": {
+              backgroundColor: "#fff",
+              boxShadow: "0 0 0 3px rgba(2,152,152,0.1)",
+            },
+          },
+          "& .MuiOutlinedInput-input": {
+            fontSize: "13px",
+            padding: "10px 14px",
+            color: "#1a202c",
+          },
+        }}
+        InputProps={{
+          startAdornment: (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
+              <Box sx={{ width: "1px", height: "20px", bgcolor: "#e5e7eb" }} />
+            </Box>
+          ),
+        }}
+      />
+
+     
+
+            {/* ------------------------------- BOTTOM BUTTONS ------------------------------- */}
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "flex-end",
                 gap: 2,
-                p: 2,
-                bgcolor: "#f5f5f5",
-                boxShadow: "none",
+                mt: 4,
+                mb: 3,
               }}
             >
               <Button
                 variant="outlined"
-                onClick={() =>
-                  setFormData({
-                    companyName: "",
-                    businessType: "",
-                    phone: "",
-                    email: "",
-                    pointOfContact: "",
-                    pointOfContactMobile: "",
-                    district: "",
-                    city: "",
-                    address: "",
-                    serviceableCities: "",
-                    adhaarCard: "",
-                    gstDocument: "",
-                    companyDocument: "",
-                  })
-                }
                 sx={{
                   textTransform: "none",
                   fontSize: "14px",
-                  borderColor: "#bdbdbd",
-                  color: "#424242",
-                  bgcolor: "#f5f5f5",
-                  "&:hover": { bgcolor: "#e0e0e0" },
-                  width: "170px",
+                  fontWeight: 600,
+                  borderColor: "#d1d5db",
+                  color: "#6b7280",
+                  bgcolor: "#ffffff",
+                  height: "42px",
+                  borderRadius: "8px",
+                  "&:hover": {
+                    bgcolor: "#f9fafb",
+                    borderColor: "#9ca3af",
+                  },
+                  width: "130px",
                 }}
+                onClick={resetForm}
               >
                 Clear
               </Button>
+
               <Button
                 variant="contained"
-                onClick={handleSubmit}
                 sx={{
                   textTransform: "none",
                   fontSize: "14px",
+                  fontWeight: 600,
                   bgcolor: "#029898",
                   color: "white",
-                  "&:hover": { bgcolor: "#1f6b6bff" },
-                  width: "170px",
+                  height: "42px",
+                  borderRadius: "8px",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                  "&:hover": {
+                    bgcolor: "#027676",
+                    boxShadow: "0 4px 12px rgba(2,152,152,0.3)",
+                  },
+                  width: "130px",
                 }}
+                onClick={() => handleSubmit()}   // ← ADD THIS ONE LINE ONLY
               >
-                {taskData ? "Update" : "Add"}
+                {isEditMode ? "Update" : "Add"}
               </Button>
+
             </Box>
           </Box>
         </Box>
       </Box>
+      {/* <ToastContainer
+    position="top-right"
+    autoClose={3000}
+    hideProgressBar={false}
+    newestOnTop={false}
+    closeOnClick
+    rtl={false}
+    pauseOnFocusLoss
+    draggable
+    pauseOnHover
+  /> */}
+      <ToastContainer
+        position="top-right"
+        theme="colored"
+        autoClose={2000}
+        hideProgressBar={true}
+        pauseOnHover={true}
+      />
+
     </>
   );
 }
