@@ -1,5 +1,5 @@
 // src/pages/Dashboard.js
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../../componts/AdminNavbar";
 import {
   Box,
@@ -21,6 +21,18 @@ function Dashboard() {
   const location = useLocation();
   const taskData = location.state?.task;
   const isEditMode = !!taskData;
+
+  // Form state management
+  const [formValues, setFormValues] = useState({
+    name: taskData?.Name || "",
+    phoneNumber: taskData?.["Mobile No"] || "",
+    email: taskData?.["Email ID"] || "",
+    address: taskData?.Address || "",
+    country: taskData?.Country || "",
+    state: taskData?.State || "",
+    city: taskData?.City || "",
+    role: taskData?.Role || "",
+  });
 
   const personalFields = [
     "Name",
@@ -131,7 +143,21 @@ function Dashboard() {
                             variant="outlined"
                             size="small"
                             sx={getTextFieldSx(field)}
-                            defaultValue={taskData ? taskData[field] || "" : ""}
+                            value={formValues[field === "Mobile No" ? "phoneNumber" : field.toLowerCase().replace(/ /g, "")] || ""}
+                            onChange={(e) => {
+                              let value = e.target.value;
+                              const fieldKey = field === "Mobile No" ? "phoneNumber" : field.toLowerCase().replace(/ /g, "");
+
+                              // Only allow numbers for Mobile No field
+                              if (field === "Mobile No") {
+                                value = value.replace(/\D/g, "");
+                              }
+
+                              setFormValues({
+                                ...formValues,
+                                [fieldKey]: value,
+                              });
+                            }}
                           />
                         )}
                       </Grid>
@@ -307,7 +333,7 @@ function Dashboard() {
             </Box>
           </Box>
         </Box>
-      </Box> 
+      </Box>
     </>
   );
 }

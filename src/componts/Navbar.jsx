@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react"; // Import useRef
+import React, { useState, useEffect, useRef } from "react";
 import {
   Drawer,
   List,
@@ -28,6 +28,7 @@ import LaunchIcon from "@mui/icons-material/Launch";
 import ManageHistoryIcon from "@mui/icons-material/ManageHistory";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useAuth } from "../context/AuthContext";
 
 const SidebarLayout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -42,6 +43,7 @@ const SidebarLayout = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, logout } = useAuth();
 
   // Use a ref to track if it's the initial render, to avoid closing on first mount
   const isInitialMount = useRef(true);
@@ -72,23 +74,23 @@ const SidebarLayout = () => {
 
 
   // Strictly toggles the state when parent is clicked
-// ✅ Keep parent menu open when any of its subroutes are active
-const toggleOpen = (key) => {
-  setOpenKeys((prev) => ({
-    ...prev,
-    [key]: !prev[key], // Toggle only when clicking parent
-  }));
-};
+  // ✅ Keep parent menu open when any of its subroutes are active
+  const toggleOpen = (key) => {
+    setOpenKeys((prev) => ({
+      ...prev,
+      [key]: !prev[key], // Toggle only when clicking parent
+    }));
+  };
 
-// ✅ Keep submenu open if route matches any of its children
-useEffect(() => {
-  if (location.pathname.startsWith("/enquiry/")) {
-    setOpenKeys((prev) => ({ ...prev, Enquiry: true }));
-  }
-  if (location.pathname.startsWith("/user/")) {
-    setOpenKeys((prev) => ({ ...prev, "Add User": true }));
-  }
-}, [location.pathname]);
+  // ✅ Keep submenu open if route matches any of its children
+  useEffect(() => {
+    if (location.pathname.startsWith("/enquiry/")) {
+      setOpenKeys((prev) => ({ ...prev, Enquiry: true }));
+    }
+    if (location.pathname.startsWith("/user/")) {
+      setOpenKeys((prev) => ({ ...prev, "Add User": true }));
+    }
+  }, [location.pathname]);
 
 
   const handleMenuOpen = (event) => {
@@ -97,6 +99,12 @@ useEffect(() => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    handleMenuClose();
+    logout();
+    navigate("/");
   };
 
   const drawer = (
@@ -230,8 +238,8 @@ useEffect(() => {
                   idx === 0
                     ? "/user/addLSP"
                     : idx === 1
-                    ? "/user/manageLSP"
-                    : "/user/manage"
+                      ? "/user/manageLSP"
+                      : "/user/manage"
                 }
                 onClick={handleDrawerToggle}
                 style={activeLinkStyles}
@@ -374,10 +382,8 @@ useEffect(() => {
                 }}
               >
                 <Box>
-                  <img
-                    src=""
-                    alt="profile"
-                    style={{
+                  <AccountCircle
+                    sx={{
                       width: 45,
                       height: 45,
                       borderRadius: "100%",
@@ -387,10 +393,10 @@ useEffect(() => {
                 </Box>
                 <Box sx={{ p: 2 }}>
                   <Typography variant="subtitle1" fontWeight={600}>
-                    Username
+                    {user?.name || "User"}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Email Id
+                    {user?.email || ""}
                   </Typography>
                 </Box>
               </Box>
@@ -422,7 +428,7 @@ useEffect(() => {
               </MenuItem>
               <Divider sx={{ my: 1, borderColor: "#e0e0e0" }} />
 
-              <MenuItem onClick={handleMenuClose}>
+              <MenuItem onClick={handleLogout}>
                 <IconButton size="small" sx={{ mr: 1 }}>
                   <TbLogout />
                 </IconButton>

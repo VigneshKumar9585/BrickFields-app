@@ -116,7 +116,7 @@ function Dashboard() {
         { label: "City", icon: <MyLocationIcon sx={{ color: "#029898" }} /> },
         { label: "State", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
         { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
-        { label: "Password", icon: <LockIcon sx={{ color: "#029898" }} /> },
+        // { label: "Password", icon: <LockIcon sx={{ color: "#029898" }} /> },
     ];
 
     const documentFields = [
@@ -219,37 +219,37 @@ function Dashboard() {
 
         // -------------------- PERSONAL FIELDS --------------------
         // Name
-        if (!formValues.name.trim()) {
+        if (!formValues.name || !String(formValues.name).trim()) {
             newErrors.name = "Name is required";
         }
         console.log("Validating phone number:", formValues.phoneNumber);
 
         // Phone
-        if (!formValues.phoneNumber.trim()) {
+        const phoneStr = String(formValues.phoneNumber || "");
+        if (!phoneStr.trim()) {
             newErrors.phoneNumber = "Mobile number is required";
-        } else if (!/^\d{10}$/.test(formValues.phoneNumber)) {
+        } else if (!/^\d{10}$/.test(phoneStr)) {
             newErrors.phoneNumber = "Mobile number must be 10 digits";
         }
 
-        // if (!formValues.age.trim()) {
-        //     newErrors.age = "Age is required";
+        // Password validation removed since field is commented out in edit mode
+        // if (!formValues.password.trim()) {
+        //     newErrors.password = "Password is required";
         // }
 
-        if (!formValues.password.trim()) {
-            newErrors.password = "Password is required";
-        }
-
         // Email
-        if (!formValues.email.trim()) {
+        const emailStr = String(formValues.email || "");
+        if (!emailStr.trim()) {
             newErrors.email = "Email is required";
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.email)) {
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailStr)) {
             newErrors.email = "Invalid email format";
         }
 
         // Address fields
         const addressFields = ["country", "state", "district", "region", "city", "street"];
         addressFields.forEach((key) => {
-            if (!formValues[key] || !formValues[key].trim()) {
+            const value = String(formValues[key] || "");
+            if (!value.trim()) {
                 newErrors[key] = `${key.charAt(0).toUpperCase() + key.slice(1)} is required`;
             }
         });
@@ -261,8 +261,9 @@ function Dashboard() {
         const urlRegex = /^(https?:\/\/)?([\w\d\-]+\.)+\w{2,}(\/.*)?$/;
 
         socialFields.forEach((key) => {
-            if (formValues[key] && formValues[key].trim() !== "") {
-                if (!urlRegex.test(formValues[key])) {
+            const value = String(formValues[key] || "");
+            if (value.trim() !== "") {
+                if (!urlRegex.test(value)) {
                     newErrors[key] = "Invalid URL format";
                 }
             }
@@ -270,14 +271,13 @@ function Dashboard() {
 
 
         // -------------------- DOCUMENT VALIDATION --------------------
-        documentFields.forEach((label) => {
-            const key = fieldKeyMap[label];
-
-            // Check if user uploaded at least 1 file
-            if (!uploadedDocs[label] || uploadedDocs[label].length === 0) {
-                newErrors[key] = `${label} is required`;
-            }
-        });
+        // REMOVED for edit mode - documents are already uploaded
+        // documentFields.forEach((label) => {
+        //     const key = fieldKeyMap[label];
+        //     if (!uploadedDocs[label] || uploadedDocs[label].length === 0) {
+        //         newErrors[key] = `${label} is required`;
+        //     }
+        // });
 
 
         // Set errors to state
@@ -401,13 +401,21 @@ function Dashboard() {
                                                     size="small"
                                                     value={formValues[fieldKeyMap[fieldObj.label]] || ""}
                                                     onChange={(e) => {
+                                                        const fieldKey = fieldKeyMap[fieldObj.label];
+                                                        let value = e.target.value;
+
+                                                        // Only allow numbers for Mobile No field
+                                                        if (fieldKey === "phoneNumber") {
+                                                            value = value.replace(/\D/g, "");
+                                                        }
+
                                                         setFormValues({
                                                             ...formValues,
-                                                            [fieldKeyMap[fieldObj.label]]: e.target.value
+                                                            [fieldKey]: value
                                                         });
                                                         setErrors({
                                                             ...errors,
-                                                            [fieldKeyMap[fieldObj.label]]: "",
+                                                            [fieldKey]: "",
                                                         });
                                                     }
 
@@ -699,7 +707,7 @@ function Dashboard() {
                                 mb: 3,
                             }}
                         >
-                            <Button
+                            {/* <Button
                                 variant="outlined"
                                 sx={{
                                     textTransform: "none",
@@ -718,7 +726,7 @@ function Dashboard() {
                                 }}
                             >
                                 Clear
-                            </Button>
+                            </Button> */}
 
                             <Button
                                 variant="contained"

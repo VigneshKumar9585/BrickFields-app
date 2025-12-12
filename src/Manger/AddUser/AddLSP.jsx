@@ -31,6 +31,7 @@ import {
   YouTube as YouTubeIcon,
   LinkedIn as LinkedInIcon,
   Lock as LockIcon,
+  Business as BusinessIcon,
 } from "@mui/icons-material";
 import logo from "../../assets/logo/logo.webp";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -67,117 +68,117 @@ function AddLsp() {
     "Company Document": "companyDocument",
   };
 
-const validateForm = () => {
-  const newErrors = {};
+  const validateForm = () => {
+    const newErrors = {};
 
-  // -------------------- PERSONAL FIELDS --------------------
-  // Name
-  if (!formValues.companyName.trim()) {
-    newErrors.companyName = "Company Name is required";
-  }
-
-  // Phone
-  if (!formValues.pointOfContactNumber.trim()) {
-    newErrors.pointOfContactNumber = "Mobile number is required";
-  } else if (!/^\d{10}$/.test(formValues.pointOfContactNumber)) {
-    newErrors.pointOfContactNumber = "Mobile number must be 10 digits";
-  }
-
-
-  if (!formValues.password.trim()) {
-    newErrors.password = "Password is required";
-  }
-
-  
-  if (!formValues.pointOfContactNumber.trim()) {
-    newErrors.pointOfContactNumber = "Point of contact number is required";
-  }
-
-   if (!formValues.companyPhoneNumber.trim()) {
-    newErrors.companyPhoneNumber = "Company phone number is required";
-  }
-
-  
-  if (!formValues.businessType.trim()) {
-    newErrors.businessType = "Business Type is required";
-  }
-
-
-  if (!formValues.serviceableCities.trim()) {
-    newErrors.serviceableCities = "Serviceable Cities is required";
-  }
-
-  // Email
-  if (!formValues.email.trim()) {
-    newErrors.email = "Email is required";
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.email)) {
-    newErrors.email = "Invalid email format";
-  }
-
-  // Address fields
-  const addressFields = ["country", "state", "district", "region", "city", "street"];
-  addressFields.forEach((key) => {
-    if (!formValues[key] || !formValues[key].trim()) {
-      newErrors[key] = `${key.charAt(0).toUpperCase() + key.slice(1)} is required`;
+    // -------------------- PERSONAL FIELDS --------------------
+    // Name
+    if (!formValues.companyName.trim()) {
+      newErrors.companyName = "Company Name is required";
     }
-  });
 
-
-  // -------------------- SOCIAL MEDIA (OPTIONAL BUT MUST BE VALID IF ENTERED) --------------------
-  // const socialFields = ["instagramLink", "youtubeLink", "linkedinLink"];
-
-  // const urlRegex = /^(https?:\/\/)?([\w\d\-]+\.)+\w{2,}(\/.*)?$/;
-
-  // socialFields.forEach((key) => {
-  //   if (formValues[key] && formValues[key].trim() !== "") {
-  //     if (!urlRegex.test(formValues[key])) {
-  //       newErrors[key] = "Invalid URL format";
-  //     }
-  //   }
-  // });
-
-
-  // -------------------- DOCUMENT VALIDATION --------------------
-  documentFields.forEach((label) => {
-    const key = fieldKeyMap[label];
-
-    // Check if user uploaded at least 1 file
-    if (!uploadedDocs[label] || uploadedDocs[label].length === 0) {
-      newErrors[key] = `${label} is required`;
+    // Phone
+    if (!formValues.pointOfContactNumber.trim()) {
+      newErrors.pointOfContactNumber = "Mobile number is required";
+    } else if (!/^\d{10}$/.test(formValues.pointOfContactNumber)) {
+      newErrors.pointOfContactNumber = "Mobile number must be 10 digits";
     }
-  });
 
 
-  // Set errors to state
-  setErrors(newErrors);
-
-  // Return TRUE if no errors exist
-  return Object.keys(newErrors).length === 0;
-};
+    if (!formValues.password.trim()) {
+      newErrors.password = "Password is required";
+    }
 
 
+    if (!formValues.pointOfContactNumber.trim()) {
+      newErrors.pointOfContactNumber = "Point of contact number is required";
+    }
+
+    if (!formValues.companyPhoneNumber.trim()) {
+      newErrors.companyPhoneNumber = "Company phone number is required";
+    }
 
 
-const personalFields = [
-  { label: "Company Name", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
-  { label: "Business Type", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
-  { label: "Company Phone NO", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
-  { label: "Point Of Contact person", icon: <PersonIcon sx={{ color: "#029898" }} /> },
-  { label: "Point Of Contact Number", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
-  { label: "Serviceable Cities", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
-
-  { label: "Email ID", icon: <EmailIcon sx={{ color: "#029898" }} /> },
-  { label: "Password", icon: <LockIcon sx={{ color: "#029898" }} /> },
+    if (!formValues.businessType.trim()) {
+      newErrors.businessType = "Business Type is required";
+    }
 
 
-  // Address fields
-  { label: "Country", icon: <MapsHomeWorkIcon sx={{ color: "#029898" }} /> },
-  { label: "State", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
-  { label: "District", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
-  { label: "City", icon: <MyLocationIcon sx={{ color: "#029898" }} /> },
-  { label: "Region", icon: <PushPinIcon sx={{ color: "#029898" }} /> },
-  { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
-];
+    if (!formValues.serviceableCities.trim()) {
+      newErrors.serviceableCities = "Serviceable Cities is required";
+    }
+
+    // Email
+    if (!formValues.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    // Address fields
+    const addressFields = ["country", "state", "district", "region", "city", "street"];
+    addressFields.forEach((key) => {
+      if (!formValues[key] || !formValues[key].trim()) {
+        newErrors[key] = `${key.charAt(0).toUpperCase() + key.slice(1)} is required`;
+      }
+    });
+
+
+    // -------------------- SOCIAL MEDIA (OPTIONAL BUT MUST BE VALID IF ENTERED) --------------------
+    // const socialFields = ["instagramLink", "youtubeLink", "linkedinLink"];
+
+    // const urlRegex = /^(https?:\/\/)?([\w\d\-]+\.)+\w{2,}(\/.*)?$/;
+
+    // socialFields.forEach((key) => {
+    //   if (formValues[key] && formValues[key].trim() !== "") {
+    //     if (!urlRegex.test(formValues[key])) {
+    //       newErrors[key] = "Invalid URL format";
+    //     }
+    //   }
+    // });
+
+
+    // -------------------- DOCUMENT VALIDATION --------------------
+    documentFields.forEach((label) => {
+      const key = fieldKeyMap[label];
+
+      // Check if user uploaded at least 1 file
+      if (!uploadedDocs[label] || uploadedDocs[label].length === 0) {
+        newErrors[key] = `${label} is required`;
+      }
+    });
+
+
+    // Set errors to state
+    setErrors(newErrors);
+
+    // Return TRUE if no errors exist
+    return Object.keys(newErrors).length === 0;
+  };
+
+
+
+
+  const personalFields = [
+    { label: "Company Name", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
+    { label: "Business Type", icon: <BusinessIcon sx={{ color: "#029898" }} /> },
+    { label: "Company Phone NO", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
+    { label: "Point Of Contact person", icon: <PersonIcon sx={{ color: "#029898" }} /> },
+    { label: "Point Of Contact Number", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
+    { label: "Serviceable Cities", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
+
+    { label: "Email ID", icon: <EmailIcon sx={{ color: "#029898" }} /> },
+    { label: "Password", icon: <LockIcon sx={{ color: "#029898" }} /> },
+
+
+    // Address fields
+    { label: "Country", icon: <MapsHomeWorkIcon sx={{ color: "#029898" }} /> },
+    { label: "State", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
+    { label: "District", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
+    { label: "City", icon: <MyLocationIcon sx={{ color: "#029898" }} /> },
+    { label: "Region", icon: <PushPinIcon sx={{ color: "#029898" }} /> },
+    { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
+  ];
 
 
   const documentFields = [
@@ -193,40 +194,40 @@ const personalFields = [
   ];
 
   const resetForm = () => {
- setFormValues({
-  companyName: "",
-  businessType: "",
-  companyPhoneNumber: "",
-  companyEmail: "",
-  contactPerson: "",
-  pointOfContactNumber: "",
-  serviceableCities: "",
+    setFormValues({
+      companyName: "",
+      businessType: "",
+      companyPhoneNumber: "",
+      companyEmail: "",
+      contactPerson: "",
+      pointOfContactNumber: "",
+      serviceableCities: "",
 
-  email: "",
-  password: "",
+      email: "",
+      password: "",
 
-  // Address fields
-  street: "",
-  state: "",
-  district: "",
-  city: "",
-  region: "",
-  country: "",
+      // Address fields
+      street: "",
+      state: "",
+      district: "",
+      city: "",
+      region: "",
+      country: "",
 
-  // Social media (optional if needed)
-  // instagramLink: "",
-  // youtubeLink: "",
-  // linkedinLink: "",
+      // Social media (optional if needed)
+      // instagramLink: "",
+      // youtubeLink: "",
+      // linkedinLink: "",
 
-  // Documents (file inputs remain in uploadedDocs state)
-  gstDocument: "",
-  companyDocument: "",
-  aadhaarCard: "",
-});
+      // Documents (file inputs remain in uploadedDocs state)
+      gstDocument: "",
+      companyDocument: "",
+      aadhaarCard: "",
+    });
 
-  setUploadedDocs({});
-  setErrors({});
-};
+    setUploadedDocs({});
+    setErrors({});
+  };
 
 
   const [uploadedDocs, setUploadedDocs] = useState({});
@@ -261,34 +262,34 @@ const personalFields = [
     }));
   };
   const [formValues, setFormValues] = useState({
-     companyName: "",
-  businessType: "",
-  companyPhoneNumber: "",
-  companyEmail: "",
-  contactPerson: "",
-  pointOfContactNumber: "",
-  serviceableCities: "",
+    companyName: "",
+    businessType: "",
+    companyPhoneNumber: "",
+    companyEmail: "",
+    contactPerson: "",
+    pointOfContactNumber: "",
+    serviceableCities: "",
 
-  email: "",
-  password: "",
+    email: "",
+    password: "",
 
-  // Address fields
-  street: "",
-  state: "",
-  district: "",
-  city: "",
-  region: "",
-  country: "",
+    // Address fields
+    street: "",
+    state: "",
+    district: "",
+    city: "",
+    region: "",
+    country: "",
 
-  // Social media (optional if needed)
-  // instagramLink: "",
-  // youtubeLink: "",
-  // linkedinLink: "",
+    // Social media (optional if needed)
+    // instagramLink: "",
+    // youtubeLink: "",
+    // linkedinLink: "",
 
-  // Documents (file inputs remain in uploadedDocs state)
-  gstDocument: "",
-  companyDocument: "",
-  aadhaarCard: "",
+    // Documents (file inputs remain in uploadedDocs state)
+    gstDocument: "",
+    companyDocument: "",
+    aadhaarCard: "",
   });
   React.useEffect(() => {
     if (!isEditMode || !taskData) return;
@@ -309,7 +310,7 @@ const personalFields = [
       password: taskData.password || "",
       age: taskData.age || "",
       yearOfExperience: taskData.yearOfExperience,
-    categoryOfService: taskData.categoryOfService
+      categoryOfService: taskData.categoryOfService
     });
   }, [taskData]);
 
@@ -495,15 +496,23 @@ const personalFields = [
                           size="small"
                           value={formValues[fieldKeyMap[fieldObj.label]] || ""}
                           onChange={(e) => {
+                            const fieldKey = fieldKeyMap[fieldObj.label];
+                            let value = e.target.value;
+
+                            // Only allow numbers for phone number fields
+                            if (fieldKey === "companyPhoneNumber" || fieldKey === "pointOfContactNumber") {
+                              value = value.replace(/\D/g, "");
+                            }
+
                             setFormValues({
                               ...formValues,
-                              [fieldKeyMap[fieldObj.label]]: e.target.value,
+                              [fieldKey]: value,
                             });
 
                             // Clear error while typing
                             setErrors({
                               ...errors,
-                              [fieldKeyMap[fieldObj.label]]: "",
+                              [fieldKey]: "",
                             });
                           }}
                           placeholder={

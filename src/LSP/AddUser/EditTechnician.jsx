@@ -39,6 +39,8 @@ import {
     YouTube as YouTubeIcon,
     LinkedIn as LinkedInIcon,
     Lock as LockIcon,
+    Work as WorkIcon,
+    Category as CategoryIcon,
 } from "@mui/icons-material";
 import { Eye, X } from "lucide-react";
 import logo from "../../assets/logo/logo.webp";
@@ -97,8 +99,8 @@ function editTechnician() {
         "Country": "country",
         "Instagram": "instagramLink",
         "Youtube": "youtubeLink",
-        "Year Of Experience" :"yearOfExperience",
-    "Category Of Service" : "categoryOfService",
+        "Year Of Experience": "yearOfExperience",
+        "Category Of Service": "categoryOfService",
 
         "Linkedin": "linkedinLink",
         "Password": "password",
@@ -121,10 +123,10 @@ function editTechnician() {
         { label: "State", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
         { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
 
-            { label: "Category Of Service", icon: <LockIcon sx={{ color: "#029898" }} /> },
+        { label: "Category Of Service", icon: <CategoryIcon sx={{ color: "#029898" }} /> },
 
         { label: "Password", icon: <LockIcon sx={{ color: "#029898" }} /> },
-         { label: "Year Of Experience", icon: <LockIcon sx={{ color: "#029898" }} /> },
+        { label: "Year Of Experience", icon: <WorkIcon sx={{ color: "#029898" }} /> },
     ];
 
     const documentFields = [
@@ -185,8 +187,8 @@ function editTechnician() {
         instagramLink: "",
         youtubeLink: "",
         linkedinLink: "",
-          yearOfExperience: "",
-    categoryOfService: ""
+        yearOfExperience: "",
+        categoryOfService: ""
     });
 
 
@@ -350,11 +352,20 @@ function editTechnician() {
                                                     name={fieldObj.label}
                                                     size="small"
                                                     value={formValues[fieldKeyMap[fieldObj.label]] || ""}
-                                                    onChange={(e) =>
+                                                    onChange={(e) => {
+                                                        const fieldKey = fieldKeyMap[fieldObj.label];
+                                                        let value = e.target.value;
+
+                                                        // Only allow numbers for Mobile No and Year Of Experience fields
+                                                        if (fieldKey === "phoneNumber" || fieldKey === "yearOfExperience") {
+                                                            value = value.replace(/\D/g, "");
+                                                        }
+
                                                         setFormValues({
                                                             ...formValues,
-                                                            [fieldKeyMap[fieldObj.label]]: e.target.value
-                                                        })
+                                                            [fieldKey]: value
+                                                        });
+                                                    }
                                                     }
                                                     placeholder={
                                                         ["country", "state", "region", "district"].includes(fieldObj.label)

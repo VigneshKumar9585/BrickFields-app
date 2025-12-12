@@ -27,6 +27,7 @@ import AdminEditManager from "./Admin/AddUser/editManager.jsx"
 import Dashboard from './Manger/Dashborad/Dashbord.jsx'
 import Login from "./Manger/Login.jsx"
 import Forgot from "./Manger/ForgotPasswored.jsx";
+import VerifyOTP from "./Manger/VerifyOTP.jsx";
 import Reset from "./Manger/ResetPasssword.jsx"
 import Profile from "./Manger/Profile.jsx"
 import NewEnqiry from "./Manger/Enquiry/NewEnqiry.jsx"
@@ -83,99 +84,100 @@ import PayPage from '../Payment'
 function App() {
   return (
     <>
-    <Toaster
+      <Toaster
         position="top-right"
         toastOptions={{
           style: { fontSize: "14px", fontWeight: 500 },
         }}
       />
-    <Routes>
+      <Routes>
 
 
 
 
 
-      {/* Admin */}
-      <Route path="/admin-dashboard" element={<AdminDashboared />} />
-      <Route path="/master/settings" element={<MasterSetting />} />
-      <Route path="/master/country" element={<MasterCountry />} />
-      <Route path="/master/state" element={<MasterState />} />
-      <Route path='/master/region' element={<MasterRegion/>} />
-      <Route path='/master/district' element={<MasterDistrict/>} />
-      <Route path='/master/checklist' element={<MasterChecklist/>} />
-      <Route path='/master/category' element={<MasterCategory/>} />
-      <Route path='/admin-inspection' element={<AdminInspection/>} />
-      <Route path="/admin-inspection-Details" element={<AdminInspectionDetails/>} />
-      <Route path='/admin-profile' element={<AdminPrfile/>} />
-      <Route path='/admin-report' element={<AdminReport/>} />
-      <Route path='/admin-new-enquiry' element={<AdminNewEnaquiry/>} />
-      <Route path='/admin-new-enquiry-Details/:id' element={<AdminNewTaskDetails/>} />
-      <Route path='/admin-manage-enquiry' element={<AdminManageEnquiry/>} />
-      <Route path='/admin-add-manager' element={<AdminAddManager/>} />
-      <Route path='/admin-edit-manager/:id' element={<AdminEditManager />} />
-      <Route path='/admin-add-Staff' element={<AdminAddStaff/>} />
-      <Route path='/admin-manage-user' element={<AdminManagerUser/>} />
-      
-
-      {/* Manager */}
-      <Route path="/" element={<Login />} />
-      <Route path="/forgot-password" element={<Forgot />} />
-      <Route path="/reset-password" element={<Reset />} />
-      <Route path='/dashboard' element={<Dashboard/>} />
-      <Route path='/profile' element={<Profile/>}/>
-      <Route path='/profile/edit' element={<EditProfile/>}/>
-      <Route path='/enquiry/new' element={<NewEnqiry/>}/>
-      <Route path='/enquiry/manage' element={<ManageEnqiry/>}/>
-      <Route path='/enquiry/new/details' element={<NewTask/>}/>
-      <Route path='/change/passwored' element={<ChangePasswored/>}/>
-      <Route path="/edit/assign" element={<AssignEdit />} />
-      <Route path='/user/addLSP' element={<AddLSP/>} />
-      <Route path='/user/manageLSP' element={<ManageLSP/>} />
-      <Route path='/report' element={<Report/>}/>
-      <Route path='/inspection' element={<Inspection/>}/>
-      <Route path='/inspection-Details' element={<InspectionDetails/>}/>
-      <Route path='/edit-lsp/:id' element={<EditLsp/>}/>
+        {/* Admin */}
+        <Route path="/admin-dashboard" element={<AdminDashboared />} />
+        <Route path="/master/settings" element={<MasterSetting />} />
+        <Route path="/master/country" element={<MasterCountry />} />
+        <Route path="/master/state" element={<MasterState />} />
+        <Route path='/master/region' element={<MasterRegion />} />
+        <Route path='/master/district' element={<MasterDistrict />} />
+        <Route path='/master/checklist' element={<MasterChecklist />} />
+        <Route path='/master/category' element={<MasterCategory />} />
+        <Route path='/admin-inspection' element={<AdminInspection />} />
+        <Route path="/admin-inspection-Details" element={<AdminInspectionDetails />} />
+        <Route path='/admin-profile' element={<AdminPrfile />} />
+        <Route path='/admin-report' element={<AdminReport />} />
+        <Route path='/admin-new-enquiry' element={<AdminNewEnaquiry />} />
+        <Route path='/admin-new-enquiry-Details/:id' element={<AdminNewTaskDetails />} />
+        <Route path='/admin-manage-enquiry' element={<AdminManageEnquiry />} />
+        <Route path='/admin-add-manager' element={<AdminAddManager />} />
+        <Route path='/admin-edit-manager/:id' element={<AdminEditManager />} />
+        <Route path='/admin-add-Staff' element={<AdminAddStaff />} />
+        <Route path='/admin-manage-user' element={<AdminManagerUser />} />
 
 
-
-{/* Tachnician */}
-      <Route path='/technician-new-task' element={<TechnicianNewtask/>}/>
-      <Route path='/technician-current-task' element={<TechnicianCurrenttask/>}/>
-      <Route path='/technician-new-enquiry' element={<TechnicianNewEnquiry/>}/>
-      <Route path='/technician-Dashboard' element={<TechnicianDashbored/>}/>
-      <Route path='/technician-live-update' element={<TechnicianLiveUpdate/>}/>
-      <Route path='/technician-inspection-general' element={<TechnicianInspectionGeneral/>}/>
-      <Route path='/technician-inspection-cheaklist' element={<TechnicianInspectionCheacklist/>}/>
-      {/* <Route path='/technician-current-enquiry' element={<TechnicianCurrentEnquiry/>}/> */}
-
-
-    {/* LSP */}
-      <Route path='/lsp-Dashboard' element={<LspDashboard/>}/>
-      <Route path='/lsp-report' element={<LspReport/>}/>
-      <Route path='/lsp-addLSP' element={<AddTechnician/>}/>
-      {/* <Route path='/lsp-manageLSP' element={<LspManageLsp/>}/> */}
-      <Route path='/lsp-manageLSP' element={<ManageTechnician/>}/>
-      <Route path='/edit-technician/:id' element={<EditTechnician/>}/>
-
-
-      <Route path='/lsp-new-enquiry' element={<LspNewEnquiry/>}/>
-      <Route path='/lsp-manage-enquiry' element={<LspManageEnquiry/>}/>
-      <Route path='/lsp-new-edit-assgin' element={<LspNewEditAssgin/>} />
-      <Route path='/lsp-edit-assgin' element={<LspEditAssign />} />
-      <Route path='/lsp-profile' element={<LspProfile />} />
+        {/* Manager */}
+        <Route path="/" element={<Login />} />
+        <Route path="/forgot-password" element={<Forgot />} />
+        <Route path="/verify-otp" element={<VerifyOTP />} />
+        <Route path="/reset-password" element={<Reset />} />
+        <Route path='/dashboard' element={<Dashboard />} />
+        <Route path='/profile' element={<Profile />} />
+        <Route path='/profile/edit' element={<EditProfile />} />
+        <Route path='/enquiry/new' element={<NewEnqiry />} />
+        <Route path='/enquiry/manage' element={<ManageEnqiry />} />
+        <Route path='/enquiry/new/details' element={<NewTask />} />
+        <Route path='/change/passwored' element={<ChangePasswored />} />
+        <Route path="/edit/assign" element={<AssignEdit />} />
+        <Route path='/user/addLSP' element={<AddLSP />} />
+        <Route path='/user/manageLSP' element={<ManageLSP />} />
+        <Route path='/report' element={<Report />} />
+        <Route path='/inspection' element={<Inspection />} />
+        <Route path='/inspection-Details' element={<InspectionDetails />} />
+        <Route path='/edit-lsp/:id' element={<EditLsp />} />
 
 
 
-     
-      <Route path='/add-enquiry' element={<EnquiryForm />} />
-      <Route path='/pay' element={<PayPage />} />
+        {/* Tachnician */}
+        <Route path='/technician-new-task' element={<TechnicianNewtask />} />
+        <Route path='/technician-current-task' element={<TechnicianCurrenttask />} />
+        <Route path='/technician-new-enquiry' element={<TechnicianNewEnquiry />} />
+        <Route path='/technician-Dashboard' element={<TechnicianDashbored />} />
+        <Route path='/technician-live-update' element={<TechnicianLiveUpdate />} />
+        <Route path='/technician-inspection-general' element={<TechnicianInspectionGeneral />} />
+        <Route path='/technician-inspection-cheaklist' element={<TechnicianInspectionCheacklist />} />
+        {/* <Route path='/technician-current-enquiry' element={<TechnicianCurrentEnquiry/>}/> */}
+
+
+        {/* LSP */}
+        <Route path='/lsp-Dashboard' element={<LspDashboard />} />
+        <Route path='/lsp-report' element={<LspReport />} />
+        <Route path='/lsp-addLSP' element={<AddTechnician />} />
+        {/* <Route path='/lsp-manageLSP' element={<LspManageLsp/>}/> */}
+        <Route path='/lsp-manageLSP' element={<ManageTechnician />} />
+        <Route path='/edit-technician/:id' element={<EditTechnician />} />
+
+
+        <Route path='/lsp-new-enquiry' element={<LspNewEnquiry />} />
+        <Route path='/lsp-manage-enquiry' element={<LspManageEnquiry />} />
+        <Route path='/lsp-new-edit-assgin' element={<LspNewEditAssgin />} />
+        <Route path='/lsp-edit-assgin' element={<LspEditAssign />} />
+        <Route path='/lsp-profile' element={<LspProfile />} />
 
 
 
-      
+
+        <Route path='/add-enquiry' element={<EnquiryForm />} />
+        <Route path='/pay' element={<PayPage />} />
 
 
-    </Routes>
+
+
+
+
+      </Routes>
     </>
   )
 }

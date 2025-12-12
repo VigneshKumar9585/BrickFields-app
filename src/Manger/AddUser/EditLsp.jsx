@@ -39,6 +39,7 @@ import {
     YouTube as YouTubeIcon,
     LinkedIn as LinkedInIcon,
     Lock as LockIcon,
+    Business as BusinessIcon,
 } from "@mui/icons-material";
 import { Eye, X } from "lucide-react";
 import logo from "../../assets/logo/logo.webp";
@@ -64,97 +65,97 @@ function EditLsp() {
     const [previewImage, setPreviewImage] = useState(null);
     console.log("Editing lsp ID:", existingDocs);
 
-useEffect(() => {
-  if (!id) return;
+    useEffect(() => {
+        if (!id) return;
 
-  axios.get(`${BACKEND_URL}/api/get-lsp/${id}`)
-    .then((res) => {
-      const data = res.data;
+        axios.get(`${BACKEND_URL}/api/get-lsp/${id}`)
+            .then((res) => {
+                const data = res.data;
 
-      setFormValues({
-        companyName: data.companyName || "",
-        businessType: data.businessType || "",
-        companyPhoneNumber: data.companyPhoneNumber || "",
-        contactPerson: data.contactPerson || "",
-        pointOfContactNumber: data.pointOfContactNumber || "",
-        serviceableCities: data.serviceableCities || "",
-        email: data.email || "",
+                setFormValues({
+                    companyName: data.companyName || "",
+                    businessType: data.businessType || "",
+                    companyPhoneNumber: data.companyPhoneNumber || "",
+                    contactPerson: data.contactPerson || "",
+                    pointOfContactNumber: data.pointOfContactNumber || "",
+                    serviceableCities: data.serviceableCities || "",
+                    email: data.email || "",
 
-        street: data.street || "",
-        state: data.state || "",
-        district: data.district || "",
-        city: data.city || "",
-        region: data.region || "",
-        country: data.country || "",
+                    street: data.street || "",
+                    state: data.state || "",
+                    district: data.district || "",
+                    city: data.city || "",
+                    region: data.region || "",
+                    country: data.country || "",
 
-        aadhaarCard: "",
-        gstDocument: "",
-        companyDocument: "",
-      });
+                    aadhaarCard: "",
+                    gstDocument: "",
+                    companyDocument: "",
+                });
 
-      setAadhaarCard(data.aadhaarCard || []);
-      setDegreeCertificate(data.gstDocument || []);
-      setProvisionalCertificate(data.companyDocument || []);
-    })
-    .catch((err) => console.error(err));
-}, [id]);
+                setAadhaarCard(data.aadhaarCard || []);
+                setDegreeCertificate(data.gstDocument || []);
+                setProvisionalCertificate(data.companyDocument || []);
+            })
+            .catch((err) => console.error(err));
+    }, [id]);
 
 
 
     console.log(aadhaarCard, degreeCertificate, provisionalCertificate, experienceCertificate);
 
 
-  const fieldKeyMap = {
-  "Company Name": "companyName",
-  "Business Type": "businessType",
-  "Company Phone NO": "companyPhoneNumber",
-  "Point Of Contact person": "contactPerson",
-  "Point Of Contact Number": "pointOfContactNumber",
-  "Serviceable Cities": "serviceableCities",
+    const fieldKeyMap = {
+        "Company Name": "companyName",
+        "Business Type": "businessType",
+        "Company Phone NO": "companyPhoneNumber",
+        "Point Of Contact person": "contactPerson",
+        "Point Of Contact Number": "pointOfContactNumber",
+        "Serviceable Cities": "serviceableCities",
 
-  "Email ID": "email",
-//   "Password": "password",
+        "Email ID": "email",
+        //   "Password": "password",
 
-  "Street": "street",
-  "State": "state",
-  "District": "district",
-  "City": "city",
-  "Region": "region",
-  "Country": "country",
+        "Street": "street",
+        "State": "state",
+        "District": "district",
+        "City": "city",
+        "Region": "region",
+        "Country": "country",
 
-  "Adhaar Card": "aadhaarCard",
-  "Gst Document": "gstDocument",
-  "Company Document": "companyDocument",
-};
+        "Adhaar Card": "aadhaarCard",
+        "Gst Document": "gstDocument",
+        "Company Document": "companyDocument",
+    };
 
 
 
     const personalFields = [
-  { label: "Company Name", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
-  { label: "Business Type", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
-  { label: "Company Phone NO", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
-  { label: "Point Of Contact person", icon: <PersonIcon sx={{ color: "#029898" }} /> },
-  { label: "Point Of Contact Number", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
-  { label: "Serviceable Cities", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
+        { label: "Company Name", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
+        { label: "Business Type", icon: <BusinessIcon sx={{ color: "#029898" }} /> },
+        { label: "Company Phone NO", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
+        { label: "Point Of Contact person", icon: <PersonIcon sx={{ color: "#029898" }} /> },
+        { label: "Point Of Contact Number", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
+        { label: "Serviceable Cities", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
 
-  { label: "Email ID", icon: <EmailIcon sx={{ color: "#029898" }} /> },
-//   { label: "Password", icon: <LockIcon sx={{ color: "#029898" }} /> },
+        { label: "Email ID", icon: <EmailIcon sx={{ color: "#029898" }} /> },
+        //   { label: "Password", icon: <LockIcon sx={{ color: "#029898" }} /> },
 
-  // Address
-  { label: "Country", icon: <MapsHomeWorkIcon sx={{ color: "#029898" }} /> },
-  { label: "State", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
-  { label: "District", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
-  { label: "City", icon: <MyLocationIcon sx={{ color: "#029898" }} /> },
-  { label: "Region", icon: <PushPinIcon sx={{ color: "#029898" }} /> },
-  { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
-];
+        // Address
+        { label: "Country", icon: <MapsHomeWorkIcon sx={{ color: "#029898" }} /> },
+        { label: "State", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
+        { label: "District", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
+        { label: "City", icon: <MyLocationIcon sx={{ color: "#029898" }} /> },
+        { label: "Region", icon: <PushPinIcon sx={{ color: "#029898" }} /> },
+        { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
+    ];
 
 
     const documentFields = [
-  "Adhaar Card",
-  "Gst Document",
-  "Company Document",
-];
+        "Adhaar Card",
+        "Gst Document",
+        "Company Document",
+    ];
 
 
     const socialFields = [
@@ -194,26 +195,26 @@ useEffect(() => {
             [field]: prev[field] ? [...prev[field], ...mapped] : [...mapped]
         }));
     };
-  const [formValues, setFormValues] = useState({
-  companyName: "",
-  businessType: "",
-  companyPhoneNumber: "",
-  contactPerson: "",
-  pointOfContactNumber: "",
-  serviceableCities: "",
-  email: "",
+    const [formValues, setFormValues] = useState({
+        companyName: "",
+        businessType: "",
+        companyPhoneNumber: "",
+        contactPerson: "",
+        pointOfContactNumber: "",
+        serviceableCities: "",
+        email: "",
 
-  street: "",
-  state: "",
-  district: "",
-  city: "",
-  region: "",
-  country: "",
+        street: "",
+        state: "",
+        district: "",
+        city: "",
+        region: "",
+        country: "",
 
-  aadhaarCard: "",
-  gstDocument: "",
-  companyDocument: "",
-});
+        aadhaarCard: "",
+        gstDocument: "",
+        companyDocument: "",
+    });
 
 
 
@@ -378,11 +379,20 @@ useEffect(() => {
                                                     name={fieldObj.label}
                                                     size="small"
                                                     value={formValues[fieldKeyMap[fieldObj.label]] || ""}
-                                                    onChange={(e) =>
+                                                    onChange={(e) => {
+                                                        const fieldKey = fieldKeyMap[fieldObj.label];
+                                                        let value = e.target.value;
+
+                                                        // Only allow numbers for phone number fields
+                                                        if (fieldKey === "companyPhoneNumber" || fieldKey === "pointOfContactNumber") {
+                                                            value = value.replace(/\D/g, "");
+                                                        }
+
                                                         setFormValues({
                                                             ...formValues,
-                                                            [fieldKeyMap[fieldObj.label]]: e.target.value
-                                                        })
+                                                            [fieldKey]: value
+                                                        });
+                                                    }
                                                     }
                                                     placeholder={
                                                         ["country", "state", "region", "district"].includes(fieldObj.label)
@@ -641,7 +651,7 @@ useEffect(() => {
                                 mb: 3,
                             }}
                         >
-                            <Button
+                            {/* <Button
                                 variant="outlined"
                                 sx={{
                                     textTransform: "none",
@@ -660,7 +670,7 @@ useEffect(() => {
                                 }}
                             >
                                 Clear
-                            </Button>
+                            </Button> */}
 
                             <Button
                                 variant="contained"

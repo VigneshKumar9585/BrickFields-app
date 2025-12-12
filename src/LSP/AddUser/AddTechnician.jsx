@@ -31,6 +31,9 @@ import {
   YouTube as YouTubeIcon,
   LinkedIn as LinkedInIcon,
   Lock as LockIcon,
+  Cake as CakeIcon,
+  Work as WorkIcon,
+  Category as CategoryIcon,
 } from "@mui/icons-material";
 import logo from "../../assets/logo/logo.webp";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -52,7 +55,7 @@ function AddTechnician() {
     "Password": "password",
     "Age": "age",
     "Email ID": "email",
-    "Category Of Service" : "categoryOfService",
+    "Category Of Service": "categoryOfService",
     // "Gender":"gender",s
     "Street": "street",
     "State": "state",
@@ -63,99 +66,99 @@ function AddTechnician() {
     "Instagram": "instagramLink",
     "Youtube": "youtubeLink",
     "Linkedin": "linkedinLink",
-    "Year Of Experience" :"yearOfExperience",
+    "Year Of Experience": "yearOfExperience",
     "Degree Certificate": "degreeCertificate",
     "Adhaar Card": "aadhaarCard",
     "Provisional Certificate": "provisionalCertificate",
     "Experience Certificate": "experienceCertificate",
   };
 
-const validateForm = () => {
-  const newErrors = {};
+  const validateForm = () => {
+    const newErrors = {};
 
-  // -------------------- PERSONAL FIELDS --------------------
-  // Name
-  if (!formValues.name.trim()) {
-    newErrors.name = "Name is required";
-  }
-
-  // Phone
-  if (!formValues.phoneNumber.trim()) {
-    newErrors.phoneNumber = "Mobile number is required";
-  } else if (!/^\d{10}$/.test(formValues.phoneNumber)) {
-    newErrors.phoneNumber = "Mobile number must be 10 digits";
-  }
-
-   if (!formValues.age.trim()) {
-    newErrors.age = "Age is required";
-  } 
-
-  if (!formValues.password.trim()) {
-    newErrors.password = "Password is required";
-  }
-
-   if (!formValues.categoryOfService.trim()) {
-    newErrors.categoryOfService = "Category Of Service is required";
-  }
-
-   if (!formValues.yearOfExperience.trim()) {
-    newErrors.yearOfExperience = "Year Of Experience is required";
-  }
-
-  // Email
-  if (!formValues.email.trim()) {
-    newErrors.email = "Email is required";
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.email)) {
-    newErrors.email = "Invalid email format";
-  }
-
-  // Address fields
-  const addressFields = ["country", "state", "district", "region", "city", "street"];
-  addressFields.forEach((key) => {
-    if (!formValues[key] || !formValues[key].trim()) {
-      newErrors[key] = `${key.charAt(0).toUpperCase() + key.slice(1)} is required`;
+    // -------------------- PERSONAL FIELDS --------------------
+    // Name
+    if (!formValues.name.trim()) {
+      newErrors.name = "Name is required";
     }
-  });
 
+    // Phone
+    if (!formValues.phoneNumber.trim()) {
+      newErrors.phoneNumber = "Mobile number is required";
+    } else if (!/^\d{10}$/.test(formValues.phoneNumber)) {
+      newErrors.phoneNumber = "Mobile number must be 10 digits";
+    }
 
-  // -------------------- SOCIAL MEDIA (OPTIONAL BUT MUST BE VALID IF ENTERED) --------------------
-  const socialFields = ["instagramLink", "youtubeLink", "linkedinLink"];
+    if (!formValues.age.trim()) {
+      newErrors.age = "Age is required";
+    }
 
-  const urlRegex = /^(https?:\/\/)?([\w\d\-]+\.)+\w{2,}(\/.*)?$/;
+    if (!formValues.password.trim()) {
+      newErrors.password = "Password is required";
+    }
 
-  socialFields.forEach((key) => {
-    if (formValues[key] && formValues[key].trim() !== "") {
-      if (!urlRegex.test(formValues[key])) {
-        newErrors[key] = "Invalid URL format";
+    if (!formValues.categoryOfService.trim()) {
+      newErrors.categoryOfService = "Category Of Service is required";
+    }
+
+    if (!formValues.yearOfExperience.trim()) {
+      newErrors.yearOfExperience = "Year Of Experience is required";
+    }
+
+    // Email
+    if (!formValues.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    // Address fields
+    const addressFields = ["country", "state", "district", "region", "city", "street"];
+    addressFields.forEach((key) => {
+      if (!formValues[key] || !formValues[key].trim()) {
+        newErrors[key] = `${key.charAt(0).toUpperCase() + key.slice(1)} is required`;
       }
-    }
-  });
+    });
 
 
-  // -------------------- DOCUMENT VALIDATION --------------------
-  documentFields.forEach((label) => {
-    const key = fieldKeyMap[label];
+    // -------------------- SOCIAL MEDIA (OPTIONAL BUT MUST BE VALID IF ENTERED) --------------------
+    const socialFields = ["instagramLink", "youtubeLink", "linkedinLink"];
 
-    // Check if user uploaded at least 1 file
-    if (!uploadedDocs[label] || uploadedDocs[label].length === 0) {
-      newErrors[key] = `${label} is required`;
-    }
-  });
+    const urlRegex = /^(https?:\/\/)?([\w\d\-]+\.)+\w{2,}(\/.*)?$/;
+
+    socialFields.forEach((key) => {
+      if (formValues[key] && formValues[key].trim() !== "") {
+        if (!urlRegex.test(formValues[key])) {
+          newErrors[key] = "Invalid URL format";
+        }
+      }
+    });
 
 
-  // Set errors to state
-  setErrors(newErrors);
+    // -------------------- DOCUMENT VALIDATION --------------------
+    documentFields.forEach((label) => {
+      const key = fieldKeyMap[label];
 
-  // Return TRUE if no errors exist
-  return Object.keys(newErrors).length === 0;
-};
+      // Check if user uploaded at least 1 file
+      if (!uploadedDocs[label] || uploadedDocs[label].length === 0) {
+        newErrors[key] = `${label} is required`;
+      }
+    });
+
+
+    // Set errors to state
+    setErrors(newErrors);
+
+    // Return TRUE if no errors exist
+    return Object.keys(newErrors).length === 0;
+  };
 
 
 
 
   const personalFields = [
     { label: "Name", icon: <PersonIcon sx={{ color: "#029898" }} /> },
-    { label: "Age", icon: <PersonIcon sx={{ color: "#029898" }} /> },
+    { label: "Age", icon: <CakeIcon sx={{ color: "#029898" }} /> },
     { label: "Mobile No", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
     { label: "Email ID", icon: <EmailIcon sx={{ color: "#029898" }} /> },
     { label: "Country", icon: <MapsHomeWorkIcon sx={{ color: "#029898" }} /> },
@@ -165,8 +168,8 @@ const validateForm = () => {
     { label: "State", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
     { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
     { label: "Password", icon: <LockIcon sx={{ color: "#029898" }} /> },
-    { label: "Year Of Experience", icon: <LockIcon sx={{ color: "#029898" }} /> },
-    { label: "Category Of Service", icon: <LockIcon sx={{ color: "#029898" }} /> },
+    { label: "Year Of Experience", icon: <WorkIcon sx={{ color: "#029898" }} /> },
+    { label: "Category Of Service", icon: <CategoryIcon sx={{ color: "#029898" }} /> },
 
   ];
 
@@ -184,28 +187,28 @@ const validateForm = () => {
   ];
 
   const resetForm = () => {
-  setFormValues({
-    name: "",
-    phoneNumber: "",
-    password: "",
-    age: "",
-    email: "",
-    street: "",
-    state: "",
-    district: "",
-    city: "",
-    region: "",
-    country: "",
-    instagramLink: "",
-    youtubeLink: "",
-    linkedinLink: "",
-    yearOfExperience: "",
-    categoryOfService: ""
-  });
+    setFormValues({
+      name: "",
+      phoneNumber: "",
+      password: "",
+      age: "",
+      email: "",
+      street: "",
+      state: "",
+      district: "",
+      city: "",
+      region: "",
+      country: "",
+      instagramLink: "",
+      youtubeLink: "",
+      linkedinLink: "",
+      yearOfExperience: "",
+      categoryOfService: ""
+    });
 
-  setUploadedDocs({});
-  setErrors({});
-};
+    setUploadedDocs({});
+    setErrors({});
+  };
 
 
   const [uploadedDocs, setUploadedDocs] = useState({});
@@ -245,7 +248,7 @@ const validateForm = () => {
     email: "",
     street: "",
     state: "",
-    age:"",
+    age: "",
     district: "",
     city: "",
     region: "",
@@ -254,7 +257,7 @@ const validateForm = () => {
     youtubeLink: "",
     linkedinLink: "",
     password: "",
-     yearOfExperience: "",
+    yearOfExperience: "",
     categoryOfService: ""
   });
   React.useEffect(() => {
@@ -276,7 +279,7 @@ const validateForm = () => {
       password: taskData.password || "",
       age: taskData.age || "",
       yearOfExperience: taskData.yearOfExperience,
-    categoryOfService: taskData.categoryOfService
+      categoryOfService: taskData.categoryOfService
     });
   }, [taskData]);
 
@@ -462,15 +465,23 @@ const validateForm = () => {
                           size="small"
                           value={formValues[fieldKeyMap[fieldObj.label]] || ""}
                           onChange={(e) => {
+                            const fieldKey = fieldKeyMap[fieldObj.label];
+                            let value = e.target.value;
+
+                            // Only allow numbers for Mobile No, Age, and Year Of Experience fields
+                            if (fieldKey === "phoneNumber" || fieldKey === "age" || fieldKey === "yearOfExperience") {
+                              value = value.replace(/\D/g, "");
+                            }
+
                             setFormValues({
                               ...formValues,
-                              [fieldKeyMap[fieldObj.label]]: e.target.value,
+                              [fieldKey]: value,
                             });
 
                             // Clear error while typing
                             setErrors({
                               ...errors,
-                              [fieldKeyMap[fieldObj.label]]: "",
+                              [fieldKey]: "",
                             });
                           }}
                           placeholder={
@@ -657,76 +668,76 @@ const validateForm = () => {
                 </Typography>
 
                 <Grid container spacing={3}>
-  {socialFields.map((fieldObj, i) => (
-    <Grid item xs={12} sm={6} md={4} key={i}>
-      <Typography
-        sx={{
-          mb: 1.5,
-          color: "#2d3748",
-          fontSize: "13px",
-          fontWeight: 600,
-        }}
-      >
-        {fieldObj.label}
-      </Typography>
+                  {socialFields.map((fieldObj, i) => (
+                    <Grid item xs={12} sm={6} md={4} key={i}>
+                      <Typography
+                        sx={{
+                          mb: 1.5,
+                          color: "#2d3748",
+                          fontSize: "13px",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {fieldObj.label}
+                      </Typography>
 
-      <TextField
-        fullWidth
-        size="small"
-        name={fieldObj.label}
-        value={formValues[fieldKeyMap[fieldObj.label]] || ""}
-        onChange={(e) => {
-          setFormValues({
-            ...formValues,
-            [fieldKeyMap[fieldObj.label]]: e.target.value,
-          });
+                      <TextField
+                        fullWidth
+                        size="small"
+                        name={fieldObj.label}
+                        value={formValues[fieldKeyMap[fieldObj.label]] || ""}
+                        onChange={(e) => {
+                          setFormValues({
+                            ...formValues,
+                            [fieldKeyMap[fieldObj.label]]: e.target.value,
+                          });
 
-          // ⬅ clear error on typing
-          setErrors({
-            ...errors,
-            [fieldKeyMap[fieldObj.label]]: "",
-          });
-        }}
-        placeholder={`Enter ${fieldObj.label} URL`}
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            backgroundColor: "#ffffff",
-            borderRadius: "8px",
-            height: "40px",
-            transition: "all 0.2s ease",
-            "& fieldset": { borderColor: "#d1d5db" },
-            "&:hover fieldset": { borderColor: "#029898" },
-            "&.Mui-focused fieldset": { borderColor: "#029898", borderWidth: "2px" },
-            "&.Mui-focused": {
-              backgroundColor: "#fff",
-              boxShadow: "0 0 0 3px rgba(2,152,152,0.1)",
-            },
-          },
-          "& .MuiOutlinedInput-input": {
-            fontSize: "13px",
-            padding: "10px 14px",
-            color: "#1a202c",
-          },
-        }}
-        InputProps={{
-          startAdornment: (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
-              <Box sx={{ width: "1px", height: "20px", bgcolor: "#e5e7eb" }} />
-            </Box>
-          ),
-        }}
-      />
+                          // ⬅ clear error on typing
+                          setErrors({
+                            ...errors,
+                            [fieldKeyMap[fieldObj.label]]: "",
+                          });
+                        }}
+                        placeholder={`Enter ${fieldObj.label} URL`}
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            backgroundColor: "#ffffff",
+                            borderRadius: "8px",
+                            height: "40px",
+                            transition: "all 0.2s ease",
+                            "& fieldset": { borderColor: "#d1d5db" },
+                            "&:hover fieldset": { borderColor: "#029898" },
+                            "&.Mui-focused fieldset": { borderColor: "#029898", borderWidth: "2px" },
+                            "&.Mui-focused": {
+                              backgroundColor: "#fff",
+                              boxShadow: "0 0 0 3px rgba(2,152,152,0.1)",
+                            },
+                          },
+                          "& .MuiOutlinedInput-input": {
+                            fontSize: "13px",
+                            padding: "10px 14px",
+                            color: "#1a202c",
+                          },
+                        }}
+                        InputProps={{
+                          startAdornment: (
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                              {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
+                              <Box sx={{ width: "1px", height: "20px", bgcolor: "#e5e7eb" }} />
+                            </Box>
+                          ),
+                        }}
+                      />
 
-      {/* 🔴 INLINE ERROR MESSAGE UNDER INPUT */}
-      {errors[fieldKeyMap[fieldObj.label]] && (
-        <Typography sx={{ color: "red", fontSize: "12px", mt: 0.5 }}>
-          {errors[fieldKeyMap[fieldObj.label]]}
-        </Typography>
-      )}
-    </Grid>
-  ))}
-</Grid>
+                      {/* 🔴 INLINE ERROR MESSAGE UNDER INPUT */}
+                      {errors[fieldKeyMap[fieldObj.label]] && (
+                        <Typography sx={{ color: "red", fontSize: "12px", mt: 0.5 }}>
+                          {errors[fieldKeyMap[fieldObj.label]]}
+                        </Typography>
+                      )}
+                    </Grid>
+                  ))}
+                </Grid>
 
               </CardContent>
             </Card>
@@ -741,7 +752,7 @@ const validateForm = () => {
                 mb: 3,
               }}
             >
-              <Button
+              {/* <Button
                 variant="outlined"
                 sx={{
                   textTransform: "none",
@@ -761,7 +772,7 @@ const validateForm = () => {
                 onClick={resetForm}
               >
                 Clear
-              </Button>
+              </Button> */}
 
               <Button
                 variant="contained"

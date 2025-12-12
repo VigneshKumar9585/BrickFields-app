@@ -8,37 +8,63 @@ import {
   Typography,
   Link,
   Alert,
+  CircularProgress,
 } from "@mui/material";
+import { useAuth } from "../context/AuthContext";
+import axios from "../utils/axios";
 import logo from "../assets/logo/logo.webp";
-
-// Add Poppins font in index.html:
-// <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    if (email === "manager@gmail.com" && password === "manager") {
-      setError("");
-      navigate("/dashboard"); // ✅ go to dashboard if correct
-    }else if (email === "technician@gmail.com" && password === "technician") {
-      setError("");
-      navigate("/technician-dashboard"); // ✅ go to dashboard if correct
-    }else if (email === "lsp@gmail.com" && password === "lsp") {
-      setError("");
-      navigate("/lsp-dashboard"); // ✅ go to dashboard if correct
-    }else if (email === "lsp@gmail.com" && password === "lsp") {
-      setError("");
-      navigate("/lsp-dashboard"); // ✅ go to dashboard if correct
-    } else if (email === "admin@gmail.com" && password === "admin") {
-      setError("");
-      navigate("/admin-dashboard"); // ✅ go to dashboard if correct
-    }else {
-      setError("Invalid email or password");
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    // Validation
+    if (!email || !password) {
+      setError("Please enter both email and password");
+      return;
     }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await axios.post('/api/auth/login', {
+        email,
+        password,
+      });
+
+      const data = response.data;
+      console.log(data);
+
+      // Store user data and token
+      login(data.user, data.token);
+
+      // Role-based routing
+      const roleRoutes = {
+        admin: "/admin-dashboard",
+        manager: "/dashboard",
+        technician: "/technician-dashboard",
+        lsp: "/lsp-dashboard",
+      };
+      console.log(data.user);
+
+      const route = roleRoutes[data.role.toLowerCase()] || "/dashboard";
+      navigate(route);
+
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || "Invalid email or password");
+    }finally{
+      setLoading(false);
+    }
+
   };
 
   return (
@@ -186,6 +212,7 @@ const Login = () => {
                   fullWidth
                   variant="contained"
                   onClick={handleLogin}
+                  disabled={loading}
                   sx={{
                     backgroundColor: "#029898",
                     color: "#fff",
@@ -195,9 +222,10 @@ const Login = () => {
                     fontSize: "16px",
                     fontWeight: 500,
                     "&:hover": { backgroundColor: "#038080ff" },
+                    "&:disabled": { backgroundColor: "#cccccc" },
                   }}
                 >
-                  Log In
+                  {loading ? <CircularProgress size={24} color="inherit" /> : "Log In"}
                 </Button>
               </Box>
             </Box>
