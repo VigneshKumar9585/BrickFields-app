@@ -285,12 +285,12 @@ export default function ManageEnquiry() {
           }}
         >
 
-          <Typography
+          {/* <Typography
             color="rgb(0,0,0)"
             sx={{ fontSize: { xs: "20px", md: "24px" }, fontWeight: "500", mb: 1 }}
           >
             Manage Managers
-          </Typography>
+          </Typography> */}
 
           {/* Filter Bar */}
           <Card elevation={0} sx={{ display: "flex", height: "60px", mt: 1 }}>
@@ -298,12 +298,18 @@ export default function ManageEnquiry() {
               sx={{
                 width: "100%",
                 display: "flex",
-                justifyContent: "flex-end",
+                justifyContent: "space-between",
                 alignItems: "center",
                 p: 1,
                 flexWrap: "wrap",
               }}
             >
+               <Typography
+                              color="rgb(0,0,0)"
+                              sx={{ fontSize: { xs: "20px", md: "24px" }, fontWeight: "500" }}
+                            >
+                              Manage Managers
+                            </Typography>
 
               <Box display="flex" gap={2} alignItems="center" flexWrap="wrap">
 

@@ -40,6 +40,12 @@ import {
     LinkedIn as LinkedInIcon,
     Lock as LockIcon,
 } from "@mui/icons-material";
+import WcIcon from "@mui/icons-material/Wc";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import CakeIcon from "@mui/icons-material/Cake";
+import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
+import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
+
 import { Eye, X } from "lucide-react";
 import logo from "../../assets/logo/logo.webp";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -89,7 +95,7 @@ function Dashboard() {
         "Name": "name",
         "Mobile No": "phoneNumber",
         "Email ID": "email",
-        "age": "age",
+        "Age": "age",
         "Gender": "gender",
         "Marital Status": "maritalStatus",
         "Street": "street",
@@ -109,29 +115,36 @@ function Dashboard() {
 
 
  const personalFields = [
-    { label: "Name", icon: <PersonIcon sx={{ color: "#029898" }} /> },
-    { label: "Mobile No", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
-    { label: "Age", icon: <LockIcon sx={{ color: "#029898" }} /> },
-    { 
-        label: "Gender", 
-        icon: <PersonIcon sx={{ color: "#029898" }} />, 
-        select: true, 
-        options: ["Male", "Female", "Other"] 
-    },
-    { 
-        label: "Marital Status", 
-        icon: <PersonIcon sx={{ color: "#029898" }} />, 
-        select: true, 
-        options: ["Single", "Married", "Divorced", "Widowed"] 
-    },
-    { label: "Email ID", icon: <EmailIcon sx={{ color: "#029898" }} /> },
-    { label: "Country", icon: <MapsHomeWorkIcon sx={{ color: "#029898" }} /> },
-    { label: "District", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
-    { label: "Region", icon: <PushPinIcon sx={{ color: "#029898" }} /> },
-    { label: "City", icon: <MyLocationIcon sx={{ color: "#029898" }} /> },
-    { label: "State", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
-    { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
+  { label: "Name", icon: <PersonIcon sx={{ color: "#029898" }} /> },
+
+  { label: "Mobile No", icon: <PhoneAndroidIcon sx={{ color: "#029898" }} /> },
+
+  { label: "Age", icon: <CakeIcon sx={{ color: "#029898" }} /> },
+
+  {
+    label: "Gender",
+    icon: <WcIcon sx={{ color: "#029898" }} />,
+    select: true,
+    options: ["Male", "Female", "Other"],
+  },
+
+  {
+    label: "Marital Status",
+    icon: <FavoriteIcon sx={{ color: "#029898" }} />,
+    select: true,
+    options: ["Single", "Married", "Divorced", "Widowed"],
+  },
+
+  { label: "Email ID", icon: <AlternateEmailIcon sx={{ color: "#029898" }} /> },
+
+  { label: "Country", icon: <MapsHomeWorkIcon sx={{ color: "#029898" }} /> },
+  { label: "District", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
+  { label: "Region", icon: <PushPinIcon sx={{ color: "#029898" }} /> },
+  { label: "City", icon: <MyLocationIcon sx={{ color: "#029898" }} /> },
+  { label: "State", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
+  { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
 ];
+
 
 
     const documentFields = [
@@ -254,9 +267,6 @@ function Dashboard() {
         //     newErrors.age = "Age is required";
         // }
 
-        if (!formValues.password.trim()) {
-            newErrors.password = "Password is required";
-        }
 
         // Email
         if (!formValues.email.trim()) {
@@ -317,8 +327,8 @@ personalFields.forEach((f) => {
 });
 
 // -------- ADD THESE TWO LINES --------
-formData.append("gender", formValues.gender);
-formData.append("maritalStatus", formValues.maritalStatus);
+// formData.append("gender", formValues.gender);
+// formData.append("maritalStatus", formValues.maritalStatus);
 
 
         // SOCIAL FIELDS

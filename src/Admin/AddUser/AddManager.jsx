@@ -33,6 +33,12 @@ import {
   Lock as LockIcon,
   Public as PublicIcon
 } from "@mui/icons-material";
+import CakeIcon from "@mui/icons-material/Cake";
+import WcIcon from "@mui/icons-material/Wc";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import LocationCityIcon from "@mui/icons-material/LocationCity";
+import MapIcon from "@mui/icons-material/Map";
+
 import logo from "../../assets/logo/logo.webp";
 import { useLocation, useNavigate } from "react-router-dom";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -158,21 +164,22 @@ documentFields
 
 
 
-  const personalFields = [
-    { label: "Name", icon: <PersonIcon sx={{ color: "#029898" }} /> },
-    { label: "Age", icon: <PersonIcon sx={{ color: "#029898" }} /> },
-    { label: "Gender", icon: <PersonIcon sx={{ color: "#029898" }} /> },
-    { label: "Mobile No", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
-    { label: "Email ID", icon: <EmailIcon sx={{ color: "#029898" }} /> },
-    { label: "Marital Status", icon: <PersonIcon sx={{ color: "#029898" }} /> },
-    { label: "Country", icon: <PublicIcon sx={{ color: "#029898" }} /> },
-    { label: "District", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
-    { label: "Region", icon: <PushPinIcon sx={{ color: "#029898" }} /> },
-    { label: "City", icon: <MyLocationIcon sx={{ color: "#029898" }} /> },
-    { label: "State", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
-    { label: "Password", icon: <LockIcon sx={{ color: "#029898" }} /> },
-    { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
-  ];
+ const personalFields = [
+  { label: "Name", icon: <PersonIcon sx={{ color: "#029898" }} /> },
+  { label: "Age", icon: <CakeIcon sx={{ color: "#029898" }} /> },
+  { label: "Gender", icon: <WcIcon sx={{ color: "#029898" }} /> },
+  { label: "Mobile No", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
+  { label: "Email ID", icon: <EmailIcon sx={{ color: "#029898" }} /> },
+  { label: "Marital Status", icon: <FavoriteIcon sx={{ color: "#029898" }} /> },
+  { label: "Country", icon: <PublicIcon sx={{ color: "#029898" }} /> },
+  { label: "District", icon: <LocationCityIcon sx={{ color: "#029898" }} /> },
+  { label: "Region", icon: <PushPinIcon sx={{ color: "#029898" }} /> },
+  { label: "City", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
+  { label: "State", icon: <MapIcon sx={{ color: "#029898" }} /> },
+  { label: "Password", icon: <LockIcon sx={{ color: "#029898" }} /> },
+  { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
+];
+
 
   const documentFields = [
     "Degree Certificate",

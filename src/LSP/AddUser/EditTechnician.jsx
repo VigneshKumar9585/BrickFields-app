@@ -42,6 +42,9 @@ import {
     Work as WorkIcon,
     Category as CategoryIcon,
 } from "@mui/icons-material";
+import WcIcon from "@mui/icons-material/Wc";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+
 import { Eye, X } from "lucide-react";
 import logo from "../../assets/logo/logo.webp";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -121,13 +124,13 @@ function editTechnician() {
        { label: "Age", icon: <LockIcon sx={{ color: "#029898" }} /> },
            { 
                label: "Gender", 
-               icon: <PersonIcon sx={{ color: "#029898" }} />, 
+                icon: <WcIcon sx={{ color: "#029898" }} />,
                select: true, 
                options: ["Male", "Female", "Other"] 
            },
            { 
                label: "Marital Status", 
-               icon: <PersonIcon sx={{ color: "#029898" }} />, 
+               icon:  <FavoriteIcon sx={{ color: "#029898" }} />, 
                select: true, 
                options: ["Single", "Married", "Divorced", "Widowed"] 
            },
