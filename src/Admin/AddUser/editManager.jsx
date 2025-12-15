@@ -89,6 +89,9 @@ function Dashboard() {
         "Name": "name",
         "Mobile No": "phoneNumber",
         "Email ID": "email",
+        "age": "age",
+        "Gender": "gender",
+        "Marital Status": "maritalStatus",
         "Street": "street",
         "State": "state",
         "District": "district",
@@ -98,7 +101,6 @@ function Dashboard() {
         "Instagram": "instagramLink",
         "Youtube": "youtubeLink",
         "Linkedin": "linkedinLink",
-        "Password": "password",
         "Degree Certificate": "degreeCertificate",
         "Adhaar Card": "aadhaarCard",
         "Provisional Certificate": "provisionalCertificate",
@@ -106,18 +108,31 @@ function Dashboard() {
     };
 
 
-    const personalFields = [
-        { label: "Name", icon: <PersonIcon sx={{ color: "#029898" }} /> },
-        { label: "Mobile No", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
-        { label: "Email ID", icon: <EmailIcon sx={{ color: "#029898" }} /> },
-        { label: "Country", icon: <MapsHomeWorkIcon sx={{ color: "#029898" }} /> },
-        { label: "District", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
-        { label: "Region", icon: <PushPinIcon sx={{ color: "#029898" }} /> },
-        { label: "City", icon: <MyLocationIcon sx={{ color: "#029898" }} /> },
-        { label: "State", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
-        { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
-        // { label: "Password", icon: <LockIcon sx={{ color: "#029898" }} /> },
-    ];
+ const personalFields = [
+    { label: "Name", icon: <PersonIcon sx={{ color: "#029898" }} /> },
+    { label: "Mobile No", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
+    { label: "Age", icon: <LockIcon sx={{ color: "#029898" }} /> },
+    { 
+        label: "Gender", 
+        icon: <PersonIcon sx={{ color: "#029898" }} />, 
+        select: true, 
+        options: ["Male", "Female", "Other"] 
+    },
+    { 
+        label: "Marital Status", 
+        icon: <PersonIcon sx={{ color: "#029898" }} />, 
+        select: true, 
+        options: ["Single", "Married", "Divorced", "Widowed"] 
+    },
+    { label: "Email ID", icon: <EmailIcon sx={{ color: "#029898" }} /> },
+    { label: "Country", icon: <MapsHomeWorkIcon sx={{ color: "#029898" }} /> },
+    { label: "District", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
+    { label: "Region", icon: <PushPinIcon sx={{ color: "#029898" }} /> },
+    { label: "City", icon: <MyLocationIcon sx={{ color: "#029898" }} /> },
+    { label: "State", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
+    { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
+];
+
 
     const documentFields = [
         "Degree Certificate",
@@ -164,20 +179,24 @@ function Dashboard() {
         }));
     };
     const [formValues, setFormValues] = useState({
-        name: "",
-        password: "",
-        phoneNumber: "",
-        email: "",
-        street: "",
-        state: "",
-        district: "",
-        city: "",
-        region: "",
-        country: "",
-        instagramLink: "",
-        youtubeLink: "",
-        linkedinLink: "",
-    });
+    name: "",
+    password: "",
+    phoneNumber: "",
+    gender: "",           
+    maritalStatus: "",   
+    email: "",
+    age: "",
+    street: "",
+    state: "",
+    district: "",
+    city: "",
+    region: "",
+    country: "",
+    instagramLink: "",
+    youtubeLink: "",
+    linkedinLink: "",
+});
+
 
 
 
@@ -219,37 +238,37 @@ function Dashboard() {
 
         // -------------------- PERSONAL FIELDS --------------------
         // Name
-        if (!formValues.name || !String(formValues.name).trim()) {
+        if (!formValues.name.trim()) {
             newErrors.name = "Name is required";
         }
         console.log("Validating phone number:", formValues.phoneNumber);
 
         // Phone
-        const phoneStr = String(formValues.phoneNumber || "");
+       const phoneStr = String(formValues.phoneNumber || "");
         if (!phoneStr.trim()) {
             newErrors.phoneNumber = "Mobile number is required";
         } else if (!/^\d{10}$/.test(phoneStr)) {
             newErrors.phoneNumber = "Mobile number must be 10 digits";
         }
-
-        // Password validation removed since field is commented out in edit mode
-        // if (!formValues.password.trim()) {
-        //     newErrors.password = "Password is required";
+        // if (!formValues.age.trim()) {
+        //     newErrors.age = "Age is required";
         // }
 
+        if (!formValues.password.trim()) {
+            newErrors.password = "Password is required";
+        }
+
         // Email
-        const emailStr = String(formValues.email || "");
-        if (!emailStr.trim()) {
+        if (!formValues.email.trim()) {
             newErrors.email = "Email is required";
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailStr)) {
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.email)) {
             newErrors.email = "Invalid email format";
         }
 
         // Address fields
         const addressFields = ["country", "state", "district", "region", "city", "street"];
         addressFields.forEach((key) => {
-            const value = String(formValues[key] || "");
-            if (!value.trim()) {
+            if (!formValues[key] || !formValues[key].trim()) {
                 newErrors[key] = `${key.charAt(0).toUpperCase() + key.slice(1)} is required`;
             }
         });
@@ -261,9 +280,8 @@ function Dashboard() {
         const urlRegex = /^(https?:\/\/)?([\w\d\-]+\.)+\w{2,}(\/.*)?$/;
 
         socialFields.forEach((key) => {
-            const value = String(formValues[key] || "");
-            if (value.trim() !== "") {
-                if (!urlRegex.test(value)) {
+            if (formValues[key] && formValues[key].trim() !== "") {
+                if (!urlRegex.test(formValues[key])) {
                     newErrors[key] = "Invalid URL format";
                 }
             }
@@ -271,9 +289,10 @@ function Dashboard() {
 
 
         // -------------------- DOCUMENT VALIDATION --------------------
-        // REMOVED for edit mode - documents are already uploaded
         // documentFields.forEach((label) => {
         //     const key = fieldKeyMap[label];
+
+        //     // Check if user uploaded at least 1 file
         //     if (!uploadedDocs[label] || uploadedDocs[label].length === 0) {
         //         newErrors[key] = `${label} is required`;
         //     }
@@ -291,11 +310,16 @@ function Dashboard() {
         if (!validateForm()) return;
         const formData = new FormData();
 
-        // PERSONAL FIELDS
-        personalFields.forEach((f) => {
-            const key = fieldKeyMap[f.label];
-            formData.append(key, formValues[key]);
-        });
+      // PERSONAL FIELDS
+personalFields.forEach((f) => {
+    const key = fieldKeyMap[f.label];
+    formData.append(key, formValues[key]);
+});
+
+// -------- ADD THESE TWO LINES --------
+formData.append("gender", formValues.gender);
+formData.append("maritalStatus", formValues.maritalStatus);
+
 
         // SOCIAL FIELDS
         socialFields.forEach((f) => {
@@ -357,7 +381,7 @@ function Dashboard() {
 
                     {/* Tabs */}
                     <Box sx={{ display: "flex", gap: 2, mb: 3, alignItems: "center" }}>
-                        <Typography sx={{ fontWeight: 600, fontSize: "15px", color: "#1a202c", cursor: "pointer" }}>
+                        <Typography sx={{ fontWeight: 600, fontSize: "20px", color: "#1a202c", cursor: "pointer" }}>
                             Edit Manager
                         </Typography>
 
@@ -380,76 +404,107 @@ function Dashboard() {
                                     Personal Data
                                 </Typography>
 
-                                <Box sx={{ width: "90%" }}> {/* Center and 90% width */}
-                                    <Grid container spacing={3}>
-                                        {personalFields.map((fieldObj, i) => (
-                                            <Grid item xs={12} sm={6} md={4} key={i}>
-                                                {/* Each takes 4/12 → 3 per row */}
-                                                <Typography
-                                                    sx={{
-                                                        mb: 1.5,
-                                                        color: "#2d3748",
-                                                        fontSize: "13px",
-                                                        fontWeight: 600,
-                                                    }}
-                                                >
-                                                    {fieldObj.label}
-                                                </Typography>
+<Box sx={{ width: "90%" }}>
+  <Grid container spacing={3}>
+    {personalFields.map((fieldObj, i) => (
+      <Grid item xs={12} sm={6} md={4} key={i}>
+        <Typography
+          sx={{
+            mb: 1.5,
+            color: "#2d3748",
+            fontSize: "13px",
+            fontWeight: 600,
+          }}
+        >
+          {fieldObj.label}
+        </Typography>
 
-                                                <TextField
-                                                    name={fieldObj.label}
-                                                    size="small"
-                                                    value={formValues[fieldKeyMap[fieldObj.label]] || ""}
-                                                    onChange={(e) => {
-                                                        const fieldKey = fieldKeyMap[fieldObj.label];
-                                                        let value = e.target.value;
+        {fieldObj.select ? (
+          // For select fields (Gender, Marital Status)
+          <TextField
+            select
+            size="small"
+            value={formValues[fieldKeyMap[fieldObj.label]] || ""}
+            onChange={(e) =>
+              setFormValues({
+                ...formValues,
+                [fieldKeyMap[fieldObj.label]]: e.target.value,
+              })
+            }
+            sx={{
+              ...getTextFieldSx(fieldObj.label),
+              width: fieldObj.label === "Street" ? "390px" : "240px",
+            }}
+                
+           
+            InputProps={{
+              startAdornment: (
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
+                  <Box
+                    sx={{ width: "1px", height: "20px", bgcolor: "#e5e7eb" }}
+                  />
+                </Box>
+              ),
+            }}
+          >
+            <MenuItem value="">Select {fieldObj.label}</MenuItem>
+            {fieldObj.options.map((opt) => (
+              <MenuItem key={opt} value={opt}>
+                {opt}
+              </MenuItem>
+            ))}
+          </TextField>
+        ) : (
+          // For normal input fields
+          <TextField
+            size="small"
+            value={formValues[fieldKeyMap[fieldObj.label]] || ""}
+            onChange={(e) => {
+              setFormValues({
+                ...formValues,
+                [fieldKeyMap[fieldObj.label]]: e.target.value,
+              });
+              setErrors({
+                ...errors,
+                [fieldKeyMap[fieldObj.label]]: "",
+              });
+            }}
+            placeholder={
+              ["country", "state", "region", "district"].includes(
+                fieldObj.label
+              )
+                ? ""
+                : `Enter ${fieldObj.label}`
+            }
+            sx={{
+              ...getTextFieldSx(fieldObj.label),
+              width: fieldObj.label === "Street" ? "390px" : "100%",
+            }}
+            InputProps={{
+              startAdornment: (
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
+                  <Box
+                    sx={{ width: "1px", height: "20px", bgcolor: "#e5e7eb" }}
+                  />
+                </Box>
+              ),
+            }}
+          />
+        )}
 
-                                                        // Only allow numbers for Mobile No field
-                                                        if (fieldKey === "phoneNumber") {
-                                                            value = value.replace(/\D/g, "");
-                                                        }
-
-                                                        setFormValues({
-                                                            ...formValues,
-                                                            [fieldKey]: value
-                                                        });
-                                                        setErrors({
-                                                            ...errors,
-                                                            [fieldKey]: "",
-                                                        });
-                                                    }
-
-                                                    }
-                                                    placeholder={
-                                                        ["country", "state", "region", "district"].includes(fieldObj.label)
-                                                            ? ""
-                                                            : `Enter ${fieldObj.label}`
-                                                    }
-                                                    sx={{
-                                                        ...getTextFieldSx(fieldObj.label),
-                                                        width: fieldObj.label === "Street" ? "390px" : "100%",
-                                                    }}
-                                                    InputProps={{
-                                                        startAdornment: (
-                                                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                                                {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
-                                                                <Box sx={{ width: "1px", height: "20px", bgcolor: "#e5e7eb" }} />
-                                                            </Box>
-                                                        ),
-                                                    }}
-                                                />
-                                                {/* 🔴 ERROR MESSAGE BELOW INPUT */}
-                                                {errors[fieldKeyMap[fieldObj.label]] && (
-                                                    <Typography sx={{ color: "red", fontSize: "12px", mt: 0.5 }}>
-                                                        {errors[fieldKeyMap[fieldObj.label]]}
-                                                    </Typography>
-                                                )}
+        {errors[fieldKeyMap[fieldObj.label]] && (
+          <Typography sx={{ color: "red", fontSize: "12px", mt: 0.5 }}>
+            {errors[fieldKeyMap[fieldObj.label]]}
+          </Typography>
+        )}
+      </Grid>
+    ))}
+  </Grid>
+</Box>
 
 
-                                            </Grid>
-                                        ))}
-                                    </Grid>
-                                </Box>
 
 
                             </CardContent>
@@ -707,7 +762,7 @@ function Dashboard() {
                                 mb: 3,
                             }}
                         >
-                            {/* <Button
+                            <Button
                                 variant="outlined"
                                 sx={{
                                     textTransform: "none",
@@ -726,7 +781,7 @@ function Dashboard() {
                                 }}
                             >
                                 Clear
-                            </Button> */}
+                            </Button>
 
                             <Button
                                 variant="contained"

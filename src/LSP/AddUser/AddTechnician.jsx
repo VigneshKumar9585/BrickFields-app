@@ -56,10 +56,11 @@ function AddTechnician() {
     "Age": "age",
     "Email ID": "email",
     "Category Of Service": "categoryOfService",
-    // "Gender":"gender",s
+    "Gender":"gender",
     "Street": "street",
     "State": "state",
     "District": "district",
+    "Marital Status": "maritalStatus",
     "City": "city",
     "Region": "region",
     "Country": "country",
@@ -88,6 +89,16 @@ function AddTechnician() {
     } else if (!/^\d{10}$/.test(formValues.phoneNumber)) {
       newErrors.phoneNumber = "Mobile number must be 10 digits";
     }
+
+     // Gender
+if (!formValues.gender) {
+  newErrors.gender = "Gender is required";
+}
+
+// Marital Status
+if (!formValues.maritalStatus) {
+  newErrors.maritalStatus = "Marital status is required";
+}
 
     if (!formValues.age.trim()) {
       newErrors.age = "Age is required";
@@ -136,14 +147,15 @@ function AddTechnician() {
 
 
     // -------------------- DOCUMENT VALIDATION --------------------
-    documentFields.forEach((label) => {
-      const key = fieldKeyMap[label];
+   documentFields
+  .filter((label) => label === "Adhaar Card") // only validate this
+  .forEach((label) => {
+    const key = fieldKeyMap[label];
 
-      // Check if user uploaded at least 1 file
-      if (!uploadedDocs[label] || uploadedDocs[label].length === 0) {
-        newErrors[key] = `${label} is required`;
-      }
-    });
+    if (!uploadedDocs[label] || uploadedDocs[label].length === 0) {
+      newErrors[key] = `${label} is required`;
+    }
+  });
 
 
     // Set errors to state
@@ -160,16 +172,18 @@ function AddTechnician() {
     { label: "Name", icon: <PersonIcon sx={{ color: "#029898" }} /> },
     { label: "Age", icon: <CakeIcon sx={{ color: "#029898" }} /> },
     { label: "Mobile No", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
+    { label: "Gender", icon: <PersonIcon sx={{ color: "#029898" }} /> },
     { label: "Email ID", icon: <EmailIcon sx={{ color: "#029898" }} /> },
+    { label: "Marital Status", icon: <PersonIcon sx={{ color: "#029898" }} /> },
     { label: "Country", icon: <MapsHomeWorkIcon sx={{ color: "#029898" }} /> },
     { label: "District", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
     { label: "Region", icon: <PushPinIcon sx={{ color: "#029898" }} /> },
     { label: "City", icon: <MyLocationIcon sx={{ color: "#029898" }} /> },
     { label: "State", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
-    { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
     { label: "Password", icon: <LockIcon sx={{ color: "#029898" }} /> },
     { label: "Year Of Experience", icon: <WorkIcon sx={{ color: "#029898" }} /> },
     { label: "Category Of Service", icon: <CategoryIcon sx={{ color: "#029898" }} /> },
+    { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
 
   ];
 
@@ -192,6 +206,8 @@ function AddTechnician() {
       phoneNumber: "",
       password: "",
       age: "",
+        gender: "",
+         maritalStatus: "",
       email: "",
       street: "",
       state: "",
@@ -444,76 +460,209 @@ function AddTechnician() {
                   Personal Data
                 </Typography>
 
-                <Box sx={{ width: "90%" }}> {/* Center and 90% width */}
-                  <Grid container spacing={3}>
-                    {personalFields.map((fieldObj, i) => (
-                      <Grid item xs={12} sm={6} md={4} key={i}>
-                        {/* Each takes 4/12 → 3 per row */}
-                        <Typography
-                          sx={{
-                            mb: 1.5,
-                            color: "#2d3748",
-                            fontSize: "13px",
-                            fontWeight: 600,
-                          }}
-                        >
-                          {fieldObj.label}
-                        </Typography>
-
-                        <TextField
-                          name={fieldObj.label}
-                          size="small"
-                          value={formValues[fieldKeyMap[fieldObj.label]] || ""}
-                          onChange={(e) => {
-                            const fieldKey = fieldKeyMap[fieldObj.label];
-                            let value = e.target.value;
-
-                            // Only allow numbers for Mobile No, Age, and Year Of Experience fields
-                            if (fieldKey === "phoneNumber" || fieldKey === "age" || fieldKey === "yearOfExperience") {
-                              value = value.replace(/\D/g, "");
-                            }
-
-                            setFormValues({
-                              ...formValues,
-                              [fieldKey]: value,
-                            });
-
-                            // Clear error while typing
-                            setErrors({
-                              ...errors,
-                              [fieldKey]: "",
-                            });
-                          }}
-                          placeholder={
-                            ["country", "state", "region", "district"].includes(fieldObj.label)
-                              ? ""
-                              : `Enter ${fieldObj.label}`
-                          }
-                          sx={{
-                            ...getTextFieldSx(fieldObj.label),
-                            width: fieldObj.label === "Street" ? "490px" : "100%",
-                          }}
-                          InputProps={{
-                            startAdornment: (
-                              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
-                                <Box sx={{ width: "1px", height: "20px", bgcolor: "#e5e7eb" }} />
-                              </Box>
-                            ),
-                          }}
-                        />
-
-                        {/* 🔴 ERROR MESSAGE BELOW INPUT */}
-                        {errors[fieldKeyMap[fieldObj.label]] && (
-                          <Typography sx={{ color: "red", fontSize: "12px", mt: 0.5 }}>
-                            {errors[fieldKeyMap[fieldObj.label]]}
-                          </Typography>
-                        )}
-                      </Grid>
-
-                    ))}
-                  </Grid>
-                </Box>
+ <Box sx={{ width: "90%" }}>
+   <Grid container spacing={3}>
+     {personalFields.map((fieldObj, i) => {
+       const key = fieldKeyMap[fieldObj.label];
+ 
+       return (
+         <Grid item xs={12} sm={6} md={4} key={i}>
+           <Typography
+             sx={{
+               mb: 1.5,
+               color: "#2d3748",
+               fontSize: "13px",
+               fontWeight: 600,
+             }}
+           >
+             {fieldObj.label}
+           </Typography>
+ 
+           {/* ⭐ GENDER DROPDOWN */}
+           {fieldObj.label === "Gender" ? (
+            <TextField
+   select
+   fullWidth
+   size="small"
+   value={formValues.gender}
+   onChange={(e) =>
+     setFormValues({ ...formValues, gender: e.target.value })
+   }
+   sx={{
+     ...getTextFieldSx(fieldObj.label),
+     width: fieldObj.label === "Street" ? "490px" : "238px",
+   }}
+   SelectProps={{
+     displayEmpty: true,
+     renderValue: (selected) => {
+       if (!selected) {
+         return <span style={{ color: "#aaa" }}>Select Gender</span>; // placeholder
+       }
+       return selected;
+     },
+   }}
+   InputProps={{
+     startAdornment: (
+       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+         {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
+         <Box
+           sx={{
+             width: "1px",
+             height: "20px",
+             bgcolor: "#e5e7eb",
+           }}
+         />
+       </Box>
+     ),
+   }}
+ >
+   {/* Placeholder item */}
+ <MenuItem value="" sx={{ fontSize: "14px" }}>
+   Select Gender
+ </MenuItem>
+ 
+ <MenuItem value="Male" sx={{ fontSize: "14px" }}>
+   Male
+ </MenuItem>
+ 
+ <MenuItem value="Female" sx={{ fontSize: "14px" }}>
+   Female
+ </MenuItem>
+ 
+ <MenuItem value="Other" sx={{ fontSize: "14px" }}>
+   Other
+ </MenuItem>
+ 
+ </TextField>
+ 
+           ) : 
+ 
+           /* ⭐ MARITAL STATUS DROPDOWN */
+           fieldObj.label === "Marital Status" ? (
+            <TextField
+   select
+   fullWidth
+   size="small"
+   value={formValues.maritalStatus}
+   onChange={(e) =>
+     setFormValues({
+       ...formValues,
+       maritalStatus: e.target.value,
+     })
+   }
+   sx={{
+     ...getTextFieldSx(fieldObj.label),
+     width: fieldObj.label === "Street" ? "490px" : "238px",
+   }}
+   SelectProps={{
+     displayEmpty: true,
+     renderValue: (selected) => {
+       if (!selected) {
+         return <span style={{ color: "#9ca3af" }}>Enter Marital Status</span>; // placeholder text
+       }
+       return selected;
+     },
+   }}
+   InputProps={{
+     startAdornment: (
+       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+         {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
+         <Box
+           sx={{
+             width: "1px",
+             height: "20px",
+             bgcolor: "#e5e7eb",
+           }}
+         />
+       </Box>
+     ),
+   }}
+ >
+   {/* Placeholder item */}
+   <MenuItem value="" sx={{ fontSize: "14px" }}>
+   Enter Marital Status
+ </MenuItem>
+ 
+ <MenuItem value="Single" sx={{ fontSize: "14px" }}>
+   Single
+ </MenuItem>
+ 
+ <MenuItem value="Married" sx={{ fontSize: "14px" }}>
+   Married
+ </MenuItem>
+ 
+ <MenuItem value="Divorced" sx={{ fontSize: "14px" }}>
+   Divorced
+ </MenuItem>
+ 
+ <MenuItem value="Widowed" sx={{ fontSize: "14px" }}>
+   Widowed
+ </MenuItem>
+ 
+ </TextField>
+ 
+           ) : (
+ 
+             /* ⭐ ALL NORMAL INPUT FIELDS */
+             <TextField
+               size="small"
+               fullWidth
+               value={formValues[key] || ""}
+               onChange={(e) => {
+                 setFormValues({
+                   ...formValues,
+                   [key]: e.target.value,
+                 });
+                 setErrors({
+                   ...errors,
+                   [key]: "",
+                 });
+               }}
+               placeholder={
+                 ["country", "state", "region", "district"].includes(
+                   fieldObj.label
+                 )
+                   ? ""
+                   : `Enter ${fieldObj.label}`
+               }
+               sx={{
+                 ...getTextFieldSx(fieldObj.label),
+                 width: fieldObj.label === "Street" ? "490px" : "100%",
+               }}
+               InputProps={{
+                 startAdornment: (
+                   <Box
+                     sx={{
+                       display: "flex",
+                       alignItems: "center",
+                       gap: 1,
+                     }}
+                   >
+                     {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
+                     <Box
+                       sx={{
+                         width: "1px",
+                         height: "20px",
+                         bgcolor: "#e5e7eb",
+                       }}
+                     />
+                   </Box>
+                 ),
+               }}
+             />
+           )}
+ 
+           {/* ⭐ ERROR MESSAGE */}
+           {errors[key] && (
+             <Typography sx={{ color: "red", fontSize: "12px", mt: 0.5 }}>
+               {errors[key]}
+             </Typography>
+           )}
+         </Grid>
+       );
+     })}
+   </Grid>
+ </Box>
 
 
               </CardContent>
