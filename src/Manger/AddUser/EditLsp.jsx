@@ -268,79 +268,79 @@ function EditLsp() {
     // };
 
 
-   const validatePersonalData = () => {
-    let tempErrors = {};
+    const validatePersonalData = () => {
+        let tempErrors = {};
 
-    personalFields.forEach((field) => {
-        const key = fieldKeyMap[field.label];
-        const value = formValues[key];
+        personalFields.forEach((field) => {
+            const key = fieldKeyMap[field.label];
+            const value = formValues[key];
 
-        // ✅ SAFE STRING CHECK
-        if (!value || String(value).trim() === "") {
-            tempErrors[key] = `${field.label} is required`;
-        }
-    });
-
-    // Phone validations
-    if (
-        formValues.companyPhoneNumber &&
-        !/^\d{10}$/.test(formValues.companyPhoneNumber)
-    ) {
-        tempErrors.companyPhoneNumber = "Company Phone must be 10 digits";
-    }
-
-    if (
-        formValues.pointOfContactNumber &&
-        !/^\d{10}$/.test(formValues.pointOfContactNumber)
-    ) {
-        tempErrors.pointOfContactNumber = "Contact Number must be 10 digits";
-    }
-
-    // Email validation
-    if (
-        formValues.email &&
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.email)
-    ) {
-        tempErrors.email = "Invalid email address";
-    }
-
-    setErrors(tempErrors);
-    return Object.keys(tempErrors).length === 0;
-};
-
-
-
-  const handleSubmit = async () => {
-    if (!validatePersonalData()) return;
-
-    const formData = new FormData();
-
-    // PERSONAL FIELDS
-    personalFields.forEach((f) => {
-        const key = fieldKeyMap[f.label];
-        formData.append(key, formValues[key]);
-    });
-
-    // DOCUMENTS
-    documentFields.forEach((label) => {
-        const key = fieldKeyMap[label];
-        if (uploadedDocs[label]) {
-            uploadedDocs[label].forEach((d) => formData.append(key, d.file));
-        }
-    });
-
-    try {
-        await axios.put(`${BACKEND_URL}/api/update-lsp/${id}`, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
+            // ✅ SAFE STRING CHECK
+            if (!value || String(value).trim() === "") {
+                tempErrors[key] = `${field.label} is required`;
+            }
         });
 
-        toast.success("LSP Updated Successfully!");
-        setTimeout(() => navigate("/user/manageLSP"), 1000);
-    } catch (error) {
-        console.error(error);
-        toast.error("Failed to update LSP.");
-    }
-};
+        // Phone validations
+        if (
+            formValues.companyPhoneNumber &&
+            !/^\d{10}$/.test(formValues.companyPhoneNumber)
+        ) {
+            tempErrors.companyPhoneNumber = "Company Phone must be 10 digits";
+        }
+
+        if (
+            formValues.pointOfContactNumber &&
+            !/^\d{10}$/.test(formValues.pointOfContactNumber)
+        ) {
+            tempErrors.pointOfContactNumber = "Contact Number must be 10 digits";
+        }
+
+        // Email validation
+        if (
+            formValues.email &&
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.email)
+        ) {
+            tempErrors.email = "Invalid email address";
+        }
+
+        setErrors(tempErrors);
+        return Object.keys(tempErrors).length === 0;
+    };
+
+
+
+    const handleSubmit = async () => {
+        if (!validatePersonalData()) return;
+
+        const formData = new FormData();
+
+        // PERSONAL FIELDS
+        personalFields.forEach((f) => {
+            const key = fieldKeyMap[f.label];
+            formData.append(key, formValues[key]);
+        });
+
+        // DOCUMENTS
+        documentFields.forEach((label) => {
+            const key = fieldKeyMap[label];
+            if (uploadedDocs[label]) {
+                uploadedDocs[label].forEach((d) => formData.append(key, d.file));
+            }
+        });
+
+        try {
+            await axios.put(`${BACKEND_URL}/api/update-lsp/${id}`, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+
+            toast.success("LSP Updated Successfully!");
+            setTimeout(() => navigate("/user/manageLSP"), 1000);
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to update LSP.");
+        }
+    };
 
     const getStoredImages = (field) => {
         switch (field) {
@@ -412,56 +412,56 @@ function EditLsp() {
                                                     {fieldObj.label}
                                                 </Typography>
 
-                                               <TextField
-    name={fieldObj.label}
-    size="small"
-    value={formValues[fieldKeyMap[fieldObj.label]] || ""}
+                                                <TextField
+                                                    name={fieldObj.label}
+                                                    size="small"
+                                                    value={formValues[fieldKeyMap[fieldObj.label]] || ""}
 
-    onChange={(e) => {
-        const fieldKey = fieldKeyMap[fieldObj.label];
-        let value = e.target.value;
+                                                    onChange={(e) => {
+                                                        const fieldKey = fieldKeyMap[fieldObj.label];
+                                                        let value = e.target.value;
 
-        // Only allow numbers for phone number fields
-        if (
-            fieldKey === "companyPhoneNumber" ||
-            fieldKey === "pointOfContactNumber"
-        ) {
-            value = value.replace(/\D/g, "");
-        }
+                                                        // Only allow numbers for phone number fields
+                                                        if (
+                                                            fieldKey === "companyPhoneNumber" ||
+                                                            fieldKey === "pointOfContactNumber"
+                                                        ) {
+                                                            value = value.replace(/\D/g, "");
+                                                        }
 
-        setFormValues({
-            ...formValues,
-            [fieldKey]: value
-        });
+                                                        setFormValues({
+                                                            ...formValues,
+                                                            [fieldKey]: value
+                                                        });
 
-        // 🔥 OPTIONAL: clear error while typing
-        setErrors((prev) => ({ ...prev, [fieldKey]: "" }));
-    }}
+                                                        // 🔥 OPTIONAL: clear error while typing
+                                                        setErrors((prev) => ({ ...prev, [fieldKey]: "" }));
+                                                    }}
 
-    /* ✅ 3️⃣ THIS IS THE IMPORTANT PART */
-    error={!!errors[fieldKeyMap[fieldObj.label]]}
-    helperText={errors[fieldKeyMap[fieldObj.label]]}
+                                                    /* ✅ 3️⃣ THIS IS THE IMPORTANT PART */
+                                                    error={!!errors[fieldKeyMap[fieldObj.label]]}
+                                                    helperText={errors[fieldKeyMap[fieldObj.label]]}
 
-    placeholder={
-        ["country", "state", "region", "district"].includes(fieldObj.label)
-            ? ""
-            : `Enter ${fieldObj.label}`
-    }
+                                                    placeholder={
+                                                        ["country", "state", "region", "district"].includes(fieldObj.label)
+                                                            ? ""
+                                                            : `Enter ${fieldObj.label}`
+                                                    }
 
-    sx={{
-        ...getTextFieldSx(fieldObj.label),
-        width: fieldObj.label === "Street" ? "500px" : "100%",
-    }}
+                                                    sx={{
+                                                        ...getTextFieldSx(fieldObj.label),
+                                                        width: fieldObj.label === "Street" ? "500px" : "100%",
+                                                    }}
 
-    InputProps={{
-        startAdornment: (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
-                <Box sx={{ width: "1px", height: "20px", bgcolor: "#e5e7eb" }} />
-            </Box>
-        ),
-    }}
-/>
+                                                    InputProps={{
+                                                        startAdornment: (
+                                                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                                                {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
+                                                                <Box sx={{ width: "1px", height: "20px", bgcolor: "#e5e7eb" }} />
+                                                            </Box>
+                                                        ),
+                                                    }}
+                                                />
 
 
 

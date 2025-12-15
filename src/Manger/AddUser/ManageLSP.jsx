@@ -1070,10 +1070,10 @@ export default function ManageLsp() {
                       boxShadow: "0 8px 16px rgba(0,0,0,0.2)",
                     },
                   }}
-                  onClick={() => setPreviewImage(img.startsWith("http") ? img : `https://bf-back.appblocky.com/upload-site-images/${img}`)}
+                  onClick={() => setPreviewImage(img.startsWith("http") ? img : `${BACKEND_URL}/upload-site-images/${img}`)}
                 >
                   <img
-                    src={img.startsWith("http") ? img : `https://bf-back.appblocky.com/upload-site-images/${img}`}
+                    src={img.startsWith("http") ? img : `${BACKEND_URL}/upload-site-images/${img}`}
                     alt="document"
                     style={{
                       width: "100%",

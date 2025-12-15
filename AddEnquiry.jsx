@@ -42,6 +42,7 @@ import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 // --- Styled Components ---
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const FormPaper = styled(Paper)(() => ({
     borderRadius: "16px",
@@ -306,7 +307,7 @@ export default function EnquiryForm() {
 
         try {
             await axios.post(
-                "https://bf-back.appblocky.com/api/create-enquiry",
+                `${BACKEND_URL}/api/create-enquiry`,
                 sendData,
                 { headers: { "Content-Type": "multipart/form-data" } }
             );

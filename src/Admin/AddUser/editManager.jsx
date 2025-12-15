@@ -55,7 +55,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 function Dashboard() {
     const { id } = useParams();
-    
+
     const isEditMode = true;  // Always edit mode
     const navigate = useNavigate();
     const [existingDocs, setExistingDocs] = useState({});
@@ -115,36 +115,36 @@ function Dashboard() {
     };
 
 
- const personalFields = [
-  { label: "Name", icon: <PersonIcon sx={{ color: "#029898" }} /> },
+    const personalFields = [
+        { label: "Name", icon: <PersonIcon sx={{ color: "#029898" }} /> },
 
-  { label: "Mobile No", icon: <PhoneAndroidIcon sx={{ color: "#029898" }} /> },
+        { label: "Mobile No", icon: <PhoneAndroidIcon sx={{ color: "#029898" }} /> },
 
-  { label: "Age", icon: <CakeIcon sx={{ color: "#029898" }} /> },
+        { label: "Age", icon: <CakeIcon sx={{ color: "#029898" }} /> },
 
-  {
-    label: "Gender",
-    icon: <WcIcon sx={{ color: "#029898" }} />,
-    select: true,
-    options: ["Male", "Female", "Other"],
-  },
+        {
+            label: "Gender",
+            icon: <WcIcon sx={{ color: "#029898" }} />,
+            select: true,
+            options: ["Male", "Female", "Other"],
+        },
 
-  {
-    label: "Marital Status",
-    icon: <FavoriteIcon sx={{ color: "#029898" }} />,
-    select: true,
-    options: ["Single", "Married", "Divorced", "Widowed"],
-  },
+        {
+            label: "Marital Status",
+            icon: <FavoriteIcon sx={{ color: "#029898" }} />,
+            select: true,
+            options: ["Single", "Married", "Divorced", "Widowed"],
+        },
 
-  { label: "Email ID", icon: <AlternateEmailIcon sx={{ color: "#029898" }} /> },
+        { label: "Email ID", icon: <AlternateEmailIcon sx={{ color: "#029898" }} /> },
 
-  { label: "Country", icon: <MapsHomeWorkIcon sx={{ color: "#029898" }} /> },
-  { label: "District", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
-  { label: "Region", icon: <PushPinIcon sx={{ color: "#029898" }} /> },
-  { label: "City", icon: <MyLocationIcon sx={{ color: "#029898" }} /> },
-  { label: "State", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
-  { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
-];
+        { label: "Country", icon: <MapsHomeWorkIcon sx={{ color: "#029898" }} /> },
+        { label: "District", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
+        { label: "Region", icon: <PushPinIcon sx={{ color: "#029898" }} /> },
+        { label: "City", icon: <MyLocationIcon sx={{ color: "#029898" }} /> },
+        { label: "State", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
+        { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
+    ];
 
 
 
@@ -193,23 +193,23 @@ function Dashboard() {
         }));
     };
     const [formValues, setFormValues] = useState({
-    name: "",
-    password: "",
-    phoneNumber: "",
-    gender: "",           
-    maritalStatus: "",   
-    email: "",
-    age: "",
-    street: "",
-    state: "",
-    district: "",
-    city: "",
-    region: "",
-    country: "",
-    instagramLink: "",
-    youtubeLink: "",
-    linkedinLink: "",
-});
+        name: "",
+        password: "",
+        phoneNumber: "",
+        gender: "",
+        maritalStatus: "",
+        email: "",
+        age: "",
+        street: "",
+        state: "",
+        district: "",
+        city: "",
+        region: "",
+        country: "",
+        instagramLink: "",
+        youtubeLink: "",
+        linkedinLink: "",
+    });
 
 
 
@@ -258,7 +258,7 @@ function Dashboard() {
         console.log("Validating phone number:", formValues.phoneNumber);
 
         // Phone
-       const phoneStr = String(formValues.phoneNumber || "");
+        const phoneStr = String(formValues.phoneNumber || "");
         if (!phoneStr.trim()) {
             newErrors.phoneNumber = "Mobile number is required";
         } else if (!/^\d{10}$/.test(phoneStr)) {
@@ -321,15 +321,15 @@ function Dashboard() {
         if (!validateForm()) return;
         const formData = new FormData();
 
-      // PERSONAL FIELDS
-personalFields.forEach((f) => {
-    const key = fieldKeyMap[f.label];
-    formData.append(key, formValues[key]);
-});
+        // PERSONAL FIELDS
+        personalFields.forEach((f) => {
+            const key = fieldKeyMap[f.label];
+            formData.append(key, formValues[key]);
+        });
 
-// -------- ADD THESE TWO LINES --------
-// formData.append("gender", formValues.gender);
-// formData.append("maritalStatus", formValues.maritalStatus);
+        // -------- ADD THESE TWO LINES --------
+        // formData.append("gender", formValues.gender);
+        // formData.append("maritalStatus", formValues.maritalStatus);
 
 
         // SOCIAL FIELDS
@@ -415,105 +415,110 @@ personalFields.forEach((f) => {
                                     Personal Data
                                 </Typography>
 
-<Box sx={{ width: "90%" }}>
-  <Grid container spacing={3}>
-    {personalFields.map((fieldObj, i) => (
-      <Grid item xs={12} sm={6} md={4} key={i}>
-        <Typography
-          sx={{
-            mb: 1.5,
-            color: "#2d3748",
-            fontSize: "13px",
-            fontWeight: 600,
-          }}
-        >
-          {fieldObj.label}
-        </Typography>
+                                <Box sx={{ width: "90%" }}>
+                                    <Grid container spacing={3}>
+                                        {personalFields.map((fieldObj, i) => (
+                                            <Grid item xs={12} sm={6} md={4} key={i}>
+                                                <Typography
+                                                    sx={{
+                                                        mb: 1.5,
+                                                        color: "#2d3748",
+                                                        fontSize: "13px",
+                                                        fontWeight: 600,
+                                                    }}
+                                                >
+                                                    {fieldObj.label}
+                                                </Typography>
 
-        {fieldObj.select ? (
-          // For select fields (Gender, Marital Status)
-          <TextField
-            select
-            size="small"
-            value={formValues[fieldKeyMap[fieldObj.label]] || ""}
-            onChange={(e) =>
-              setFormValues({
-                ...formValues,
-                [fieldKeyMap[fieldObj.label]]: e.target.value,
-              })
-            }
-            sx={{
-              ...getTextFieldSx(fieldObj.label),
-              width: fieldObj.label === "Street" ? "390px" : "240px",
-            }}
-                
-           
-            InputProps={{
-              startAdornment: (
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
-                  <Box
-                    sx={{ width: "1px", height: "20px", bgcolor: "#e5e7eb" }}
-                  />
-                </Box>
-              ),
-            }}
-          >
-            <MenuItem value="">Select {fieldObj.label}</MenuItem>
-            {fieldObj.options.map((opt) => (
-              <MenuItem key={opt} value={opt}>
-                {opt}
-              </MenuItem>
-            ))}
-          </TextField>
-        ) : (
-          // For normal input fields
-          <TextField
-            size="small"
-            value={formValues[fieldKeyMap[fieldObj.label]] || ""}
-            onChange={(e) => {
-              setFormValues({
-                ...formValues,
-                [fieldKeyMap[fieldObj.label]]: e.target.value,
-              });
-              setErrors({
-                ...errors,
-                [fieldKeyMap[fieldObj.label]]: "",
-              });
-            }}
-            placeholder={
-              ["country", "state", "region", "district"].includes(
-                fieldObj.label
-              )
-                ? ""
-                : `Enter ${fieldObj.label}`
-            }
-            sx={{
-              ...getTextFieldSx(fieldObj.label),
-              width: fieldObj.label === "Street" ? "390px" : "100%",
-            }}
-            InputProps={{
-              startAdornment: (
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
-                  <Box
-                    sx={{ width: "1px", height: "20px", bgcolor: "#e5e7eb" }}
-                  />
-                </Box>
-              ),
-            }}
-          />
-        )}
+                                                {fieldObj.select ? (
+                                                    // For select fields (Gender, Marital Status)
+                                                    <TextField
+                                                        select
+                                                        size="small"
+                                                        value={formValues[fieldKeyMap[fieldObj.label]] || ""}
+                                                        onChange={(e) =>
+                                                            setFormValues({
+                                                                ...formValues,
+                                                                [fieldKeyMap[fieldObj.label]]: e.target.value,
+                                                            })
+                                                        }
+                                                        sx={{
+                                                            ...getTextFieldSx(fieldObj.label),
+                                                            width: fieldObj.label === "Street" ? "390px" : "240px",
+                                                        }}
 
-        {errors[fieldKeyMap[fieldObj.label]] && (
-          <Typography sx={{ color: "red", fontSize: "12px", mt: 0.5 }}>
-            {errors[fieldKeyMap[fieldObj.label]]}
-          </Typography>
-        )}
-      </Grid>
-    ))}
-  </Grid>
-</Box>
+
+                                                        InputProps={{
+                                                            startAdornment: (
+                                                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                                                    {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
+                                                                    <Box
+                                                                        sx={{ width: "1px", height: "20px", bgcolor: "#e5e7eb" }}
+                                                                    />
+                                                                </Box>
+                                                            ),
+                                                        }}
+                                                    >
+                                                        <MenuItem value="">Select {fieldObj.label}</MenuItem>
+                                                        {fieldObj.options.map((opt) => (
+                                                            <MenuItem key={opt} value={opt}>
+                                                                {opt}
+                                                            </MenuItem>
+                                                        ))}
+                                                    </TextField>
+                                                ) : (
+                                                    // For normal input fields
+                                                    <TextField
+                                                        size="small"
+                                                        value={formValues[fieldKeyMap[fieldObj.label]] || ""}
+
+                                                        onChange={(e) => {
+                                                            let value = e.target.value;
+                                                            if (fieldObj.label === "Mobile No" || fieldObj.label === "Age") {
+                                                                value = value.replace(/[^0-9]/g, "");
+                                                            }
+                                                            setFormValues({
+                                                                ...formValues,
+                                                                [fieldKeyMap[fieldObj.label]]: value,
+                                                            });
+                                                            setErrors({
+                                                                ...errors,
+                                                                [fieldKeyMap[fieldObj.label]]: "",
+                                                            });
+                                                        }}
+                                                        placeholder={
+                                                            ["country", "state", "region", "district"].includes(
+                                                                fieldObj.label
+                                                            )
+                                                                ? ""
+                                                                : `Enter ${fieldObj.label}`
+                                                        }
+                                                        sx={{
+                                                            ...getTextFieldSx(fieldObj.label),
+                                                            width: fieldObj.label === "Street" ? "390px" : "100%",
+                                                        }}
+                                                        InputProps={{
+                                                            startAdornment: (
+                                                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                                                    {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
+                                                                    <Box
+                                                                        sx={{ width: "1px", height: "20px", bgcolor: "#e5e7eb" }}
+                                                                    />
+                                                                </Box>
+                                                            ),
+                                                        }}
+                                                    />
+                                                )}
+
+                                                {errors[fieldKeyMap[fieldObj.label]] && (
+                                                    <Typography sx={{ color: "red", fontSize: "12px", mt: 0.5 }}>
+                                                        {errors[fieldKeyMap[fieldObj.label]]}
+                                                    </Typography>
+                                                )}
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                </Box>
 
 
 
@@ -773,7 +778,7 @@ personalFields.forEach((f) => {
                                 mb: 3,
                             }}
                         >
-                            <Button
+                            {/* <Button
                                 variant="outlined"
                                 sx={{
                                     textTransform: "none",
@@ -792,7 +797,7 @@ personalFields.forEach((f) => {
                                 }}
                             >
                                 Clear
-                            </Button>
+                            </Button> */}
 
                             <Button
                                 variant="contained"

@@ -39,6 +39,7 @@ import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "@mui/material/styles";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 // Dummy LSP Data
 const partners = [
@@ -154,7 +155,7 @@ function NewEnquiryDetails() {
     };
 
     useEffect(() => {
-        axios.get(`https://bf-back.appblocky.com/api/get-enquiry-id/${id}`)
+        axios.get(`${BACKEND_URL}/api/get-enquiry-id/${id}`)
             .then((res) => {
                 console.log("Enquiry Data:", res.data);
                 setEnquiryData(res.data);
@@ -193,7 +194,7 @@ function NewEnquiryDetails() {
 
 
 
-            const response = await axios.post("https://bf-back.appblocky.com/api/send-payment-link", {
+            const response = await axios.post(`${BACKEND_URL}/api/send-payment-link`, {
                 email,
                 amount,
                 name,
@@ -217,7 +218,7 @@ function NewEnquiryDetails() {
     const handleUpdateEnquiry = async () => {
         try {
             const res = await axios.put(
-                `https://bf-back.appblocky.com/api/update-enquiry/${id}`,
+                `${BACKEND_URL}/api/update-enquiry/${id}`,
                 enquiryData
             );
 

@@ -772,7 +772,7 @@ function AddLsp() {
                 mb: 3,
               }}
             >
-              <Button
+              {/* <Button
                 variant="outlined"
                 sx={{
                   textTransform: "none",
@@ -792,7 +792,7 @@ function AddLsp() {
                 onClick={resetForm}
               >
                 Clear
-              </Button>
+              </Button> */}
 
               <Button
                 variant="contained"

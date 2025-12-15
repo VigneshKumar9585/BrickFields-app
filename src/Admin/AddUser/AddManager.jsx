@@ -77,108 +77,122 @@ function Dashboard() {
     "Experience Certificate": "experienceCertificate",
   };
 
-const validateForm = () => {
-  const newErrors = {};
+  const validateForm = () => {
+    const newErrors = {};
 
-  // -------------------- PERSONAL FIELDS --------------------
-  // Name
-  if (!formValues.name.trim()) {
-    newErrors.name = "Name is required";
-  }
-
-  // Phone
-  if (!formValues.phoneNumber.trim()) {
-    newErrors.phoneNumber = "Mobile number is required";
-  } else if (!/^\d{10}$/.test(formValues.phoneNumber)) {
-    newErrors.phoneNumber = "Mobile number must be 10 digits";
-  }
-
-   if (!formValues.age.trim()) {
-    newErrors.age = "Age is required";
-  } 
-
-  if (!formValues.password.trim()) {
-    newErrors.password = "Password is required";
-  }
-
-  // Email
-  if (!formValues.email.trim()) {
-    newErrors.email = "Email is required";
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.email)) {
-    newErrors.email = "Invalid email format";
-  }
-
- // Gender
-if (!formValues.gender) {
-  newErrors.gender = "Gender is required";
-}
-
-// Marital Status
-if (!formValues.maritalStatus) {
-  newErrors.maritalStatus = "Marital status is required";
-}
-
-
-
-  // Address fields
-  const addressFields = ["country", "state", "district", "region", "city", "street"];
-  addressFields.forEach((key) => {
-    if (!formValues[key] || !formValues[key].trim()) {
-      newErrors[key] = `${key.charAt(0).toUpperCase() + key.slice(1)} is required`;
+    // -------------------- PERSONAL FIELDS --------------------
+    // Name
+    if (!formValues.name.trim()) {
+      newErrors.name = "Name is required";
     }
-  });
 
-  const socialFields = ["instagramLink", "youtubeLink", "linkedinLink"];
+    // Phone
+    if (!formValues.phoneNumber.trim()) {
+      newErrors.phoneNumber = "Mobile number is required";
+    } else if (!/^\d{10}$/.test(formValues.phoneNumber)) {
+      newErrors.phoneNumber = "Mobile number must be 10 digits";
+    }
 
-  const urlRegex = /^(https?:\/\/)?([\w\d\-]+\.)+\w{2,}(\/.*)?$/;
+    if (!formValues.age.trim()) {
+      newErrors.age = "Age is required";
+    }
 
-  socialFields.forEach((key) => {
-    if (formValues[key] && formValues[key].trim() !== "") {
-      if (!urlRegex.test(formValues[key])) {
-        newErrors[key] = "Invalid URL format";
+    if (!formValues.password.trim()) {
+      newErrors.password = "Password is required";
+    }
+
+    // Age
+    if (!formValues.age.trim()) {
+      newErrors.age = "Age is required";
+    } else if (!/^\d+$/.test(formValues.age) || parseInt(formValues.age) < 1 || parseInt(formValues.age) > 120) {
+      newErrors.age = "Age must be a valid number between 1 and 120";
+    }
+
+    // Phone
+    if (!formValues.phoneNumber.trim()) {
+      newErrors.phoneNumber = "Mobile number is required";
+    } else if (!/^\d{10}$/.test(formValues.phoneNumber)) {
+      newErrors.phoneNumber = "Mobile number must be 10 digits";
+    }
+
+    // Email
+    if (!formValues.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    // Gender
+    if (!formValues.gender) {
+      newErrors.gender = "Gender is required";
+    }
+
+    // Marital Status
+    if (!formValues.maritalStatus) {
+      newErrors.maritalStatus = "Marital status is required";
+    }
+
+
+
+    // Address fields
+    const addressFields = ["country", "state", "district", "region", "city", "street"];
+    addressFields.forEach((key) => {
+      if (!formValues[key] || !formValues[key].trim()) {
+        newErrors[key] = `${key.charAt(0).toUpperCase() + key.slice(1)} is required`;
       }
-    }
-  });
+    });
+
+    const socialFields = ["instagramLink", "youtubeLink", "linkedinLink"];
+
+    const urlRegex = /^(https?:\/\/)?([\w\d\-]+\.)+\w{2,}(\/.*)?$/;
+
+    socialFields.forEach((key) => {
+      if (formValues[key] && formValues[key].trim() !== "") {
+        if (!urlRegex.test(formValues[key])) {
+          newErrors[key] = "Invalid URL format";
+        }
+      }
+    });
 
 
-  // -------------------- DOCUMENT VALIDATION --------------------
-// Only validate Adhaar Card (example)
-documentFields
-  .filter((label) => label === "Adhaar Card") // only validate this
-  .forEach((label) => {
-    const key = fieldKeyMap[label];
+    // -------------------- DOCUMENT VALIDATION --------------------
+    // Only validate Adhaar Card (example)
+    documentFields
+      .filter((label) => label === "Adhaar Card") // only validate this
+      .forEach((label) => {
+        const key = fieldKeyMap[label];
 
-    if (!uploadedDocs[label] || uploadedDocs[label].length === 0) {
-      newErrors[key] = `${label} is required`;
-    }
-  });
-
-
-
-  // Set errors to state
-  setErrors(newErrors);
-
-  // Return TRUE if no errors exist
-  return Object.keys(newErrors).length === 0;
-};
+        if (!uploadedDocs[label] || uploadedDocs[label].length === 0) {
+          newErrors[key] = `${label} is required`;
+        }
+      });
 
 
 
- const personalFields = [
-  { label: "Name", icon: <PersonIcon sx={{ color: "#029898" }} /> },
-  { label: "Age", icon: <CakeIcon sx={{ color: "#029898" }} /> },
-  { label: "Gender", icon: <WcIcon sx={{ color: "#029898" }} /> },
-  { label: "Mobile No", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
-  { label: "Email ID", icon: <EmailIcon sx={{ color: "#029898" }} /> },
-  { label: "Marital Status", icon: <FavoriteIcon sx={{ color: "#029898" }} /> },
-  { label: "Country", icon: <PublicIcon sx={{ color: "#029898" }} /> },
-  { label: "District", icon: <LocationCityIcon sx={{ color: "#029898" }} /> },
-  { label: "Region", icon: <PushPinIcon sx={{ color: "#029898" }} /> },
-  { label: "City", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
-  { label: "State", icon: <MapIcon sx={{ color: "#029898" }} /> },
-  { label: "Password", icon: <LockIcon sx={{ color: "#029898" }} /> },
-  { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
-];
+    // Set errors to state
+    setErrors(newErrors);
+
+    // Return TRUE if no errors exist
+    return Object.keys(newErrors).length === 0;
+  };
+
+
+
+  const personalFields = [
+    { label: "Name", icon: <PersonIcon sx={{ color: "#029898" }} /> },
+    { label: "Age", icon: <CakeIcon sx={{ color: "#029898" }} /> },
+    { label: "Gender", icon: <WcIcon sx={{ color: "#029898" }} /> },
+    { label: "Mobile No", icon: <PhoneIcon sx={{ color: "#029898" }} /> },
+    { label: "Email ID", icon: <EmailIcon sx={{ color: "#029898" }} /> },
+    { label: "Marital Status", icon: <FavoriteIcon sx={{ color: "#029898" }} /> },
+    { label: "Country", icon: <PublicIcon sx={{ color: "#029898" }} /> },
+    { label: "District", icon: <LocationCityIcon sx={{ color: "#029898" }} /> },
+    { label: "Region", icon: <PushPinIcon sx={{ color: "#029898" }} /> },
+    { label: "City", icon: <LocationOnIcon sx={{ color: "#029898" }} /> },
+    { label: "State", icon: <MapIcon sx={{ color: "#029898" }} /> },
+    { label: "Password", icon: <LockIcon sx={{ color: "#029898" }} /> },
+    { label: "Street", icon: <HomeWorkIcon sx={{ color: "#029898" }} /> },
+  ];
 
 
   const documentFields = [
@@ -195,28 +209,28 @@ documentFields
   ];
 
   const resetForm = () => {
-  setFormValues({
-    name: "",
-    phoneNumber: "",
-    password: "",
-    age: "",
-    gender: "",
-    email: "",
-    maritalStatus: "",
-    street: "",
-    state: "",
-    district: "",
-    city: "",
-    region: "",
-    country: "",
-    instagramLink: "",
-    youtubeLink: "",
-    linkedinLink: "",
-  });
+    setFormValues({
+      name: "",
+      phoneNumber: "",
+      password: "",
+      age: "",
+      gender: "",
+      email: "",
+      maritalStatus: "",
+      street: "",
+      state: "",
+      district: "",
+      city: "",
+      region: "",
+      country: "",
+      instagramLink: "",
+      youtubeLink: "",
+      linkedinLink: "",
+    });
 
-  setUploadedDocs({});
-  setErrors({});
-};
+    setUploadedDocs({});
+    setErrors({});
+  };
 
 
   const [uploadedDocs, setUploadedDocs] = useState({});
@@ -264,7 +278,7 @@ documentFields
     youtubeLink: "",
     linkedinLink: "",
     password: "",
-    age:""
+    age: ""
   });
   React.useEffect(() => {
     if (!isEditMode || !taskData) return;
@@ -448,209 +462,214 @@ documentFields
                   Personal Data
                 </Typography>
 
-<Box sx={{ width: "90%" }}>
-  <Grid container spacing={3}>
-    {personalFields.map((fieldObj, i) => {
-      const key = fieldKeyMap[fieldObj.label];
+                <Box sx={{ width: "90%" }}>
+                  <Grid container spacing={3}>
+                    {personalFields.map((fieldObj, i) => {
+                      const key = fieldKeyMap[fieldObj.label];
 
-      return (
-        <Grid item xs={12} sm={6} md={4} key={i}>
-          <Typography
-            sx={{
-              mb: 1.5,
-              color: "#2d3748",
-              fontSize: "13px",
-              fontWeight: 600,
-            }}
-          >
-            {fieldObj.label}
-          </Typography>
+                      return (
+                        <Grid item xs={12} sm={6} md={4} key={i}>
+                          <Typography
+                            sx={{
+                              mb: 1.5,
+                              color: "#2d3748",
+                              fontSize: "13px",
+                              fontWeight: 600,
+                            }}
+                          >
+                            {fieldObj.label}
+                          </Typography>
 
-          {/* ⭐ GENDER DROPDOWN */}
-          {fieldObj.label === "Gender" ? (
-           <TextField
-  select
-  fullWidth
-  size="small"
-  value={formValues.gender}
-  onChange={(e) =>
-    setFormValues({ ...formValues, gender: e.target.value })
-  }
-  sx={{
-    ...getTextFieldSx(fieldObj.label),
-    width: fieldObj.label === "Street" ? "490px" : "238px",
-  }}
-  SelectProps={{
-    displayEmpty: true,
-    renderValue: (selected) => {
-      if (!selected) {
-        return <span style={{ color: "#aaa" }}>Select Gender</span>; // placeholder
-      }
-      return selected;
-    },
-  }}
-  InputProps={{
-    startAdornment: (
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
-        <Box
-          sx={{
-            width: "1px",
-            height: "10px",
-            bgcolor: "#ffffffff",
-          }}
-        />
-      </Box>
-    ),
-  }}
->
-  {/* Placeholder item */}
-<MenuItem value="" sx={{ fontSize: "14px" }}>
-  Select Gender
-</MenuItem>
+                          {/* ⭐ GENDER DROPDOWN */}
+                          {fieldObj.label === "Gender" ? (
+                            <TextField
+                              select
+                              fullWidth
+                              size="small"
+                              value={formValues.gender}
+                              onChange={(e) =>
+                                setFormValues({ ...formValues, gender: e.target.value })
+                              }
+                              sx={{
+                                ...getTextFieldSx(fieldObj.label),
+                                width: fieldObj.label === "Street" ? "490px" : "238px",
+                              }}
+                              SelectProps={{
+                                displayEmpty: true,
+                                renderValue: (selected) => {
+                                  if (!selected) {
+                                    return <span style={{ color: "#aaa" }}>Select Gender</span>; // placeholder
+                                  }
+                                  return selected;
+                                },
+                              }}
+                              InputProps={{
+                                startAdornment: (
+                                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                    {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
+                                    <Box
+                                      sx={{
+                                        width: "1px",
+                                        height: "10px",
+                                        bgcolor: "#ffffffff",
+                                      }}
+                                    />
+                                  </Box>
+                                ),
+                              }}
+                            >
+                              {/* Placeholder item */}
+                              <MenuItem value="" sx={{ fontSize: "14px" }}>
+                                Select Gender
+                              </MenuItem>
 
-<MenuItem value="Male" sx={{ fontSize: "14px" }}>
-  Male
-</MenuItem>
+                              <MenuItem value="Male" sx={{ fontSize: "14px" }}>
+                                Male
+                              </MenuItem>
 
-<MenuItem value="Female" sx={{ fontSize: "14px" }}>
-  Female
-</MenuItem>
+                              <MenuItem value="Female" sx={{ fontSize: "14px" }}>
+                                Female
+                              </MenuItem>
 
-<MenuItem value="Other" sx={{ fontSize: "14px" }}>
-  Other
-</MenuItem>
+                              <MenuItem value="Other" sx={{ fontSize: "14px" }}>
+                                Other
+                              </MenuItem>
 
-</TextField>
+                            </TextField>
 
-          ) : 
+                          ) :
 
-          /* ⭐ MARITAL STATUS DROPDOWN */
-          fieldObj.label === "Marital Status" ? (
-           <TextField
-  select
-  fullWidth
-  size="small"
-  value={formValues.maritalStatus}
-  onChange={(e) =>
-    setFormValues({
-      ...formValues,
-      maritalStatus: e.target.value,
-    })
-  }
-  sx={{
-    ...getTextFieldSx(fieldObj.label),
-    width: fieldObj.label === "Street" ? "490px" : "238px",
-  }}
-  SelectProps={{
-    displayEmpty: true,
-    renderValue: (selected) => {
-      if (!selected) {
-        return <span style={{ color: "#9ca3af" }}>Enter Marital Status</span>; // placeholder text
-      }
-      return selected;
-    },
-  }}
-  InputProps={{
-    startAdornment: (
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
-        <Box
-          sx={{
-            width: "1px",
-            height: "20px",
-            bgcolor: "#e5e7eb",
-          }}
-        />
-      </Box>
-    ),
-  }}
->
-  {/* Placeholder item */}
-  <MenuItem value="" sx={{ fontSize: "14px" }}>
-  Enter Marital Status
-</MenuItem>
+                            /* ⭐ MARITAL STATUS DROPDOWN */
+                            fieldObj.label === "Marital Status" ? (
+                              <TextField
+                                select
+                                fullWidth
+                                size="small"
+                                value={formValues.maritalStatus}
+                                onChange={(e) =>
+                                  setFormValues({
+                                    ...formValues,
+                                    maritalStatus: e.target.value,
+                                  })
+                                }
+                                sx={{
+                                  ...getTextFieldSx(fieldObj.label),
+                                  width: fieldObj.label === "Street" ? "490px" : "238px",
+                                }}
+                                SelectProps={{
+                                  displayEmpty: true,
+                                  renderValue: (selected) => {
+                                    if (!selected) {
+                                      return <span style={{ color: "#9ca3af" }}>Enter Marital Status</span>; // placeholder text
+                                    }
+                                    return selected;
+                                  },
+                                }}
+                                InputProps={{
+                                  startAdornment: (
+                                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                      {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
+                                      <Box
+                                        sx={{
+                                          width: "1px",
+                                          height: "20px",
+                                          bgcolor: "#e5e7eb",
+                                        }}
+                                      />
+                                    </Box>
+                                  ),
+                                }}
+                              >
+                                {/* Placeholder item */}
+                                <MenuItem value="" sx={{ fontSize: "14px" }}>
+                                  Enter Marital Status
+                                </MenuItem>
 
-<MenuItem value="Single" sx={{ fontSize: "14px" }}>
-  Single
-</MenuItem>
+                                <MenuItem value="Single" sx={{ fontSize: "14px" }}>
+                                  Single
+                                </MenuItem>
 
-<MenuItem value="Married" sx={{ fontSize: "14px" }}>
-  Married
-</MenuItem>
+                                <MenuItem value="Married" sx={{ fontSize: "14px" }}>
+                                  Married
+                                </MenuItem>
 
-<MenuItem value="Divorced" sx={{ fontSize: "14px" }}>
-  Divorced
-</MenuItem>
+                                <MenuItem value="Divorced" sx={{ fontSize: "14px" }}>
+                                  Divorced
+                                </MenuItem>
 
-<MenuItem value="Widowed" sx={{ fontSize: "14px" }}>
-  Widowed
-</MenuItem>
+                                <MenuItem value="Widowed" sx={{ fontSize: "14px" }}>
+                                  Widowed
+                                </MenuItem>
 
-</TextField>
+                              </TextField>
 
-          ) : (
+                            ) : (
 
-            /* ⭐ ALL NORMAL INPUT FIELDS */
-            <TextField
-              size="small"
-              fullWidth
-              value={formValues[key] || ""}
-              onChange={(e) => {
-                setFormValues({
-                  ...formValues,
-                  [key]: e.target.value,
-                });
-                setErrors({
-                  ...errors,
-                  [key]: "",
-                });
-              }}
-              placeholder={
-                ["country", "state", "region", "district"].includes(
-                  fieldObj.label
-                )
-                  ? ""
-                  : `Enter ${fieldObj.label}`
-              }
-              sx={{
-                ...getTextFieldSx(fieldObj.label),
-                width: fieldObj.label === "Street" ? "490px" : "100%",
-              }}
-              InputProps={{
-                startAdornment: (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                    }}
-                  >
-                    {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
-                    <Box
-                      sx={{
-                        width: "1px",
-                        height: "20px",
-                        bgcolor: "#e5e7eb",
-                      }}
-                    />
-                  </Box>
-                ),
-              }}
-            />
-          )}
+                              /* ⭐ ALL NORMAL INPUT FIELDS */
+                              <TextField
+                                size="small"
+                                fullWidth
+                                value={formValues[key] || ""}
 
-          {/* ⭐ ERROR MESSAGE */}
-          {errors[key] && (
-            <Typography sx={{ color: "red", fontSize: "12px", mt: 0.5 }}>
-              {errors[key]}
-            </Typography>
-          )}
-        </Grid>
-      );
-    })}
-  </Grid>
-</Box>
+                                onChange={(e) => {
+                                  let value = e.target.value;
+                                  if (fieldObj.label === "Mobile No" || fieldObj.label === "Age") {
+                                    value = value.replace(/[^0-9]/g, "");
+                                  }
+                                  setFormValues({
+                                    ...formValues,
+                                    [key]: value,
+                                  });
+                                  setErrors({
+                                    ...errors,
+                                    [key]: "",
+                                  });
+                                }}
+                                placeholder={
+                                  ["country", "state", "region", "district"].includes(
+                                    fieldObj.label
+                                  )
+                                    ? ""
+                                    : `Enter ${fieldObj.label}`
+                                }
+                                sx={{
+                                  ...getTextFieldSx(fieldObj.label),
+                                  width: fieldObj.label === "Street" ? "490px" : "100%",
+                                }}
+                                InputProps={{
+                                  startAdornment: (
+                                    <Box
+                                      sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: 1,
+                                      }}
+                                    >
+                                      {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
+                                      <Box
+                                        sx={{
+                                          width: "1px",
+                                          height: "20px",
+                                          bgcolor: "#e5e7eb",
+                                        }}
+                                      />
+                                    </Box>
+                                  ),
+                                }}
+                              />
+                            )}
+
+                          {/* ⭐ ERROR MESSAGE */}
+                          {errors[key] && (
+                            <Typography sx={{ color: "red", fontSize: "12px", mt: 0.5 }}>
+                              {errors[key]}
+                            </Typography>
+                          )}
+                        </Grid>
+                      );
+                    })}
+                  </Grid>
+                </Box>
 
 
 
@@ -807,76 +826,76 @@ documentFields
                 </Typography>
 
                 <Grid container spacing={3}>
-  {socialFields.map((fieldObj, i) => (
-    <Grid item xs={12} sm={6} md={4} key={i}>
-      <Typography
-        sx={{
-          mb: 1.5,
-          color: "#2d3748",
-          fontSize: "13px",
-          fontWeight: 600,
-        }}
-      >
-        {fieldObj.label}
-      </Typography>
+                  {socialFields.map((fieldObj, i) => (
+                    <Grid item xs={12} sm={6} md={4} key={i}>
+                      <Typography
+                        sx={{
+                          mb: 1.5,
+                          color: "#2d3748",
+                          fontSize: "13px",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {fieldObj.label}
+                      </Typography>
 
-      <TextField
-        fullWidth
-        size="small"
-        name={fieldObj.label}
-        value={formValues[fieldKeyMap[fieldObj.label]] || ""}
-        onChange={(e) => {
-          setFormValues({
-            ...formValues,
-            [fieldKeyMap[fieldObj.label]]: e.target.value,
-          });
+                      <TextField
+                        fullWidth
+                        size="small"
+                        name={fieldObj.label}
+                        value={formValues[fieldKeyMap[fieldObj.label]] || ""}
+                        onChange={(e) => {
+                          setFormValues({
+                            ...formValues,
+                            [fieldKeyMap[fieldObj.label]]: e.target.value,
+                          });
 
-          // ⬅ clear error on typing
-          setErrors({
-            ...errors,
-            [fieldKeyMap[fieldObj.label]]: "",
-          });
-        }}
-        placeholder={`Enter ${fieldObj.label} URL`}
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            backgroundColor: "#ffffff",
-            borderRadius: "8px",
-            height: "40px",
-            transition: "all 0.2s ease",
-            "& fieldset": { borderColor: "#d1d5db" },
-            "&:hover fieldset": { borderColor: "#029898" },
-            "&.Mui-focused fieldset": { borderColor: "#029898", borderWidth: "2px" },
-            "&.Mui-focused": {
-              backgroundColor: "#fff",
-              boxShadow: "0 0 0 3px rgba(2,152,152,0.1)",
-            },
-          },
-          "& .MuiOutlinedInput-input": {
-            fontSize: "13px",
-            padding: "10px 14px",
-            color: "#1a202c",
-          },
-        }}
-        InputProps={{
-          startAdornment: (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
-              <Box sx={{ width: "1px", height: "20px", bgcolor: "#e5e7eb" }} />
-            </Box>
-          ),
-        }}
-      />
+                          // ⬅ clear error on typing
+                          setErrors({
+                            ...errors,
+                            [fieldKeyMap[fieldObj.label]]: "",
+                          });
+                        }}
+                        placeholder={`Enter ${fieldObj.label} URL`}
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            backgroundColor: "#ffffff",
+                            borderRadius: "8px",
+                            height: "40px",
+                            transition: "all 0.2s ease",
+                            "& fieldset": { borderColor: "#d1d5db" },
+                            "&:hover fieldset": { borderColor: "#029898" },
+                            "&.Mui-focused fieldset": { borderColor: "#029898", borderWidth: "2px" },
+                            "&.Mui-focused": {
+                              backgroundColor: "#fff",
+                              boxShadow: "0 0 0 3px rgba(2,152,152,0.1)",
+                            },
+                          },
+                          "& .MuiOutlinedInput-input": {
+                            fontSize: "13px",
+                            padding: "10px 14px",
+                            color: "#1a202c",
+                          },
+                        }}
+                        InputProps={{
+                          startAdornment: (
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                              {React.cloneElement(fieldObj.icon, { fontSize: "small" })}
+                              <Box sx={{ width: "1px", height: "20px", bgcolor: "#e5e7eb" }} />
+                            </Box>
+                          ),
+                        }}
+                      />
 
-      {/* 🔴 INLINE ERROR MESSAGE UNDER INPUT */}
-      {errors[fieldKeyMap[fieldObj.label]] && (
-        <Typography sx={{ color: "red", fontSize: "12px", mt: 0.5 }}>
-          {errors[fieldKeyMap[fieldObj.label]]}
-        </Typography>
-      )}
-    </Grid>
-  ))}
-</Grid>
+                      {/* 🔴 INLINE ERROR MESSAGE UNDER INPUT */}
+                      {errors[fieldKeyMap[fieldObj.label]] && (
+                        <Typography sx={{ color: "red", fontSize: "12px", mt: 0.5 }}>
+                          {errors[fieldKeyMap[fieldObj.label]]}
+                        </Typography>
+                      )}
+                    </Grid>
+                  ))}
+                </Grid>
 
               </CardContent>
             </Card>
@@ -891,7 +910,7 @@ documentFields
                 mb: 3,
               }}
             >
-              <Button
+              {/* <Button
                 variant="outlined"
                 sx={{
                   textTransform: "none",
@@ -911,7 +930,7 @@ documentFields
                 onClick={resetForm}
               >
                 Clear
-              </Button>
+              </Button> */}
 
               <Button
                 variant="contained"

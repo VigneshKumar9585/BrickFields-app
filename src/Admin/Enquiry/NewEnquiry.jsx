@@ -32,6 +32,7 @@ import { useNavigate } from "react-router-dom";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 // Add CSS for blinking animation
 const styles = `
@@ -60,7 +61,7 @@ export default function NewEnquiry() {
 
   // Fetch enquiries
   useEffect(() => {
-    axios.get("https://bf-back.appblocky.com/api/get-enquiry")
+    axios.get(`${BACKEND_URL}/api/get-enquiry`)
       .then((res) => {
         setTasks(res.data)
         console.log(res.data)
@@ -854,7 +855,7 @@ export default function NewEnquiry() {
                   }}
                 >
                   <img
-                    src={`https://bf-back.appblocky.com/upload-site-images/${img}`}
+                    src={`${BACKEND_URL}/upload-site-images/${img}`}
                     alt="enquiry"
                     style={{
                       width: "100%",
