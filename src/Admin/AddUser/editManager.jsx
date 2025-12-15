@@ -55,6 +55,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 function Dashboard() {
     const { id } = useParams();
+    
     const isEditMode = true;  // Always edit mode
     const navigate = useNavigate();
     const [existingDocs, setExistingDocs] = useState({});
@@ -73,7 +74,7 @@ function Dashboard() {
     useEffect(() => {
         if (!id) return;
 
-        axios.get(`http://localhost:2424/api/get-manager/${id}`)
+        axios.get(`${BACKEND_URL}/api/get-manager/${id}`)
             .then(res => {
                 setFormValues(res.data);
                 console.log("Fetched Manager Data:", res.data);

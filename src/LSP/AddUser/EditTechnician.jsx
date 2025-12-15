@@ -72,7 +72,7 @@ function editTechnician() {
     useEffect(() => {
         if (!id) return;
 
-        axios.get(`http://localhost:2424/api/get-technician/${id}`)
+        axios.get(`${BACKEND_URL}/api/get-technician/${id}`)
             .then(res => {
                 setFormValues(res.data);
                 console.log("Fetched technician Data:", res.data);

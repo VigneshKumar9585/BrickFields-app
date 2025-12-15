@@ -19,7 +19,8 @@ import {
 import { Edit } from "@mui/icons-material";
 import logo from "../../assets/logo/logo.webp";
 
-const API_BASE = "http://localhost:2444";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 
 function AddLsp() {
   const navigate = useNavigate();
@@ -115,7 +116,7 @@ function AddLsp() {
 
     try {
       if (taskData) {
-        await axios.put(`${API_BASE}/lsp-update/${taskData._id}`, formData);
+        await axios.put(`${BACKEND_URL}/lsp-update/${taskData._id}`, formData);
 
         Swal.fire({
           title: "LSP Updated",
