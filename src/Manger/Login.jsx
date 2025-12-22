@@ -44,7 +44,7 @@ const Login = () => {
       console.log(data);
 
       // Store user data and token
-      login(data.user, data.token);
+      login(data.user, data.token,data.role);
 
       // Role-based routing
       const roleRoutes = {

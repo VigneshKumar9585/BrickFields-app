@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "../../componts/Navbar.jsx";
+import Navbar from "../../componts/Navbar";
 import {
   Box,
   Card,
@@ -127,7 +127,7 @@ function Dashboard() {
           flexDirection: { xs: "column", md: "row" },
           minHeight: "100%",
           pb: 4,
-          pl:5
+          pl: 5
         }}
       >
         <Box sx={{ width: "400px" }} />

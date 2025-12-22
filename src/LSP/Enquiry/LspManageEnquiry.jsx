@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Navbar from "../../componts/Navbar.jsx";
+import Navbar from "../../componts/LspNavbar.jsx";
 import {
   Box,
   Card,
@@ -89,7 +89,7 @@ const sampleTasks = [
   },
 ];
 
-export default function ManageEnquiry() {
+export default function LspManageEnquiry() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedLSP, setSelectedLSP] = useState("");
@@ -108,7 +108,7 @@ export default function ManageEnquiry() {
 
   const fetchEnquiryList = async () => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/get-manage-enquiry/${user.id}`);
+      const response = await axios.get(`${BACKEND_URL}/api/lsp-enquiry-details/${user.id}`);
       setEnquiryList(response.data);
       console.log(response.data);
     } catch (error) {
@@ -122,18 +122,18 @@ export default function ManageEnquiry() {
   }, []);
 
   const handleEditClick = (task) => {
-    navigate(`/enquiry/edit-lsp-assign`, { state: { task } });
+    navigate(`/edit/technician-assign`, { state: { task } });
   };
 
-  // const handleOpenDialog = (task) => {
-  //   setSelectedTask(task);
-  //   setOpenDialog(true);
+  const handleOpenDialog = (task) => {
+    setSelectedTask(task);
+    setOpenDialog(true);
+  };
+
+  // const handleClickEye = (task) => {
+  //   console.log("Viewing task:", task._id);
+  //   navigate(`/enquiry/manage-enquiry-details/${task._id}`);
   // };
-
-  const handleClickEye = (task) => {
-    console.log("Viewing task:", task._id);
-    navigate(`/enquiry/manage-enquiry-details/${task._id}`);
-  };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -434,7 +434,7 @@ export default function ManageEnquiry() {
                           cursor: "pointer",
                           "&:hover": { bgcolor: "#f5f5f5" },
                         }}
-                        onClick={() => navigate(`/enquiry/manage-enquiry-details/${task._id}`)}
+                        onClick={() => navigate(`/lsp-manage-enquiry-details/${task._id}`)}
                       >
                         <TableCell>{startIndex + idx + 1}</TableCell>
                         <TableCell>{task.enquiryId}</TableCell>
@@ -466,15 +466,10 @@ export default function ManageEnquiry() {
                             <IconButton onClick={(e) => { e.stopPropagation(); handleOpenDialog(task); }}>
                               <Eye size={18} />
                             </IconButton>
-                            {
-                              task.assignedTechnician1 == null  ? <IconButton onClick={(e) => { e.stopPropagation(); handleEditClick(task); }}>
-                                <Pencil size={18} />
-                              </IconButton> : null
-                            }
+                            <IconButton onClick={(e) => { e.stopPropagation(); handleEditClick(task); }}>
+                              <Pencil size={18} />
+                            </IconButton>
 
-                            {/* <IconButton onClick={(e) => { e.stopPropagation(); handleOpenDeleteDialog(task); }}>
-                              <Trash2 size={18} />
-                            </IconButton> */}
                           </Box>
                         </TableCell>
                       </TableRow>

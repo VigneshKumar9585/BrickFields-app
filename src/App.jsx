@@ -21,6 +21,7 @@ import AdminAddManager from "./Admin/AddUser/AddManager.jsx"
 import AdminAddStaff from "./Admin/AddUser/AddStaff.jsx"
 import AdminManagerUser from "./Admin/AddUser/ManageUser.jsx"
 import AdminEditManager from "./Admin/AddUser/editManager.jsx"
+import EnquiryFullDetails from './Admin/Enquiry/EnquiryFullDetails.jsx';
 
 
 // Manager
@@ -32,7 +33,7 @@ import Reset from "./Manger/ResetPasssword.jsx"
 import Profile from "./Manger/Profile.jsx"
 import NewEnqiry from "./Manger/Enquiry/NewEnqiry.jsx"
 import ManageEnqiry from "./Manger/Enquiry/ManageEnquiry.jsx"
-import NewTask from "./Manger/Enquiry/NewTaskDetails.jsx"
+import NewTask from "./Manger/Enquiry/ManagerAssinging.jsx"
 import EditProfile from "./Manger/ProfileEdit.jsx"
 import ChangePasswored from "./Manger/ChangePasswored.jsx"
 import AssignEdit from "./Manger/Enquiry/EditAssign.jsx";
@@ -66,8 +67,8 @@ import LspReport from "./LSP/Report/Report.jsx"
 // import LspAddLsp from "./LSP/AddUser/AddLsp.jsx"
 // import LspManageLsp from "./LSP/AddUser/ManageLSP.jsx"
 import ManageTechnician from './LSP/AddUser/ManageTechnician';
-import LspNewEnquiry from "./LSP/Enquiry/NewEnquiry.jsx"
-import LspManageEnquiry from "./LSP/Enquiry/MangeEnquiry.jsx"
+import LspNewEnquiry from "./LSP/Enquiry/LspNewEnquiry.jsx"
+import LspManageEnquiry from "./LSP/Enquiry/LspManageEnquiry.jsx"
 import LspNewEditAssgin from "./LSP/Enquiry/NewTaskDetails.jsx"
 import LspEditAssign from "./LSP/Enquiry/EditAssign.jsx";
 import LspProfile from "./LSP/Dashborad/Profile.jsx"
@@ -80,6 +81,14 @@ import EnquiryForm from "../AddEnquiry.jsx"
 
 import { Routes, Route } from "react-router-dom";
 import PayPage from '../Payment'
+import ManagerAssigning from './Manger/Enquiry/ManagerAssinging.jsx';
+import ManagerEnquiryFullDetails from './Manger/Enquiry/ManagerEnquiryFullDetails.jsx';
+import LspAssigning from './LSP/Enquiry/LspAssigningDetails';
+import LspEnquiryFullDetails from './Lsp/Enquiry/LspEnquiryFullDetails';
+import EditLspAssign from './Manger/Enquiry/EditLspAssign';
+import { socket } from './utils/socket';
+import TaskDetails from './Tachnician/Task/TaskDetails';
+
 
 function App() {
   return (
@@ -91,11 +100,6 @@ function App() {
         }}
       />
       <Routes>
-
-
-
-
-
         {/* Admin */}
         <Route path="/admin-dashboard" element={<AdminDashboared />} />
         <Route path="/master/settings" element={<MasterSetting />} />
@@ -128,6 +132,10 @@ function App() {
         <Route path='/profile/edit' element={<EditProfile />} />
         <Route path='/enquiry/new' element={<NewEnqiry />} />
         <Route path='/enquiry/manage' element={<ManageEnqiry />} />
+        <Route path='/enquiry/manager-assigning/:id' element={<ManagerAssigning />} />
+        <Route path='/enquiry/manage-enquiry-details/:id' element={<ManagerEnquiryFullDetails />} />
+
+        <Route path='/enquiry/edit-lsp-assign' element={<EditLspAssign />} />
         <Route path='/enquiry/new/details' element={<NewTask />} />
         <Route path='/change/passwored' element={<ChangePasswored />} />
         <Route path="/edit/assign" element={<AssignEdit />} />
@@ -142,6 +150,9 @@ function App() {
 
         {/* Tachnician */}
         <Route path='/technician-new-task' element={<TechnicianNewtask />} />
+        <Route path='/technician-task-details/:id' element={<TaskDetails />} />
+
+
         <Route path='/technician-current-task' element={<TechnicianCurrenttask />} />
         <Route path='/technician-new-enquiry' element={<TechnicianNewEnquiry />} />
         <Route path='/technician-Dashboard' element={<TechnicianDashbored />} />
@@ -158,9 +169,13 @@ function App() {
         {/* <Route path='/lsp-manageLSP' element={<LspManageLsp/>}/> */}
         <Route path='/lsp-manageLSP' element={<ManageTechnician />} />
         <Route path='/edit-technician/:id' element={<EditTechnician />} />
+        <Route path='/lsp-assigning/:id' element={<LspAssigning />} />
+
 
 
         <Route path='/lsp-new-enquiry' element={<LspNewEnquiry />} />
+        <Route path='/lsp-manage-enquiry-details/:id' element={<LspEnquiryFullDetails />} />
+
         <Route path='/lsp-manage-enquiry' element={<LspManageEnquiry />} />
         <Route path='/lsp-new-edit-assgin' element={<LspNewEditAssgin />} />
         <Route path='/lsp-edit-assgin' element={<LspEditAssign />} />
@@ -177,6 +192,7 @@ function App() {
 
 
 
+        <Route path='/admin/enquiry/:id' element={<EnquiryFullDetails />} />
       </Routes>
     </>
   )

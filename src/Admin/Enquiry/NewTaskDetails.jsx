@@ -13,6 +13,8 @@ import {
     DialogContent,
     DialogTitle,
     Divider,
+    InputLabel,
+    Select,
     FormControl,
     FormControlLabel,
     FormGroup,
@@ -34,6 +36,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIconcon from "@mui/icons-material/Edit";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -70,11 +74,16 @@ const StyledInput = styled("input")(() => ({
 function NewEnquiryDetails() {
     const navigate = useNavigate();
     const { id } = useParams();
+    const user = JSON.parse(sessionStorage.getItem("user"));
     // States
     const [date, setDate] = useState(null);
     const [openPopup, setOpenPopup] = useState(false);
     const [openEstimatePopup, setOpenEstimatePopup] = useState(false);
     const [openPaymentPopup, setOpenPaymentPopup] = useState(false);
+    const [openRejectPopup, setOpenRejectPopup] = useState(false);
+    const [rejectionReason, setRejectionReason] = useState("");
+    const [editSlotDate, setEditSlotDate] = useState(null);
+    const [editSlotTime, setEditSlotTime] = useState("");
     // Estimation states
     const [sqFeetEst, setSqFeetEst] = useState("");
     const [amountPerSqFeetEst, setAmountPerSqFeetEst] = useState(5); // fixed
@@ -141,6 +150,20 @@ function NewEnquiryDetails() {
 
     const services = ["Service A", "Service B", "Service C"];
 
+    const timeSlots = [
+        "09:00", "10:00", "11:00", "12:00",
+        "13:00", "14:00", "15:00", "16:00", "17:00"
+    ];
+
+    const formatTimeDisplay = (time24) => {
+        if (!time24) return "";
+        const [hours, minutes] = time24.split(":");
+        const hour = parseInt(hours);
+        const ampm = hour >= 12 ? "PM" : "AM";
+        const hour12 = hour % 12 || 12;
+        return `${hour12}:${minutes} ${ampm}`;
+    };
+
     const formatTime = (timeString) => {
         if (!timeString) return "";
 
@@ -154,15 +177,44 @@ function NewEnquiryDetails() {
         return `${h}:${minutes} ${ampm}`;
     };
 
+    const [managers, setManagers] = useState([]);
+    const fetchManagers = async () => {
+        try {
+            const res = await axios.get(`${BACKEND_URL}/api/get-managers`);
+            setManagers(res.data);
+        } catch (err) {
+            console.error("Error fetching managers:", err);
+        }
+    };
+
+
     useEffect(() => {
         axios.get(`${BACKEND_URL}/api/get-enquiry-id/${id}`)
             .then((res) => {
                 console.log("Enquiry Data:", res.data);
                 setEnquiryData(res.data);
                 setSqFeetEst(res.data.sqFeet || ""); // AUTO FILL ESTIMATION FIELD
+                
             })
             .catch((err) => console.log(err));
-    }, [id]);
+        fetchManagers();
+            
+        }, [id]);
+
+            const assignManager = async (managerId) => {
+                try {
+                    console.log("Assigning Manager:", managerId, "to Enquiry ID:", id);
+                    console.log(id)
+                    const response = await axios.put(`${BACKEND_URL}/api/assign-manager`, { enquiryId: id, managerId: managerId });
+                    console.log("Manager assigned successfully:", response.data);
+                    toast.success("Manager assigned successfully");
+                    setEnquiryData(prev => ({ ...prev, assignedManager: managerId }));
+                    navigate(`/admin-manage-enquiry`);
+                } catch (error) {
+                    console.error("Error assigning Manager:", error);
+                    toast.error(error.response.data.message);
+                }
+            };
     useEffect(() => {
         const total = Number(sqFeetEst) * Number(amountPerSqFeetEst);
         setTotalAmountEst(total || "");
@@ -192,8 +244,6 @@ function NewEnquiryDetails() {
                 return;
             }
 
-
-
             const response = await axios.post(`${BACKEND_URL}/api/send-payment-link`, {
                 email,
                 amount,
@@ -204,7 +254,7 @@ function NewEnquiryDetails() {
             });
             toast.success("Payment link sent successfully!");
 
-            setOpenEstimatePopup(false)
+            setOpenEstimatePopup(false);
 
         } catch (error) {
             console.error("Error sending payment link:", error);
@@ -212,18 +262,43 @@ function NewEnquiryDetails() {
         }
     };
 
-
-
+    const rejectEnquiry = async () => {
+        try {
+            const requiredData = {
+                enquiryId: id,
+                reason: rejectionReason,
+                managerId: user.id
+            }
+            const res = await axios.put(
+                `${BACKEND_URL}/api/manager-enquiry/${id}`,
+                requiredData
+            );
+            toast.success("Enquiry rejected successfully!");
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to reject enquiry.");
+        }
+    };
 
     const handleUpdateEnquiry = async () => {
         try {
+            const updateData = { ...enquiryData };
+            
+            // If slot date/time was edited, include them in the update
+            if (editSlotDate && editSlotTime) {
+                updateData.preferDate = editSlotDate;
+                updateData.preferTime = editSlotTime;
+            }
+
             const res = await axios.put(
                 `${BACKEND_URL}/api/update-enquiry/${id}`,
-                enquiryData
+                updateData
             );
 
             toast.success("Enquiry updated successfully!");
             setOpenPopup(false);
+            setEditSlotDate(null);
+            setEditSlotTime("");
         } catch (err) {
             console.error(err);
             toast.error("Update failed. Check console.");
@@ -274,6 +349,9 @@ function NewEnquiryDetails() {
 
         return ""; // fallback
     };
+
+
+
 
 
 
@@ -390,8 +468,6 @@ function NewEnquiryDetails() {
                                         { label: "Phone", value: enquiryData.phoneNumber },
                                         { label: "Email", value: enquiryData.email },
                                         { label: "Sq-Feet", value: enquiryData.sqFeet },
-                                        { label: "Prefer Date", value: formatToDDMMYYYY(enquiryData.preferDate) },
-                                        { label: "Prefer Time", value: formatTime(enquiryData.preferTime) },
 
 
 
@@ -443,14 +519,68 @@ function NewEnquiryDetails() {
                                         </Box>
                                     ))}
 
+                                    {/* SLOT BOOKING SECTION */}
+                                    {enquiryData.preferDate && (
+                                        <>
+                                            <Divider sx={{ my: 2 }} />
+                                            <Typography
+                                                sx={{
+                                                    fontSize: "14px",
+                                                    fontWeight: 700,
+                                                    color: "#029898",
+                                                    mb: 2
+                                                }}
+                                            >
+                                                Preferred Inspection Slot
+                                            </Typography>
+                                            
+                                            <Box
+                                                sx={{
+                                                    p: 2,
+                                                    bgcolor: "#e0f9f9",
+                                                    borderRadius: "12px",
+                                                    border: "1px solid #b2eaea",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    gap: 2,
+                                                    mb: 1
+                                                }}
+                                            >
+                                                <Box
+                                                    sx={{
+                                                        width: 40,
+                                                        height: 40,
+                                                        borderRadius: "10px",
+                                                        bgcolor: "#029898",
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
+                                                        color: "#fff"
+                                                    }}
+                                                >
+                                                    <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
+                                                        <CalendarTodayIcon sx={{ fontSize: 18 }} />
+                                                        <AccessTimeIcon sx={{ fontSize: 16 }} />
+                                                    </Box>
+                                                </Box>
+                                                <Box>
+                                                    <Typography fontSize="12px" color="#666">Booked Appointment Slot</Typography>
+                                                    <Typography fontSize="14px" fontWeight={700} color="#029898">
+                                                        {formatToDDMMYYYY(enquiryData.preferDate)} at {formatTime(enquiryData.preferTime)}
+                                                    </Typography>
+                                                </Box>
+                                            </Box>
+                                        </>
+                                    )}
+
                                 </Box>
 
-
                                 {/* CHECKBOX SECTION */}
-                                <Box
-                                    sx={{
-                                        borderTop: "1px solid #e5e5e5",
-                                        borderBottom: "1px solid #e5e5e5",
+                                {enquiryData.initialAmount == null ? (
+                                    <Box
+                                        sx={{
+                                            borderTop: "1px solid #e5e5e5",
+                                            borderBottom: "1px solid #e5e5e5",
                                         px: 2,
                                         py: 1.5,
                                         bgcolor: "#fafafa",
@@ -524,39 +654,62 @@ function NewEnquiryDetails() {
                                             />
                                         )}
                                     </FormGroup>
-                                </Box>
+                                </Box> ) : null
+                                }   
+
 
 
                                 {/* BUTTONS */}
                                 <Box sx={{ display: "flex", gap: 1, px: 2, py: 2 }}>
-                                    <Button
-                                        variant="outlined"
-                                        color="error"
-                                        fullWidth
-                                        sx={{
-                                            fontSize: "12px",
-                                            fontWeight: 600,
-                                            textTransform: "none",
-                                            py: 0.6
-                                        }}
-                                    >
-                                        Deny
-                                    </Button>
+                                    {!enquiryData.initialAmount == null ? (
+                                        <>
+                                            <Button
+                                                variant="outlined"
+                                                color="error"
+                                                fullWidth
+                                                onClick={() => setOpenRejectPopup(true)}
+                                                sx={{
+                                                    fontSize: "12px",
+                                                    fontWeight: 600,
+                                                    textTransform: "none",
+                                                    py: 0.6
+                                                }}
+                                            >
+                                                Deny
+                                            </Button>
 
-                                    {/* <Button
-                                        variant="contained"
-                                        fullWidth
-                                        sx={{
-                                            bgcolor: "#029898",
-                                            fontSize: "12px",
-                                            fontWeight: 600,
-                                            textTransform: "none",
-                                            py: 0.6,
-                                            "&:hover": { bgcolor: "#027c7c" },
-                                        }}
-                                    >
-                                        Accept
-                                    </Button> */}
+                                            <Button
+                                                variant="contained"
+                                                fullWidth
+                                                sx={{
+                                                    bgcolor: "#029898",
+                                                    fontSize: "12px",
+                                                    fontWeight: 600,
+                                                    textTransform: "none",
+                                                    py: 0.6,
+                                                    "&:hover": { bgcolor: "#027c7c" },
+                                                }}
+                                            >
+                                                Accept
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <Button
+                                            variant="contained"
+                                            fullWidth
+                                            onClick={() => setOpenPopup(true)}
+                                            sx={{
+                                                bgcolor: "#029898",
+                                                fontSize: "12px",
+                                                fontWeight: 600,
+                                                textTransform: "none",
+                                                py: 0.6,
+                                                "&:hover": { bgcolor: "#027c7c" },
+                                            }}
+                                        >
+                                            Edit
+                                        </Button>
+                                    )}
                                 </Box>
                             </CardContent>
 
@@ -569,405 +722,166 @@ function NewEnquiryDetails() {
                         </Grid>
 
                         {/* Right Section - Assign Partner */}
-                        {detailsMatched && siteEstimated && paymentAdded && (
-                            <Grid sx={{ width: "750px" }} item xs={12} md={6}>
-                                <Typography variant="h6" sx={{ mb: 3, fontWeight: "600" }}>
-                                    Assign To Manager
-                                </Typography>
-
-                                {/* Book Prefer Date & Time */}
-                                <CardContent
-                                    sx={{
-                                        mb: 2,
-                                        border: "1px solid #abababff",
-                                        borderRadius: "14px",
-                                        p: 0,
-                                        boxShadow: "0px 4px 12px rgba(0,0,0,0.2)",
-                                        overflow: "hidden",
-                                    }}
-                                >
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            justifyContent: "space-between",
-                                            bgcolor: "#029898",
-                                            color: "#fff",
-                                            px: 2,
-                                            py: 1,
-                                            borderRadius: "8px 8px 0 0",
-                                            boxShadow: 3,
-                                        }}
-                                    >
-                                        <Typography>Book Prefer Date & Time</Typography>
-                                        <Button
-                                            variant="contained"
-                                            size="small"
-                                            sx={{ color: "#029898", bgcolor: "white", borderRadius: "12px", width: "80px" }}
-                                        >
-                                            Add
-                                        </Button>
-                                    </Box>
-
-                                    <Box display={"flex"} mt={1}>
-                                        <Box display="grid" sx={{ px: 2, py: 1 }}>
-                                            <Typography fontWeight="600" fontSize="13px" ml={1}>
-                                                Date
-                                            </Typography>
-                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                                <DatePicker
-                                                    value={date}
-                                                    onChange={(newValue) => setDate(newValue)}
-                                                    slotProps={{
-                                                        textField: {
-                                                            fullWidth: true,
-                                                            sx: { width: 210, mt: 1 },
-                                                            InputProps: {
-                                                                sx: {
-                                                                    height: 35,
-                                                                    borderRadius: "10px",
-                                                                    backgroundColor: "#dddddd",
-                                                                    "& fieldset": { border: "none !important" },
-                                                                    "&:hover fieldset": { border: "none !important" },
-                                                                    "&.Mui-focused fieldset": { border: "none !important" },
-                                                                },
-                                                            },
-                                                            inputProps: { style: { fontWeight: 400, paddingLeft: 12 } },
-                                                        },
-                                                    }}
-                                                />
-                                            </LocalizationProvider>
-                                        </Box>
-
-                                        <Box sx={{ px: 2, py: 1 }}>
-                                            <Typography fontWeight="600" fontSize="13px" ml={1}>
-                                                Session
-                                            </Typography>
-
-                                            <TextField
-                                                select
-                                                fullWidth
-                                                sx={{
-                                                    width: 210,
-                                                    mt: 1,
-                                                    backgroundColor: "#dddddd",
-                                                    borderRadius: "10px",
-                                                    "& .MuiOutlinedInput-root": {
-                                                        paddingRight: 0,
-                                                        height: 35,
-                                                        "& fieldset": { border: "none" },
-                                                        "&:hover fieldset": { border: "none" },
-                                                        "&.Mui-focused fieldset": { border: "none" },
-                                                    },
-                                                }}
-                                                SelectProps={{
-                                                    MenuProps: {
-                                                        PaperProps: { sx: { width: 120, borderRadius: "13px" } },
-                                                    },
-                                                }}
-                                            >
-                                                <MenuItem sx={{ bgcolor: "#ffffffff", color: "#000", fontWeight: 600, borderRadius: "8px", my: 0.5 }} value="Morning">
-                                                    Morning
-                                                </MenuItem>
-                                                <MenuItem sx={{ bgcolor: "#ffffffff", color: "#000", fontWeight: 600, borderRadius: "8px", my: 0.5 }} value="Afternoon">
-                                                    Afternoon
-                                                </MenuItem>
-                                                <MenuItem sx={{ bgcolor: "#ffffffff", color: "#000", fontWeight: 600, borderRadius: "8px", my: 0.5 }} value="Evening">
-                                                    Evening
-                                                </MenuItem>
-                                            </TextField>
-                                        </Box>
-                                    </Box>
-
-                                    <Box sx={{ px: 2, py: 1 }}>
-                                        <Typography fontWeight="600" fontSize="13px" ml={1}>
-                                            Remark
-                                        </Typography>
-                                        <TextField
-                                            multiline
-                                            rows={3}
-                                            sx={{
-                                                mb: 2,
-                                                width: 710,
-                                                borderRadius: "10px",
-                                                backgroundColor: "#dddddd",
-                                                "& .MuiOutlinedInput-root": {
-                                                    padding: 0,
-                                                    "& fieldset": { border: "none" },
-                                                    "&:hover fieldset": { border: "none" },
-                                                    "&.Mui-focused fieldset": { border: "none" },
-                                                    "& textarea": {
-                                                        height: 100,
-                                                        padding: "8px",
-                                                        scrollbarWidth: "thin",
-                                                        scrollbarColor: "#888 #ccc",
-                                                        "&::-webkit-scrollbar": { width: "8px" },
-                                                        "&::-webkit-scrollbar-track": { background: "#ccc", borderRadius: "10px" },
-                                                        "&::-webkit-scrollbar-thumb": { background: "#888", borderRadius: "10px" },
-                                                        "&::-webkit-scrollbar-thumb:hover": { background: "#555" },
-                                                    },
-                                                },
-                                            }}
-                                        />
-                                    </Box>
-                                </CardContent>
-
-                                {/* Partner List */}
-                                <CardContent
-                                    sx={{
-                                        mb: 2,
-                                        border: "1px solid #abababff",
-                                        borderRadius: "14px",
-                                        p: 0,
-                                        boxShadow: "0px 4px 12px rgba(0,0,0,0.2)",
-                                        overflow: "hidden",
-                                    }}
-                                >
-                                    <Box display={"flex"} mt={1} ml={1}>
-                                        <Box sx={{ px: 1, py: 1 }}>
-                                            <Typography fontWeight="600" fontSize="13px" ml={1}>
-                                                Country
-                                            </Typography>
-
-                                            <TextField
-                                                select
-                                                fullWidth
-                                                sx={{
-                                                    width: 165,
-                                                    mt: 1,
-                                                    backgroundColor: "#dddddd",
-                                                    borderRadius: "10px",
-                                                    "& .MuiOutlinedInput-root": {
-                                                        paddingRight: 0,
-                                                        height: 35,
-                                                        "& fieldset": { border: "none" },
-                                                        "&:hover fieldset": { border: "none" },
-                                                        "&.Mui-focused fieldset": { border: "none" },
-                                                    },
-                                                }}
-                                                SelectProps={{
-                                                    MenuProps: {
-                                                        PaperProps: {
-                                                            sx: {
-                                                                width: 40,
-                                                                borderRadius: "20px",
-                                                            },
-                                                        },
-                                                    },
-                                                }}
-                                            >
-                                                <MenuItem sx={{ bgcolor: "#ffffffff", fontSize: "14px", color: "#000", fontWeight: 600, borderRadius: "8px", my: 0.5 }} value="Morning">
-                                                    Morning
-                                                </MenuItem>
-                                                <MenuItem sx={{ bgcolor: "#ffffffff", fontSize: "14px", color: "#000", fontWeight: 600, borderRadius: "8px", my: 0.5 }} value="Afternoon">
-                                                    Afternoon
-                                                </MenuItem>
-                                                <MenuItem sx={{ bgcolor: "#ffffffff", fontSize: "14px", color: "#000", fontWeight: 600, borderRadius: "8px", my: 0.5 }} value="Evening">
-                                                    Evening
-                                                </MenuItem>
-                                            </TextField>
-                                        </Box>
-
-                                        <Box sx={{ px: 1, py: 1 }}>
-                                            <Typography fontWeight="600" fontSize="13px" ml={1}>
-                                                State
-                                            </Typography>
-
-                                            <TextField
-                                                select
-                                                fullWidth
-                                                sx={{
-                                                    width: 165,
-                                                    mt: 1,
-                                                    backgroundColor: "#dddddd",
-                                                    borderRadius: "10px",
-                                                    "& .MuiOutlinedInput-root": {
-                                                        paddingRight: 0,
-                                                        height: 35,
-                                                        "& fieldset": { border: "none" },
-                                                        "&:hover fieldset": { border: "none" },
-                                                        "&.Mui-focused fieldset": { border: "none" },
-                                                    },
-                                                }}
-                                                SelectProps={{
-                                                    MenuProps: {
-                                                        PaperProps: {
-                                                            sx: {
-                                                                width: 40,
-                                                                borderRadius: "20px",
-                                                            },
-                                                        },
-                                                    },
-                                                }}
-                                            >
-                                                <MenuItem sx={{ bgcolor: "#ffffffff", fontSize: "14px", color: "#000", fontWeight: 600, borderRadius: "8px", my: 0.5 }} value="Morning">
-                                                    Morning
-                                                </MenuItem>
-                                                <MenuItem sx={{ bgcolor: "#ffffffff", fontSize: "14px", color: "#000", fontWeight: 600, borderRadius: "8px", my: 0.5 }} value="Afternoon">
-                                                    Afternoon
-                                                </MenuItem>
-                                                <MenuItem sx={{ bgcolor: "#ffffffff", fontSize: "14px", color: "#000", fontWeight: 600, borderRadius: "8px", my: 0.5 }} value="Evening">
-                                                    Evening
-                                                </MenuItem>
-                                            </TextField>
-                                        </Box>
-
-                                        <Box sx={{ px: 1, py: 1 }}>
-                                            <Typography fontWeight="600" fontSize="13px" ml={1}>
-                                                Region
-                                            </Typography>
-
-                                            <TextField
-                                                select
-                                                fullWidth
-                                                sx={{
-                                                    width: 165,
-                                                    mt: 1,
-                                                    backgroundColor: "#dddddd",
-                                                    borderRadius: "10px",
-                                                    "& .MuiOutlinedInput-root": {
-                                                        paddingRight: 0,
-                                                        height: 35,
-                                                        "& fieldset": { border: "none" },
-                                                        "&:hover fieldset": { border: "none" },
-                                                        "&.Mui-focused fieldset": { border: "none" },
-                                                    },
-                                                }}
-                                                SelectProps={{
-                                                    MenuProps: {
-                                                        PaperProps: {
-                                                            sx: {
-                                                                width: 40,
-                                                                borderRadius: "20px",
-                                                            },
-                                                        },
-                                                    },
-                                                }}
-                                            >
-                                                <MenuItem sx={{ bgcolor: "#ffffffff", fontSize: "14px", color: "#000", fontWeight: 600, borderRadius: "8px", my: 0.5 }} value="Morning">
-                                                    Morning
-                                                </MenuItem>
-                                                <MenuItem sx={{ bgcolor: "#ffffffff", fontSize: "14px", color: "#000", fontWeight: 600, borderRadius: "8px", my: 0.5 }} value="Afternoon">
-                                                    Afternoon
-                                                </MenuItem>
-                                                <MenuItem sx={{ bgcolor: "#ffffffff", fontSize: "14px", color: "#000", fontWeight: 600, borderRadius: "8px", my: 0.5 }} value="Evening">
-                                                    Evening
-                                                </MenuItem>
-                                            </TextField>
-                                        </Box>
-
-                                        <Box sx={{ px: 1, py: 1 }}>
-                                            <Typography fontWeight="600" fontSize="13px" ml={1}>
-                                                District
-                                            </Typography>
-
-                                            <TextField
-                                                select
-                                                fullWidth
-                                                sx={{
-                                                    width: 165,
-                                                    mt: 1,
-                                                    backgroundColor: "#dddddd",
-                                                    borderRadius: "10px",
-                                                    "& .MuiOutlinedInput-root": {
-                                                        paddingRight: 0,
-                                                        height: 35,
-                                                        "& fieldset": { border: "none" },
-                                                        "&:hover fieldset": { border: "none" },
-                                                        "&.Mui-focused fieldset": { border: "none" },
-                                                    },
-                                                }}
-                                                SelectProps={{
-                                                    MenuProps: {
-                                                        PaperProps: {
-                                                            sx: {
-                                                                width: 40,
-                                                                borderRadius: "20px",
-                                                            },
-                                                        },
-                                                    },
-                                                }}
-                                            >
-                                                <MenuItem sx={{ bgcolor: "#ffffffff", fontSize: "14px", color: "#000", fontWeight: 600, borderRadius: "8px", my: 0.5 }} value="Morning">
-                                                    Morning
-                                                </MenuItem>
-                                                <MenuItem sx={{ bgcolor: "#ffffffff", fontSize: "14px", color: "#000", fontWeight: 600, borderRadius: "8px", my: 0.5 }} value="Afternoon">
-                                                    Afternoon
-                                                </MenuItem>
-                                                <MenuItem sx={{ bgcolor: "#ffffffff", fontSize: "14px", color: "#000", fontWeight: 600, borderRadius: "8px", my: 0.5 }} value="Evening">
-                                                    Evening
-                                                </MenuItem>
-                                            </TextField>
-                                        </Box>
-                                    </Box>
-
-                                    <Divider sx={{ my: 2 }} />
-
-                                    <Box sx={{ display: "flex", justifyContent: "flex-end", mx: 3, gap: 2 }}>
-                                        <TextField
-                                            placeholder="Search"
-                                            sx={{
-                                                width: "200px",
-                                                "& .MuiOutlinedInput-root": {
-                                                    borderRadius: "16px",
-                                                    height: "38px",
-                                                    paddingRight: 0,
-                                                },
-                                                "& .MuiOutlinedInput-input": {
-                                                    padding: "8px 12px",
-                                                },
-                                            }}
-                                            InputProps={{
-                                                endAdornment: (
-                                                    <InputAdornment position="end">
-                                                        <IconButton>
-                                                            <SearchIcon />
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                        />
-                                    </Box>
-
-                                    {partners.map((p, index) => (
-                                        <Box key={index} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", p: 2, borderBottom: "1px solid #ddd" }}>
-                                            <Box sx={{ display: "flex", alignItems: "center", gap: 2, width: "180px" }}>
-                                                <Avatar />
-                                                <Box>
-                                                    <Typography sx={{ fontWeight: 600, fontSize: "13px" }}>{p.name}</Typography>
-                                                    <Typography variant="body2" color="text.secondary">
-                                                        {p.status}
-                                                    </Typography>
-                                                </Box>
-                                            </Box>
-
-                                            <Box>
-                                                <Typography sx={{ fontWeight: 600, fontSize: "13px" }}>Region</Typography>
-                                                <Typography variant="body2" color="text.secondary">
-                                                    <Box display={"flex"} gap={1}>
-                                                        <Box sx={{ border: "2px solid #000", p: 0.5, px: 0.5, fontSize: "10px", bgcolor: "#e4e2e2ff", color: "#000", borderRadius: "20px" }}>
-                                                            Country
-                                                        </Box>
-                                                        <Box sx={{ border: "2px solid #000", p: 0.5, px: 0.5, fontSize: "10px", bgcolor: "#e4e2e2ff", color: "#000", borderRadius: "20px" }}>
-                                                            State
-                                                        </Box>
-                                                        <Box sx={{ border: "2px solid #000", p: 0.5, px: 0.5, fontSize: "10px", bgcolor: "#e4e2e2ff", color: "#000", borderRadius: "20px" }}>
-                                                            District
-                                                        </Box>
-                                                    </Box>
-                                                </Typography>
-                                            </Box>
-
-                                            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                                                <Typography variant="body2">Mobile No</Typography>
-                                                <Typography variant="body2">{p.technicians} LSP</Typography>
-                                                <Button variant="contained" sx={{ bgcolor: "#029898", borderRadius: "8px" }}>
-                                                    Assign
-                                                </Button>
-                                            </Box>
-                                        </Box>
-                                    ))}
-                                </CardContent>
-                            </Grid>
+                        {enquiryData.initialAmount != null && (
+                       <Grid item xs={12} md={8} lg={8} xl={8} sx={{ width: { xs: "100%", md: "60%" } }}>
+                                                        <Typography variant="h6" sx={{ mb: 3, fontWeight: "600" }}>
+                                                            Assign To Manager
+                                                        </Typography>
+                    
+                                                        {/* Partner List */}
+                                                        <CardContent
+                                                            sx={{
+                                                                mb: 2,
+                                                                border: "1px solid #abababff",
+                                                                borderRadius: "14px",
+                                                                p: 0,
+                                                                // boxShadow: "0px 4px 12px rgba(0,0,0,0.2)",
+                                                                overflow: "hidden",
+                                                            }}
+                                                        >
+                                                            {/* Filter & Search Bar Section */}
+                                                            <Box
+                                                                sx={{
+                                                                    display: "flex",
+                                                                    alignItems: "center",
+                                                                    gap: 2,
+                                                                    p: 2,
+                                                                    flexWrap: "wrap",
+                                                                    borderBottom: "1px solid #eee",
+                                                                    bgcolor: "#fff"
+                                                                }}
+                                                            >
+                                                                {/* Filter Styles reused from NewEnquiry.jsx */}
+                                                                {[
+                                                                    { label: "Country", options: ["India", "USA"] },
+                                                                    { label: "State", options: ["California", "Texas"] },
+                                                                    { label: "Region", options: ["North", "South"] },
+                                                                    { label: "District", options: ["District 1", "District 2"] }
+                                                                ].map((filter, idx) => (
+                                                                    <FormControl
+                                                                        key={idx}
+                                                                        size="small"
+                                                                        sx={{
+                                                                            width: "150px",
+                                                                            backgroundColor: "#f9f9f9",
+                                                                            borderRadius: "6px",
+                                                                            "& .MuiOutlinedInput-root": {
+                                                                                height: "34px",
+                                                                                fontSize: "12px",
+                                                                                borderRadius: "6px",
+                                                                                "& fieldset": { borderColor: "#d0d0d0" },
+                                                                                "&:hover fieldset": { borderColor: "#a1a1a1" },
+                                                                                "&.Mui-focused fieldset": { borderColor: "#029898" },
+                                                                            },
+                                                                            "& .MuiInputLabel-root": { fontSize: "12px", color: "#666" },
+                                                                            "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
+                                                                        }}
+                                                                    >
+                                                                        <InputLabel>{filter.label}</InputLabel>
+                                                                        <Select
+                                                                            label={filter.label}
+                                                                            defaultValue=""
+                                                                            sx={{ height: "34px" }}
+                                                                        >
+                                                                            <MenuItem value="" sx={{ fontSize: "12px" }}>All</MenuItem>
+                                                                            {filter.options.map((opt) => (
+                                                                                <MenuItem key={opt} value={opt} sx={{ fontSize: "12px" }}>{opt}</MenuItem>
+                                                                            ))}
+                                                                        </Select>
+                                                                    </FormControl>
+                                                                ))}
+                    
+                    
+                                                            </Box>
+                    
+                                                            {managers.map((p, index) => (
+                                                                <Box
+                                                                    key={index}
+                                                                    sx={{
+                                                                        display: "flex",
+                                                                        alignItems: "center",
+                                                                        justifyContent: "space-between",
+                                                                        p: 2,
+                                                                        borderBottom: "1px solid #eee",
+                                                                        transition: "background-color 0.2s",
+                                                                        "&:hover": { bgcolor: "#f9fafb" }, // Subtle hover effect
+                                                                    }}
+                                                                >
+                                                                    {/* Avatar & Name */}
+                                                                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, width: "30%" }}>
+                                                                        <Avatar sx={{ width: 40, height: 40, bgcolor: "#029898" }}>
+                                                                            {p.name ? p.name.charAt(0).toUpperCase() : "M"}
+                                                                        </Avatar>
+                                                                        <Box>
+                                                                            <Typography sx={{ fontWeight: 600, fontSize: "14px", color: "#333" }}>
+                                                                                {p.name || "Manager Name"}
+                                                                            </Typography>
+                                                                            <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+                                                                                {/* {p.status || "Active"} | Tasks: {p.taskCount || 0} */}
+                                                                            </Typography>
+                                                                        </Box>
+                                                                    </Box>
+                    
+                                                                    {/* Location / Details */}
+                                                                    <Box sx={{ width: "40%" }}>
+                                                                        {/* Tags - Now including City and Region */}
+                                                                        <Box display={"flex"} gap={1} flexWrap="wrap">
+                                                                            {[p.city, p.region, p.state, p.district].filter(Boolean).map((tag, i) => (
+                                                                                <Box
+                                                                                    key={i}
+                                                                                    sx={{
+                                                                                        border: "1px solid #e0e0e0",
+                                                                                        px: 1,
+                                                                                        py: 0.25,
+                                                                                        fontSize: "11px",
+                                                                                        bgcolor: "#f5f5f5",
+                                                                                        color: "#666",
+                                                                                        borderRadius: "4px",
+                                                                                        fontWeight: 500
+                                                                                    }}
+                                                                                >
+                                                                                    {tag}
+                                                                                </Box>
+                                                                            ))}
+                                                                        </Box>
+                                                                    </Box>
+                    
+                                                                    {/* Actions & Contact */}
+                                                                    <Box sx={{ display: "flex", alignItems: "center", gap: 3, width: "30%", justifyContent: "flex-end" }}>
+                                                                        <Box sx={{ textAlign: "right" }}>
+                                                                            <Typography sx={{ fontSize: "12px", fontWeight: 600, color: "#333" }}>
+                                                                                {p.companyPhoneNumber || "Mobile No"}
+                                                                            </Typography>
+                                                                            <Typography sx={{ fontSize: "11px", color: "text.secondary" }}>
+                                                                                {p.technicians || 0} LSP
+                    
+                                                                            </Typography>
+                                                                        </Box>
+                    
+                                                                        <Button
+                                                                            variant="contained"
+                                                                            size="small"
+                                                                            sx={{
+                                                                                bgcolor: (enquiryData.assignedManager?._id === p._id || enquiryData.assignedManager === p._id) ? "#017575" : "#029898",
+                                                                                borderRadius: "6px",
+                                                                                textTransform: "none",
+                                                                                boxShadow: "none",
+                                                                                px: 3,
+                                                                                "&:hover": { bgcolor: (enquiryData.assignedManager?._id === p._id || enquiryData.assignedManager === p._id) ? "#017575" : "#027c7c", boxShadow: "none" },
+                                                                            }}
+                                                                            onClick={() => {
+                                                                                const isAssigned = (enquiryData.assignedManager?._id === p._id || enquiryData.assignedManager === p._id);
+                                                                                if (!isAssigned) assignManager(p._id);
+                                                                            }}
+                                                                            disabled={enquiryData.assignedManager?._id === p._id || enquiryData.assignedManager === p._id}
+                                                                        >
+                                                                            {(enquiryData.assignedManager?._id === p._id || enquiryData.assignedManager === p._id) ? "Assigned" : "Assign"}
+                                                                        </Button>
+                                                                    </Box>
+                                                                </Box>
+                                                            ))}
+                                                        </CardContent>
+                                                    </Grid>
                         )}
                     </Grid>
                 </Box>
@@ -1020,8 +934,121 @@ function NewEnquiryDetails() {
                 </DialogTitle>
 
                 {/* CONTENT */}
-                <DialogContent sx={{ px: 3, py: 1 }}>
+                <DialogContent sx={{ px: 3, py: 2 }}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        {/* SLOT BOOKING SECTION */}
+                        <Box sx={{ mb: 3, pb: 2, borderBottom: "1px solid #e5e5e5" }}>
+                            <Typography sx={{ fontSize: "14px", fontWeight: 700, color: "#029898", mb: 2 }}>
+                                Edit Inspection Slot
+                            </Typography>
+
+                            <Grid container spacing={2}>
+                                {/* Date Picker */}
+                                <Grid item xs={12} md={editSlotDate ? 6 : 12}>
+                                    <Box>
+                                        <Typography fontWeight="600" fontSize="13px" mb={1}>
+                                            Select Date
+                                        </Typography>
+                                        <DatePicker
+                                            value={editSlotDate || enquiryData.preferDate}
+                                            onChange={(newValue) => setEditSlotDate(newValue)}
+                                            slotProps={{
+                                                textField: {
+                                                    fullWidth: true,
+                                                    InputProps: {
+                                                        sx: {
+                                                            height: 36,
+                                                            borderRadius: "6px",
+                                                            backgroundColor: "#f1f1f1",
+                                                            "& fieldset": { border: "none !important" },
+                                                            "&:hover fieldset": { border: "none !important" },
+                                                            "&.Mui-focused fieldset": { border: "none !important" },
+                                                        },
+                                                    },
+                                                    inputProps: { style: { fontWeight: 400, paddingLeft: 12, fontSize: "13px" } },
+                                                },
+                                            }}
+                                        />
+                                    </Box>
+                                </Grid>
+
+                                {/* Time Slots - Show only when date is selected */}
+                                {(editSlotDate || enquiryData.preferDate) && (
+                                    <Grid item xs={12} md={6}>
+                                        <Box>
+                                            <Typography fontWeight="600" fontSize="13px" mb={1}>
+                                                Select Time
+                                            </Typography>
+                                            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                                                {timeSlots.map((slot) => (
+                                                    <Button
+                                                        key={slot}
+                                                        onClick={() => setEditSlotTime(slot)}
+                                                        variant={(editSlotTime || enquiryData.preferTime) === slot ? "contained" : "outlined"}
+                                                        sx={{
+                                                            fontSize: "12px",
+                                                            padding: "6px 12px",
+                                                            borderRadius: "6px",
+                                                            textTransform: "none",
+                                                            bgcolor: (editSlotTime || enquiryData.preferTime) === slot ? "#029898" : "#fff",
+                                                            color: (editSlotTime || enquiryData.preferTime) === slot ? "#fff" : "#029898",
+                                                            border: (editSlotTime || enquiryData.preferTime) === slot ? "none" : "1px solid #029898",
+                                                            "&:hover": {
+                                                                bgcolor: (editSlotTime || enquiryData.preferTime) === slot ? "#027c7c" : "#f0f0f0",
+                                                            },
+                                                        }}
+                                                    >
+                                                        {formatTimeDisplay(slot)}
+                                                    </Button>
+                                                ))}
+                                            </Box>
+                                        </Box>
+                                    </Grid>
+                                )}
+
+                                {/* Selected Slot Confirmation */}
+                                {(editSlotDate || enquiryData.preferDate) && (editSlotTime || enquiryData.preferTime) && (
+                                    <Grid item xs={12}>
+                                        <Box
+                                            sx={{
+                                                p: 2,
+                                                bgcolor: "#e0f9f9",
+                                                borderRadius: "8px",
+                                                border: "1px solid #b2eaea",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: 2
+                                            }}
+                                        >
+                                            <Box
+                                                sx={{
+                                                    width: 36,
+                                                    height: 36,
+                                                    borderRadius: "8px",
+                                                    bgcolor: "#029898",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    color: "#fff"
+                                                }}
+                                            >
+                                                <Box sx={{ display: "flex", gap: 0.3, fontSize: "14px" }}>
+                                                    <CalendarTodayIcon sx={{ fontSize: 16 }} />
+                                                    <AccessTimeIcon sx={{ fontSize: 16 }} />
+                                                </Box>
+                                            </Box>
+                                            <Box>
+                                                <Typography fontSize="12px" color="#666">Updated Appointment Slot</Typography>
+                                                <Typography fontSize="13px" fontWeight={700} color="#029898">
+                                                    {(editSlotDate || enquiryData.preferDate)?.toLocaleDateString?.("en-IN", { weekday: "short", year: "numeric", month: "short", day: "numeric" })} at {formatTimeDisplay(editSlotTime || enquiryData.preferTime)}
+                                                </Typography>
+                                            </Box>
+                                        </Box>
+                                    </Grid>
+                                )}
+                            </Grid>
+                        </Box>
+
                         <Box
                             sx={{
                                 display: "flex",
@@ -1037,19 +1064,8 @@ function NewEnquiryDetails() {
                                 { label: "E-Mail", field: "email" },
                                 { label: "Total Sq. Feet", field: "sqFeet" },
                                 { label: "District", field: "district" },
-
                                 { label: "City", field: "city" },
-
                                 { label: "Landmark", field: "landmark" },
-
-
-
-
-
-                                // DATE & TIME
-                                { label: "Preferred Date", field: "preferDate", type: "date", min: new Date().toISOString().split("T")[0] },
-                                { label: "Preferred Time", field: "preferTime", type: "time" },
-
                             ].map((item, index) => (
                                 <Box
                                     key={index}
@@ -1570,6 +1586,131 @@ function NewEnquiryDetails() {
                         </TableContainer>
                     </Box>
                 )}
+            </Dialog>
+
+            {/* Rejection Reason Popup */}
+            <Dialog
+                open={openRejectPopup}
+                onClose={() => {
+                    setOpenRejectPopup(false);
+                    setRejectionReason("");
+                }}
+                maxWidth="sm"
+                fullWidth
+                PaperProps={{
+                    style: {
+                        backgroundColor: "#fff",
+                        color: "#000",
+                        borderRadius: "6px",
+                        border: "1px solid #ddd",
+                        boxShadow: "0px 4px 10px rgba(0,0,0,0.2)",
+                        padding: "2px",
+                    },
+                }}
+            >
+                {/* HEADER */}
+                <DialogTitle
+                    sx={{
+                        backgroundColor: "#029898",
+                        color: "white",
+                        fontWeight: 600,
+                        fontSize: "1rem",
+                        px: 2.5,
+                        py: 1.3,
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}
+                >
+                    Rejection Reason
+
+                    <IconButton
+                        onClick={() => {
+                            setOpenRejectPopup(false);
+                            setRejectionReason("");
+                        }}
+                        sx={{
+                            color: "white",
+                            "&:hover": {
+                                backgroundColor: "rgba(255,255,255,0.15)",
+                            },
+                        }}
+                    >
+                        <CloseIcon sx={{ fontSize: "20px" }} />
+                    </IconButton>
+                </DialogTitle>
+
+                {/* CONTENT */}
+                <DialogContent sx={{ px: 2.5, py: 2 }}>
+                    <Box>
+                        <Typography fontWeight="600" fontSize="13px" mb={1}>
+                            Please provide reason for rejection
+                        </Typography>
+                        <TextField
+                            fullWidth
+                            multiline
+                            rows={4}
+                            placeholder="Enter rejection reason..."
+                            value={rejectionReason}
+                            onChange={(e) => setRejectionReason(e.target.value)}
+                            sx={{
+                                "& .MuiOutlinedInput-root": {
+                                    backgroundColor: "#f1f1f1",
+                                    borderRadius: "6px",
+                                    "& fieldset": { border: "none" },
+                                    "&:hover fieldset": { border: "none" },
+                                    "&.Mui-focused fieldset": { 
+                                        border: "2px solid #029898 !important" 
+                                    },
+                                    "& textarea": {
+                                        padding: "8px",
+                                        fontSize: "13px",
+                                        color: "#000",
+                                    }
+                                }
+                            }}
+                        />
+                    </Box>
+                </DialogContent>
+
+                {/* FOOTER */}
+                <DialogActions sx={{ px: 2.5, pb: 2, pt: 1 }}>
+                    <Button
+                        variant="outlined"
+                        onClick={() => {
+                            setOpenRejectPopup(false);
+                            setRejectionReason("");
+                        }}
+                        sx={{
+                            color: "#029898",
+                            borderColor: "#029898",
+                            textTransform: "none",
+                            fontSize: "13px",
+                            fontWeight: 600,
+                            "&:hover": { 
+                                borderColor: "#027c7c",
+                                color: "#027c7c"
+                            },
+                        }}
+                    >
+                        Cancel
+                    </Button>
+
+                    <Button
+                        variant="contained"
+                        onClick={rejectEnquiry}
+                        sx={{
+                            bgcolor: "#029898",
+                            color: "#fff",
+                            textTransform: "none",
+                            fontSize: "13px",
+                            fontWeight: 600,
+                            "&:hover": { bgcolor: "#027c7c" },
+                        }}
+                    >
+                        Reject
+                    </Button>
+                </DialogActions>
             </Dialog>
         </>
     );

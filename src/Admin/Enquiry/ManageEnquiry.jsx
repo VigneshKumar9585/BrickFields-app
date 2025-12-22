@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../../componts/AdminNavbar.jsx";
 import {
   Box,
@@ -38,6 +38,8 @@ import {
   X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 /**
  * Small helper to keep TextField styles consistent (matches NewEnquiry look)
@@ -99,11 +101,27 @@ export default function ManageEnquiry() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [activeTab, setActiveTab] = useState(0);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [enquiryList, setEnquiryList] = useState([]);
 
   const navigate = useNavigate();
 
+  const fetchEnquiryList = async () => {
+    try {
+      const response = await axios.get(`${BACKEND_URL}/api/admin-enquiry`);
+      setEnquiryList(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching enquiry list:", error);
+      toast.error("Error fetching enquiry list");
+    }
+  };
+
+  useEffect(() => {
+    fetchEnquiryList();
+  }, []);
+
   const handleEditClick = (task) => {
-    navigate(`/edit/assign`, { state: { task } });
+    navigate(`/edit/manager-assign`, { state: { task } });
   };
 
   const handleOpenDialog = (task) => {
@@ -330,128 +348,135 @@ export default function ManageEnquiry() {
           </Card>
 
           {/* ---- TABLE ---- */}
-       <Card
-      sx={{
-        boxShadow: "0px 2px 8px rgba(0,0,0,0.08)",
-        bgcolor: "#fff",
-        width: "100%",
-      }}
-    >
-      <TableContainer
-        component={Paper}
-        sx={{
-          bgcolor: "#fafafa",
-          boxShadow: "none",
-          width: "100%",
-          overflowX: "auto",
-          overflowY: "hidden",
-          whiteSpace: "nowrap",
-        }}
-      >
-        <Table
-          sx={{
-            minWidth: 2000,
-            tableLayout: "auto",
-            width: "100%",
-            td: {
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              fontSize: "12px",
-              padding: "4px 4px",
-              textAlign: "center",
-            },
-            th: {
-              whiteSpace: "nowrap",
-              border: "1px solid #e0e0e0",
-              fontSize: "12px",
-              padding: "6px 4px",
-              textAlign: "center",
-              color: "#fff",
-            },
-          }}
-        >
-          <TableHead>
-            <TableRow sx={{ bgcolor: "#029898" }}>
-              {[
-                "S.No",
-                "Task Id",
-                "Name",
-                "Address",
-                "Mobile",
-                "Service",
-                "Enquiry Date",
-                "Verified Date",
-                "Payment",
-                "Assigned Manager",
-                "LSP",
-                "Status",
-                "Action",
-              ].map((head) => (
-                <TableCell key={head}>{head}</TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
+          <Card
+            sx={{
+              boxShadow: "0px 2px 8px rgba(0,0,0,0.08)",
+              bgcolor: "#fff",
+              width: "100%",
+            }}
+          >
+            <TableContainer
+              component={Paper}
+              sx={{
+                bgcolor: "#fafafa",
+                boxShadow: "none",
+                width: "100%",
+                overflowX: "auto",
+                overflowY: "hidden",
+                whiteSpace: "nowrap",
+              }}
+            >
+              <Table
+                sx={{
+                  minWidth: 2000,
+                  tableLayout: "auto",
+                  width: "100%",
+                  td: {
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    fontSize: "12px",
+                    padding: "4px 4px",
+                    textAlign: "center",
+                  },
+                  th: {
+                    whiteSpace: "nowrap",
+                    border: "1px solid #e0e0e0",
+                    fontSize: "12px",
+                    padding: "6px 4px",
+                    textAlign: "center",
+                    color: "#fff",
+                  },
+                }}
+              >
+                <TableHead>
+                  <TableRow sx={{ bgcolor: "#029898" }}>
+                    {[
+                      "S.No",
+                      "Enquiry Id",
+                      "Name",
+                      "Phone Number",
+                      "Street",
+                      "District",
+                      "City",
+                      "Landmark",
+                      "Square Feet",
+                      "Assigned Manager",
+                      "Assigned LSP",
+                      "Assigned Technician1",
+                      "Assigned Technician2",
+                      "Status",
+                      "Action",
+                    ].map((head) => (
+                      <TableCell key={head}>{head}</TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
 
-          <TableBody>
-            {currentItems.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={13} style={{ textAlign: "center", padding: "20px" }}>
-                  No tasks found
-                </TableCell>
-              </TableRow>
-            ) : (
-              currentItems.map((task, idx) => (
-                <TableRow
-                  key={task.id}
-                  sx={{
-                    cursor: "pointer",
-                    "&:hover": { bgcolor: "#f5f5f5" },
-                  }}
-                  onClick={() => handleOpenDialog(task)}
-                >
-                  <TableCell>{startIndex + idx + 1}</TableCell>
-                  <TableCell>{task.id}</TableCell>
-                  <TableCell>{task.name}</TableCell>
-                  <TableCell align="left">{task.address}</TableCell>
-                  <TableCell>{task.email}</TableCell>
-                  <TableCell>{task.preferDate}</TableCell>
-                  <TableCell>{task.preferTime}</TableCell>
-                  <TableCell>{task.assignedLSP}</TableCell>
-                  <TableCell>{task.lspAssignDate}</TableCell>
-                  <TableCell>{task.city}</TableCell>
-                  <TableCell>{task.technicians}</TableCell>
-                  <TableCell>
-                    <Chip
-                      label={task.status}
-                      size="small"
-                      sx={{
-                        fontWeight: 500,
-                        color: task.status === "Open" ? "#0F5132" : "#0C5460",
-                        bgcolor: task.status === "Open" ? "#D1E7DD" : "#D1ECF1",
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Box display="flex" justifyContent="center" gap={0.5}>
-                      <IconButton onClick={(e) => { e.stopPropagation(); handleOpenDialog(task); }}>
-                        <Eye size={18} />
-                      </IconButton>
-                      <IconButton onClick={(e) => { e.stopPropagation(); handleEditClick(task); }}>
-                        <Pencil size={18} />
-                      </IconButton>
-                      <IconButton onClick={(e) => { e.stopPropagation(); handleOpenDeleteDialog(task); }}>
-                        <Trash2 size={18} />
-                      </IconButton>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Card>
+                <TableBody>
+                  {enquiryList.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={13} style={{ textAlign: "center", padding: "20px" }}>
+                        No tasks found
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    enquiryList.map((task, idx) => (
+                      <TableRow
+                        key={task.id}
+                        sx={{
+                          cursor: "pointer",
+                          "&:hover": { bgcolor: "#f5f5f5" },
+                        }}
+                        onClick={() => navigate(`/admin/enquiry/${task._id}`)}
+                      >
+                        <TableCell>{startIndex + idx + 1}</TableCell>
+                        <TableCell>{task.enquiryId}</TableCell>
+                        <TableCell>{task.name}</TableCell>
+                        <TableCell align="left">{task.phoneNumber}</TableCell>
+                        <TableCell>{task.street}</TableCell>
+                        <TableCell>{task.district}</TableCell>
+                        <TableCell>{task.city}</TableCell>
+                        <TableCell>{task.landmark}</TableCell>
+                        <TableCell>{task.sqFeet}</TableCell>
+                        <TableCell>{task.assignedManager == null ? "Not Assigned" : task.assignedManager?.name}</TableCell>
+                        <TableCell>{task.assignedLSP == null ? "Not Assigned" : task.assignedLSP?.companyName}</TableCell>
+                        <TableCell>{task.assignedTechnician1 == null ? "Not Assigned" : task.assignedTechnician1?.name}</TableCell>
+                        <TableCell>{task.assignedTechnician2 == null ? "Not Assigned" : task.assignedTechnician2?.name}</TableCell>
+
+                        <TableCell>
+                          <Chip
+                            label={task.status}
+                            size="small"
+                            sx={{
+                              fontWeight: 500,
+                              color: task.status === "Open" ? "#0F5132" : "#0C5460",
+                              bgcolor: task.status === "Open" ? "#D1E7DD" : "#D1ECF1",
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Box display="flex" justifyContent="center" gap={0.5}>
+                            {/* <IconButton onClick={(e) => { e.stopPropagation(); handleOpenDialog(task); }}>
+                              <Eye size={18} />
+                            </IconButton> */}
+
+                            {task.assignedLSP == null && (
+                              <IconButton onClick={(e) => { e.stopPropagation(); handleEditClick(task); }}>
+                                <Pencil size={18} />
+                              </IconButton>
+                            )}
+
+                          </Box>
+                        </TableCell>
+
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Card>
 
           {/* ---- PAGINATION ---- */}
           <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>

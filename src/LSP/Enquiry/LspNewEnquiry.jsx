@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Navbar from "../../componts/Navbar.jsx";
+import Navbar from "../../componts/LspNavbar.jsx";
 import {
   Box,
   Card,
@@ -53,7 +53,7 @@ if (typeof document !== 'undefined') {
   document.head.appendChild(styleSheet);
 }
 
-export default function NewEnquiry() {
+export default function LspNewEnquiry() {
   const navigate = useNavigate();
   const user = JSON.parse(sessionStorage.getItem("user"));
 
@@ -63,16 +63,41 @@ export default function NewEnquiry() {
 
   // Fetch enquiries
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/api/manager-enquiry/${user.id}`)
+    fetchEnquiries();
+    fetchFilterData();
+  }, []);
+
+  const fetchEnquiries = () => {
+    axios.get(`${BACKEND_URL}/api/lsp-enquiry/${user.id}`)
       .then((res) => {
         setTasks(res.data)
         console.log(res)
       })
       .catch((err) => console.log(err));
-  }, []);
+  };
+
+  const fetchFilterData = async () => {
+    try {
+      const [countriesRes, regionsRes, districtsRes] = await Promise.all([
+        axios.get(`${BACKEND_URL}/api/get-countries`),
+        axios.get(`${BACKEND_URL}/api/regions`),
+        axios.get(`${BACKEND_URL}/api/get-districts`),
+      ]);
+      setCountries(countriesRes.data || []);
+      setRegions(regionsRes.data || []);
+      setDistricts(districtsRes.data || []);
+    } catch (error) {
+      console.error("Error fetching filter data:", error);
+    }
+  };
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [countries, setCountries] = useState([]);
+  const [regions, setRegions] = useState([]);
+  const [districts, setDistricts] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
@@ -115,11 +140,11 @@ export default function NewEnquiry() {
 
 
 
-  // 🔍 Filter logic for search
+  // 🔍 Filter logic for search and dropdowns
   const filteredTasks = tasks.filter((task) => {
     const term = searchTerm.toLowerCase();
 
-    return (
+    const matchesSearch = (
       task.name?.toLowerCase().includes(term) ||
       task.email?.toLowerCase().includes(term) ||
       task.phoneNumber?.toString().includes(term) ||
@@ -132,6 +157,12 @@ export default function NewEnquiry() {
       (task.preferDate &&
         new Date(task.preferDate).toLocaleDateString().includes(term))
     );
+
+    const matchesCountry = !selectedCountry || task.country === selectedCountry;
+    const matchesRegion = !selectedRegion || task.region === selectedRegion;
+    const matchesDistrict = !selectedDistrict || task.district === selectedDistrict;
+
+    return matchesSearch && matchesCountry && matchesRegion && matchesDistrict;
   });
 
   const handleDateClick = (event) => setAnchorEl(event.currentTarget);
@@ -165,7 +196,7 @@ export default function NewEnquiry() {
   };
 
   const handleRowClick = (id) => {
-    navigate(`/enquiry/manager-assigning/${id}`);
+    navigate(`/lsp-assigning/${id}`);
   };
 
 
@@ -313,8 +344,11 @@ export default function NewEnquiry() {
                 >
                   <InputLabel>Country</InputLabel>
                   <Select
-                    value={selectedDistrict}
-                    onChange={(e) => setSelectedDistrict(e.target.value)}
+                    value={selectedCountry}
+                    onChange={(e) => {
+                      setSelectedCountry(e.target.value);
+                      setCurrentPage(1);
+                    }}
                     label="Country"
                     sx={{
                       height: "34px",
@@ -326,15 +360,15 @@ export default function NewEnquiry() {
                     }}
                   >
                     <MenuItem value="" sx={{ fontSize: "12px" }}>All</MenuItem>
-                    <MenuItem value="Central" sx={{ fontSize: "12px" }}>Central</MenuItem>
-                    <MenuItem value="North" sx={{ fontSize: "12px" }}>North</MenuItem>
-                    <MenuItem value="South" sx={{ fontSize: "12px" }}>South</MenuItem>
-                    <MenuItem value="East" sx={{ fontSize: "12px" }}>East</MenuItem>
-                    <MenuItem value="West" sx={{ fontSize: "12px" }}>West</MenuItem>
+                    {countries.map((c) => (
+                      <MenuItem key={c._id} value={c.countryName || c.name} sx={{ fontSize: "12px" }}>
+                        {c.countryName || c.name}
+                      </MenuItem>
+                    ))}
                   </Select>
-
                 </FormControl>
 
+                {/* Region Filter */}
                 <FormControl
                   size="small"
                   sx={{
@@ -366,9 +400,12 @@ export default function NewEnquiry() {
                 >
                   <InputLabel>Region</InputLabel>
                   <Select
-                    value={selectedDistrict}
-                    onChange={(e) => setSelectedDistrict(e.target.value)}
-                    label="Country"
+                    value={selectedRegion}
+                    onChange={(e) => {
+                      setSelectedRegion(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    label="Region"
                     sx={{
                       height: "34px",
                       fontSize: "12px",
@@ -379,15 +416,15 @@ export default function NewEnquiry() {
                     }}
                   >
                     <MenuItem value="" sx={{ fontSize: "12px" }}>All</MenuItem>
-                    <MenuItem value="Central" sx={{ fontSize: "12px" }}>Central</MenuItem>
-                    <MenuItem value="North" sx={{ fontSize: "12px" }}>North</MenuItem>
-                    <MenuItem value="South" sx={{ fontSize: "12px" }}>South</MenuItem>
-                    <MenuItem value="East" sx={{ fontSize: "12px" }}>East</MenuItem>
-                    <MenuItem value="West" sx={{ fontSize: "12px" }}>West</MenuItem>
+                    {regions.map((r) => (
+                      <MenuItem key={r._id} value={r.name} sx={{ fontSize: "12px" }}>
+                        {r.name}
+                      </MenuItem>
+                    ))}
                   </Select>
-
                 </FormControl>
 
+                {/* District Filter */}
                 <FormControl
                   size="small"
                   sx={{
@@ -420,8 +457,11 @@ export default function NewEnquiry() {
                   <InputLabel>District</InputLabel>
                   <Select
                     value={selectedDistrict}
-                    onChange={(e) => setSelectedDistrict(e.target.value)}
-                    label="Country"
+                    onChange={(e) => {
+                      setSelectedDistrict(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    label="District"
                     sx={{
                       height: "34px",
                       fontSize: "12px",
@@ -432,13 +472,12 @@ export default function NewEnquiry() {
                     }}
                   >
                     <MenuItem value="" sx={{ fontSize: "12px" }}>All</MenuItem>
-                    <MenuItem value="Central" sx={{ fontSize: "12px" }}>Central</MenuItem>
-                    <MenuItem value="North" sx={{ fontSize: "12px" }}>North</MenuItem>
-                    <MenuItem value="South" sx={{ fontSize: "12px" }}>South</MenuItem>
-                    <MenuItem value="East" sx={{ fontSize: "12px" }}>East</MenuItem>
-                    <MenuItem value="West" sx={{ fontSize: "12px" }}>West</MenuItem>
+                    {districts.map((d) => (
+                      <MenuItem key={d._id} value={d.name} sx={{ fontSize: "12px" }}>
+                        {d.name}
+                      </MenuItem>
+                    ))}
                   </Select>
-
                 </FormControl>
 
                 {/* ---- SEARCH FIELD ---- */}
@@ -526,14 +565,15 @@ export default function NewEnquiry() {
                       "Landmark",
                       "Preferd Date",
                       "Prefered Time",
-                      "Initial Amount",
-                      "Assigned Lsp",
+                      // "Initial Amount",
+                      "Assigned Technician 1",
+                      "Assigned Technician 2",
                       "Site Images",
                       "Enquired Date",
                       "Action",
                     ]
                       .map((head) => (
-                        <TableCell key={head}>{head}</TableCell>
+                        <TableCell key={head} sx={{ bgcolor: "#029898", color: "#fff" }}>{head}</TableCell>
                       ))}
                   </TableRow>
                 </TableHead>
@@ -548,149 +588,155 @@ export default function NewEnquiry() {
                   ) : (
                     currentItems.map((task, idx) => {
                       console.log("Rendering task:", task);
-                      return(
-                      <TableRow
-                        key={task._id}
-                        onClick={() => handleRowClick(task._id)}
-                        sx={{
-                          cursor: "pointer",
-                          "&:hover": { bgcolor: "#f5f5f5" },
-                          // Blink entire row if payment done but not assigned
-                          ...(task.assignedLsp == null && {
-                            animation: "blink 1.5s ease-in-out infinite",
-                            backgroundColor: "#fff9e6",
-                          }),
-                        }}
-                      >
-                        <TableCell>{startIndex + idx + 1}</TableCell>
-                        <TableCell>{task.enquiryId}</TableCell>
-                        <TableCell>{task.name}</TableCell>
-                        <TableCell>{task.phoneNumber}</TableCell>
-                        <TableCell>{task.email}</TableCell>
-                        <TableCell>{task.sqFeet}</TableCell>
-                        {/* <TableCell>{task.country}</TableCell> */}
-                        <TableCell>{task.state}</TableCell>
-                        <TableCell>{task.district}</TableCell>
-                        <TableCell>{task.street}</TableCell>
-                        <TableCell>{task.landmark}</TableCell>
-                        <TableCell>{formatDate(task.preferDate)}</TableCell>
-                        <TableCell>{formatTime(task.preferTime)}</TableCell>
+                      return (
+                        <TableRow
+                          key={task._id}
+                          onClick={() => handleRowClick(task._id)}
+                          sx={{
+                            cursor: "pointer",
+                            "&:hover": { bgcolor: "#f5f5f5" },
+                            // Blink entire row if payment done but not assigned
+                            ...(task.assignedLsp == null && {
+                              animation: "blink 1.5s ease-in-out infinite",
+                              backgroundColor: "#fff9e6",
+                            }),
+                          }}
+                        >
+                          <TableCell>{startIndex + idx + 1}</TableCell>
+                          <TableCell>{task.enquiryId}</TableCell>
+                          <TableCell>{task.name}</TableCell>
+                          <TableCell>{task.phoneNumber}</TableCell>
+                          <TableCell>{task.email}</TableCell>
+                          <TableCell>{task.sqFeet}</TableCell>
+                          {/* <TableCell>{task.country}</TableCell> */}
+                          <TableCell>{task.state}</TableCell>
+                          <TableCell>{task.district}</TableCell>
+                          <TableCell>{task.street}</TableCell>
+                          <TableCell>{task.landmark}</TableCell>
+                          <TableCell>{formatDate(task.preferDate)}</TableCell>
+                          <TableCell>{formatTime(task.preferTime)}</TableCell>
+                          <TableCell>
+                            {task.assignedTechnician1 != null ? (
+                              // Case 3: Already assigned
+                              <Chip
+                                label="Assigned Lsp"
+                                size="small"
+                                sx={{
+                                  bgcolor: "#d4edda",
+                                  color: "#155724",
+                                  fontWeight: 600,
+                                  fontSize: "11px",
+                                  height: "22px",
+                                  borderRadius: "12px",
+                                }}
+                              />
+                            ) : (
+                              // Case 2: Not assigned yet → show clickable chip (row already blinks)
+                              <Chip
+                                label="Need To Assign"
+                                size="small"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleRowClick(task._id);
+                                }}
+                                sx={{
+                                  bgcolor: "#d1ecf1",
+                                  color: "#0c5460",
+                                  fontWeight: 600,
+                                  fontSize: "11px",
+                                  height: "22px",
+                                  borderRadius: "12px",
+                                  justifyContent: "center",
+                                  mx: "auto",
+                                  cursor: "pointer",
+                                  "&:hover": {
+                                    bgcolor: "#bee5eb",
+                                  },
+                                }}
+                              />
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {task.assignedTechnician2 != null ? (
+                              // Case 3: Already assigned
+                              <Chip
+                                label="Assigned Lsp"
+                                size="small"
+                                sx={{
+                                  bgcolor: "#d4edda",
+                                  color: "#155724",
+                                  fontWeight: 600,
+                                  fontSize: "11px",
+                                  height: "22px",
+                                  borderRadius: "12px",
+                                }}
+                              />
+                            ) : (
+                              // Case 2: Not assigned yet → show clickable chip (row already blinks)
+                              <Chip
+                                label="Need To Assign"
+                                size="small"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleRowClick(task._id);
+                                }}
+                                sx={{
+                                  bgcolor: "#d1ecf1",
+                                  color: "#0c5460",
+                                  fontWeight: 600,
+                                  fontSize: "11px",
+                                  height: "22px",
+                                  borderRadius: "12px",
+                                  justifyContent: "center",
+                                  mx: "auto",
+                                  cursor: "pointer",
+                                  "&:hover": {
+                                    bgcolor: "#bee5eb",
+                                  },
+                                }}
+                              />
+                            )}
+                          </TableCell>
 
-                        {/* Initial Amount - Pill Style */}
-                        <TableCell>
-                          <Chip
-                            label={task.initialAmount ? "Paid" : "Pending"}
-                            size="small"
-                            sx={{
-                              bgcolor: task.initialAmount ? "#d4edda" : "#f8d7da",
-                              color: task.initialAmount ? "#155724" : "#721c24",
-                              fontWeight: 600,
-                              fontSize: "11px",
-                              height: "22px",
-                              borderRadius: "12px",
-                            }}
-                          />
-                        </TableCell>
-
-                        {/* Assigned Status - Pill Style */}
-                        <TableCell>
-                          {/* Case 1: Initial Amount NOT paid */}
-                          {!task.initialAmount ? (
-                            <Chip
-                              label="Pending"
-                              size="small"
-                              sx={{
-                                bgcolor: "#f8d7da",
-                                color: "#721c24",
-                                fontWeight: 600,
-                                fontSize: "11px",
-                                height: "22px",
-                                borderRadius: "12px",
-                              }}
-                            />
-                          ) : (
-                            // Case 2 and 3: Initial Amount Paid
-                            <>
-                              {task.assignedLsp != null ? (
-                                // Case 3: Already assigned
-                                <Chip
-                                  label="Assigned Lsp"
-                                  size="small"
-                                  sx={{
-                                    bgcolor: "#d4edda",
-                                    color: "#155724",
-                                    fontWeight: 600,
-                                    fontSize: "11px",
-                                    height: "22px",
-                                    borderRadius: "12px",
-                                  }}
-                                />
-                              ) : (
-                                // Case 2: Not assigned yet → show clickable chip (row already blinks)
-                                <Chip
-                                  label="Need To Assign"
-                                  size="small"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleOpenDialog(task);
-                                  }}
-                                  sx={{
-                                    bgcolor: "#d1ecf1",
-                                    color: "#0c5460",
-                                    fontWeight: 600,
-                                    fontSize: "11px",
-                                    height: "22px",
-                                    borderRadius: "12px",
-                                    cursor: "pointer",
-                                    "&:hover": {
-                                      bgcolor: "#bee5eb",
-                                    },
-                                  }}
-                                />
-                              )}
-                            </>
-                          )}
-                        </TableCell>
+                          <TableCell>
+                            {task.siteImage && task.siteImage.length > 0 ? (
+                              <span
+                                style={{
+                                  color: "#029898",
+                                  cursor: "pointer",
+                                  textDecoration: "underline",
+                                  fontSize: "12px",
+                                }}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleOpenDialog(task);
+                                }}
+                              >
+                                View
+                              </span>
+                            ) : (
+                              <span style={{ color: "gray", fontSize: "12px" }}>
+                                No Image Provided
+                              </span>
+                            )}
+                          </TableCell>
 
 
-                        <TableCell>
-                          {task.siteImage && task.siteImage.length > 0 ? (
-                            <span
-                              style={{
-                                color: "#029898",
-                                cursor: "pointer",
-                                textDecoration: "underline",
-                                fontSize: "12px",
-                              }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleOpenDialog(task);
-                              }}
+
+                          <TableCell>
+                            {formatDate(task.enquiryDate)}
+                          </TableCell>
+
+                          <TableCell>
+                            <IconButton
+                              onClick={() => handleRowClick(task._id)}
                             >
-                              View
-                            </span>
-                          ) : (
-                            <span style={{ color: "gray", fontSize: "12px" }}>
-                              No Image Provided
-                            </span>
-                          )}
-                        </TableCell>
-
-
-
-                        <TableCell>
-                          {formatDate(task.enquiryDate)}
-                        </TableCell>
-
-                        <TableCell>
-                          <IconButton
-                            onClick={() => handleRowClick(task._id)}
-                          >
-                            <Eye size={18} />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    )}))}
+                              <Eye size={18} />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      )
+                    }))}
                 </TableBody>
               </Table>
             </TableContainer>

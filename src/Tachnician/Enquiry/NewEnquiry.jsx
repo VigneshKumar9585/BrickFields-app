@@ -8,7 +8,98 @@ import {
   CardContent,
   Button,
   TextField,
+  Avatar,
+  Divider,
 } from "@mui/material";
+
+const DetailsCard = ({ title, data, headerColor = "#029898", image }) => {
+  if (!data) return null;
+
+  return (
+    <CardContent
+      sx={{
+        border: "1px solid #d0d0d0",
+        borderRadius: "10px",
+        p: 0,
+        bgcolor: "#fff",
+        overflow: "hidden",
+        boxShadow: "0px 2px 8px rgba(0,0,0,0.08)",
+        fontSize: "13px",
+        minHeight: "250px",
+        display: 'flex',
+        flexDirection: 'column'
+      }}
+    >
+      {/* HEADER */}
+      <Box
+        sx={{
+          px: 2,
+          py: 1,
+          bgcolor: headerColor,
+          color: "#fff",
+        }}
+      >
+        <Typography sx={{ fontSize: "14px", fontWeight: 600 }}>
+          {title}
+        </Typography>
+      </Box>
+
+      {/* DETAILS */}
+      <Box sx={{ px: 2, pt: 2, flex: 1 }}>
+        {image && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+            <Avatar
+              src={image}
+              sx={{
+                width: 80,
+                height: 80,
+                border: `2px solid ${headerColor}`,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+              }}
+            />
+          </Box>
+        )}
+        {data.map((item, index) => (
+          <Box key={index}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 1,
+              }}
+            >
+              <Typography
+                sx={{
+                  fontWeight: 600,
+                  fontSize: "13px",
+                  width: "120px",
+                  color: "#555"
+                }}
+              >
+                {item.label}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  color: "#333",
+                  flex: 1,
+                  textAlign: "right"
+                }}
+              >
+                {item.value || "-"}
+              </Typography>
+            </Box>
+            {index !== data.length - 1 && (
+              <Divider sx={{ mb: 1.5, borderColor: "#f0f0f0" }} />
+            )}
+          </Box>
+        ))}
+      </Box>
+    </CardContent>
+  );
+};
 
 function Dashboard() {
   const [beforeImages, setBeforeImages] = useState([]);
@@ -27,6 +118,24 @@ function Dashboard() {
     const newImages = files.map((file) => URL.createObjectURL(file));
     setAfterImages((prev) => [...prev, ...newImages]);
   };
+
+  // Sample task details data
+  const taskDetails = [
+    { label: "Task ID", value: "TSK001" },
+    { label: "Assigned Date", value: "2024-01-15" },
+    { label: "Name", value: "John Doe" },
+    { label: "Country", value: "India" },
+    { label: "State", value: "Maharashtra" },
+    { label: "District", value: "Mumbai" },
+    { label: "City", value: "Mumbai City" },
+    { label: "Address", value: "123 Main Street" },
+    { label: "Mobile", value: "+91 9876543210" },
+    { label: "Email", value: "john@example.com" },
+    { label: "Service", value: "Service A" },
+    { label: "Sq. Feet", value: "1500" },
+    { label: "Prefer Date", value: "2024-01-20" },
+    { label: "Prefer Time", value: "10:00 AM" },
+  ];
 
   return (
     <>
@@ -48,267 +157,59 @@ function Dashboard() {
 
         {/* Main Content */}
         <Box sx={{ flex: 1, p: 4, pt: 2 }}>
-          <Grid container spacing={3}>
-            {/* Left Section */}
-                       <Grid sx={{ width: "400px" }} item xs={12} md={6}>
-                         <Typography variant="h6" sx={{ mb: 6.3, fontWeight: "600" }}>
-                           Current Task Details
-                         </Typography>
-           
-                         <CardContent
-                           sx={{
-                             border: "1px solid #abababff",
-                             borderRadius: "14px",
-                             p: 0,
-                             boxShadow: "0px 4px 12px rgba(0,0,0,0.2)",
-                             overflow: "hidden",
-                           }}
-                         >
-                           {/* Visitor Details */}
-                           <Box
-                             sx={{
-                               display: "flex",
-                               justifyContent: "space-between",
-                               bgcolor: "#029898",
-                               color: "#fff",
-                               px: 2,
-                               py: 1,
-                               borderRadius: "8px 8px 0 0",
-                               boxShadow: 3,
-                             }}
-                           >
-                             <Typography>Task Id</Typography>
-                             <Typography>Assigned Date</Typography>
-                           </Box>
-           
-                           <Box sx={{ p: 2, pb: 0 }}>
-                             <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
-                               Visitor Details
-                             </Typography>
-           
-                             <Box sx={{ height: "100px" }}>
-                               {/* Row 1 */}
-                               <Box sx={{ display: "flex", pb: 2 }}>
-                                 <Typography fontSize="14px">Name:</Typography>
-                                 <TextField
-                                   variant="outlined"
-                                   sx={{
-                                     width: "140px",
-                                     pl: 2.5,
-                                     pr: 0.5,
-                                     "& .MuiInputBase-root": { height: 20 },
-                                     "& input": { p: 0.5, fontSize: "12px" },
-                                     "& fieldset": { border: "none" },
-                                   }}
-                                 />
-                                 <Typography fontSize="14px">Country:</Typography>
-                                 <TextField
-                                   variant="outlined"
-                                   sx={{
-                                     width: "140px",
-                                     pl: 1,
-                                     "& .MuiInputBase-root": { height: 20 },
-                                     "& input": { p: 0.5, fontSize: "12px" },
-                                     "& fieldset": { border: "none" },
-                                   }}
-                                 />
-                               </Box>
-           
-                               {/* Row 2 */}
-                               <Box sx={{ display: "flex", pb: 2 }}>
-                                 <Typography fontSize="14px">State:</Typography>
-                                 <TextField
-                                   variant="outlined"
-                                   sx={{
-                                     width: "140px",
-                                     pl: 3.2,
-                                     pr: 0.5,
-                                     "& .MuiInputBase-root": { height: 20 },
-                                     "& input": { p: 0.5, fontSize: "12px" },
-                                     "& fieldset": { border: "none" },
-                                   }}
-                                 />
-                                 <Typography fontSize="14px">Region:</Typography>
-                                 <TextField
-                                   variant="outlined"
-                                   sx={{
-                                     width: "140px",
-                                     pl: 1.8,
-                                     "& .MuiInputBase-root": { height: 20 },
-                                     "& input": { p: 0.5, fontSize: "12px" },
-                                     "& fieldset": { border: "none" },
-                                   }}
-                                 />
-                               </Box>
-           
-                               {/* Row 3 */}
-                               <Box sx={{ display: "flex" }}>
-                                 <Typography fontSize="14px">Address:</Typography>
-                                 <TextField
-                                   variant="outlined"
-                                   sx={{
-                                     width: "300px",
-                                     pl: 0.7,
-                                     "& .MuiInputBase-root": { height: 20 },
-                                     "& input": { p: 0.5, fontSize: "12px" },
-                                     "& fieldset": { border: "none" },
-                                   }}
-                                 />
-                               </Box>
-                             </Box>
-                           </Box>
-           
-                           {/* Contact Details */}
-                           <Box sx={{ bgcolor: "#f5f5f5" }}>
-                             <Typography
-                               variant="subtitle1"
-                               sx={{
-                                 fontWeight: 600,
-                                 bgcolor: "#f5f5f5",
-                                 pl: 2,
-                                 pt: 1,
-                                 borderRadius: 1,
-                               }}
-                             >
-                               Contact Details
-                             </Typography>
-           
-                             <Box sx={{ display: "flex", py: 1, px: 2 }}>
-                               <Typography fontSize="14px">Mobile:</Typography>
-                               <TextField
-                                 variant="outlined"
-                                 sx={{
-                                   width: "140px",
-                                   pl: 3.2,
-                                   pr: 0.5,
-                                   "& .MuiInputBase-root": { height: 20 },
-                                   "& input": { p: 0.5, fontSize: "12px" },
-                                   "& fieldset": { border: "none" },
-                                 }}
-                               />
-                               <Typography fontSize="14px">Email:</Typography>
-                               <TextField
-                                 variant="outlined"
-                                 sx={{
-                                   width: "140px",
-                                   pl: 1.8,
-                                   "& .MuiInputBase-root": { height: 20 },
-                                   "& input": { p: 0.5, fontSize: "12px" },
-                                   "& fieldset": { border: "none" },
-                                 }}
-                               />
-                             </Box>
-                           </Box>
-           
-                           {/* Service Details */}
-                           <Typography
-                             variant="subtitle1"
-                             sx={{ fontWeight: 600, pl: 2, pt: 1, borderRadius: 1 }}
-                           >
-                             Service Details
-                           </Typography>
-           
-                           <Box sx={{ display: "flex", py: 1, px: 2 }}>
-                             <Typography fontSize="14px">Service:</Typography>
-                             <TextField
-                               variant="outlined"
-                               sx={{
-                                 width: "140px",
-                                 pl: 3.2,
-                                 pr: 0.5,
-                                 "& .MuiInputBase-root": { height: 20 },
-                                 "& input": { p: 0.5, fontSize: "12px" },
-                                 "& fieldset": { border: "none" },
-                               }}
-                             />
-                             <Typography fontSize="14px">Sq.Feet:</Typography>
-                             <TextField
-                               variant="outlined"
-                               sx={{
-                                 width: "140px",
-                                 pl: 1.8,
-                                 "& .MuiInputBase-root": { height: 20 },
-                                 "& input": { p: 0.5, fontSize: "12px" },
-                                 "& fieldset": { border: "none" },
-                               }}
-                             />
-                           </Box>
-           
-                           <Box display="flex" sx={{ p: 2, pt: 1, pb: 1 }}>
-                             <Typography sx={{ fontWeight: 600, pr: 11.5 }}>Prefer Date:</Typography>
-                             <Typography sx={{ fontWeight: 600, pr: 2 }}>Prefer Time:</Typography>
-                           </Box>
-           
-                           <Box display="flex" sx={{ p: 2, pt: 0 }}>
-                             <Typography fontSize="12px" sx={{ pr: 11.5 }}>
-                               Morning (11 AM)
-                             </Typography>
-                             <Typography fontSize="12px">Aug 25, Wed</Typography>
-                           </Box>
-           
-                         </CardContent>
-                       </Grid>
-            {/* Right Section */}
-            <Grid sx={{ width: "750px" }} item xs={12} md={6}>
-              <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-                <Button
-                  variant="contained"
-                  sx={{
-                    borderRadius: "20px",
-                    textTransform: "none",
-                    fontSize: "16px",
-                    fontWeight: 600,
-                    bgcolor: "#029898",
-                    color: "#ffffffff",
-                    width: "180px",
-                    height: "42px",
-                  }}
-                >
-                  Start Work
-                </Button>
-              </Box>
+          <Typography variant="h5" sx={{ mb: 3, fontWeight: 600, color: "#333" }}>
+            Current Task Details
+          </Typography>
 
-              {/* Add Images Section */}
+          <Box sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", sm: "1fr", md: "1fr 1fr 1fr 1fr 1fr 1fr" },
+            gap: 3
+          }}>
+            {/* Task Details Card - Left, spans 2 rows */}
+            <Box sx={{ gridColumn: { xs: "1", sm: "1", md: "1 / 3" }, gridRow: "1 / 3" }}>
+              <DetailsCard title="Task Details" data={taskDetails} headerColor="#029898" />
+            </Box>
+
+            {/* Add Images Section - Top Right */}
+            <Box sx={{ gridColumn: { xs: "1", sm: "1", md: "3 / 7" }, gridRow: "1" }}>
               <CardContent
                 sx={{
-                  my: 2,
-                  border: "1px solid #abababff",
-                  borderRadius: "14px",
+                  border: "1px solid #d0d0d0",
+                  borderRadius: "10px",
                   p: 0,
-                  boxShadow: "0px 4px 12px rgba(0,0,0,0.2)",
+                  bgcolor: "#fff",
                   overflow: "hidden",
-                  height: "435px",
+                  boxShadow: "0px 2px 8px rgba(0,0,0,0.08)",
                 }}
               >
                 <Box
                   sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
+                    px: 2,
+                    py: 1,
                     bgcolor: "#029898",
                     color: "#fff",
-                    px: 2,
-                    py: 1.1,
-                    borderRadius: "8px 8px 0 0",
-                    boxShadow: 3,
                   }}
                 >
-                  <Typography>Add Images</Typography>
+                  <Typography sx={{ fontSize: "14px", fontWeight: 600 }}>
+                    Add Equipment Images (Before)
+                  </Typography>
                 </Box>
 
-                {/* BEFORE IMAGES */}
-                <Box sx={{ display: "grid", gap: 2, my: 2, mx: 1, bgcolor: "#f0ededff", borderRadius: "14px" }}>
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pt: 1.5, px: 2 }}>
-                    <Typography>Add Equipment Images ( Before State )</Typography>
+                <Box sx={{ p: 2 }}>
+                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+                    <Typography fontSize="12px">Upload before state images</Typography>
                     <Typography
                       onClick={() => document.getElementById("before-upload").click()}
                       sx={{
-                        fontWeight: 500,
+                        fontWeight: 600,
                         textDecoration: "underline",
                         cursor: "pointer",
-                        color: "#000000ff",
+                        color: "#029898",
+                        fontSize: "12px",
                       }}
                     >
-                      + Add
+                      + Add Images
                     </Typography>
                     <input
                       id="before-upload"
@@ -321,38 +222,70 @@ function Dashboard() {
                   </Box>
 
                   {/* Show uploaded before images */}
-                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, p: 2 }}>
-                    {beforeImages.map((src, i) => (
-                      <Box
-                        key={i}
-                        sx={{
-                          width: 60,
-                          height: 60,
-                          border: "1px solid #ccc",
-                          borderRadius: "8px",
-                          overflow: "hidden",
-                        }}
-                      >
-                        <img src={src} alt={`before-${i}`} width="60" height="60" />
-                      </Box>
-                    ))}
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                    {beforeImages.length > 0 ? (
+                      beforeImages.map((src, i) => (
+                        <Box
+                          key={i}
+                          sx={{
+                            width: 70,
+                            height: 70,
+                            border: "1px solid #ccc",
+                            borderRadius: "8px",
+                            overflow: "hidden",
+                          }}
+                        >
+                          <img src={src} alt={`before-${i}`} width="70" height="70" />
+                        </Box>
+                      ))
+                    ) : (
+                      <Typography fontSize="12px" color="#999">No images uploaded</Typography>
+                    )}
                   </Box>
                 </Box>
+              </CardContent>
+            </Box>
 
-                {/* AFTER IMAGES */}
-                <Box sx={{ display: "grid", gap: 2, my: 2, mx: 1, bgcolor: "#dfddddff", borderRadius: "14px" }}>
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pt: 1.5, px: 2 }}>
-                    <Typography>Add Equipment Images ( After State )</Typography>
+            {/* Start Work Button - Bottom Right (Top) */}
+            <Box sx={{ gridColumn: { xs: "1", sm: "1", md: "3 / 7" }, gridRow: "2", display: "flex", justifyContent: "flex-end", alignItems: "flex-start" }}>
+              <CardContent
+                sx={{
+                  border: "1px solid #d0d0d0",
+                  borderRadius: "10px",
+                  p: 0,
+                  bgcolor: "#fff",
+                  overflow: "hidden",
+                  boxShadow: "0px 2px 8px rgba(0,0,0,0.08)",
+                  width: "100%",
+                }}
+              >
+                <Box
+                  sx={{
+                    px: 2,
+                    py: 1,
+                    bgcolor: "#029898",
+                    color: "#fff",
+                  }}
+                >
+                  <Typography sx={{ fontSize: "14px", fontWeight: 600 }}>
+                    Add Equipment Images (After)
+                  </Typography>
+                </Box>
+
+                <Box sx={{ p: 2 }}>
+                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+                    <Typography fontSize="12px">Upload after state images</Typography>
                     <Typography
                       onClick={() => document.getElementById("after-upload").click()}
                       sx={{
-                        fontWeight: 500,
+                        fontWeight: 600,
                         textDecoration: "underline",
                         cursor: "pointer",
-                        color: "#000000ff",
+                        color: "#029898",
+                        fontSize: "12px",
                       }}
                     >
-                      + Add
+                      + Add Images
                     </Typography>
                     <input
                       id="after-upload"
@@ -365,26 +298,50 @@ function Dashboard() {
                   </Box>
 
                   {/* Show uploaded after images */}
-                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, p: 2 }}>
-                    {afterImages.map((src, i) => (
-                      <Box
-                        key={i}
-                        sx={{
-                          width: 60,
-                          height: 60,
-                          border: "1px solid #ccc",
-                          borderRadius: "8px",
-                          overflow: "hidden",
-                        }}
-                      >
-                        <img src={src} alt={`after-${i}`} width="60" height="60" />
-                      </Box>
-                    ))}
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                    {afterImages.length > 0 ? (
+                      afterImages.map((src, i) => (
+                        <Box
+                          key={i}
+                          sx={{
+                            width: 70,
+                            height: 70,
+                            border: "1px solid #ccc",
+                            borderRadius: "8px",
+                            overflow: "hidden",
+                          }}
+                        >
+                          <img src={src} alt={`after-${i}`} width="70" height="70" />
+                        </Box>
+                      ))
+                    ) : (
+                      <Typography fontSize="12px" color="#999">No images uploaded</Typography>
+                    )}
                   </Box>
                 </Box>
               </CardContent>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
+
+          {/* Start Work Button - Full Width Bottom */}
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 3, mb: 2 }}>
+            <Button
+              variant="contained"
+              sx={{
+                borderRadius: "8px",
+                textTransform: "none",
+                fontSize: "16px",
+                fontWeight: 600,
+                bgcolor: "#029898",
+                color: "#fff",
+                width: "200px",
+                height: "42px",
+                "&:hover": { bgcolor: "#027c7c" },
+              }}
+            >
+              Start Work
+            </Button>
+          </Box>
         </Box>
       </Box>
     </>

@@ -70,9 +70,23 @@ export default function NewEnquiry() {
   }, []);
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // States for filter options
+  const [countries, setCountries] = useState([]);
+  const [regions, setRegions] = useState([]);
+  const [districts, setDistricts] = useState([]);
+
+  // Fetch filter options
+  useEffect(() => {
+    axios.get(`${BACKEND_URL}/api/get-countries`).then(res => setCountries(res.data)).catch(err => console.log(err));
+    axios.get(`${BACKEND_URL}/api/regions`).then(res => setRegions(res.data)).catch(err => console.log(err));
+    axios.get(`${BACKEND_URL}/api/get-districts`).then(res => setDistricts(res.data)).catch(err => console.log(err));
+  }, []);
+
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
@@ -113,11 +127,11 @@ export default function NewEnquiry() {
 
 
 
-  // 🔍 Filter logic for search
+  // 🔍 Filter logic for search and dropdowns
   const filteredTasks = tasks.filter((task) => {
     const term = searchTerm.toLowerCase();
 
-    return (
+    const matchesSearch =
       task.name?.toLowerCase().includes(term) ||
       task.email?.toLowerCase().includes(term) ||
       task.phoneNumber?.toString().includes(term) ||
@@ -126,10 +140,13 @@ export default function NewEnquiry() {
       task.district?.toLowerCase().includes(term) ||
       task.city?.toLowerCase().includes(term) ||
       task.landmark?.toLowerCase().includes(term) ||
-      task.street?.toLowerCase().includes(term) ||
-      (task.preferDate &&
-        new Date(task.preferDate).toLocaleDateString().includes(term))
-    );
+      task.street?.toLowerCase().includes(term);
+
+    const matchesCountry = !selectedCountry || task.country === selectedCountry;
+    const matchesRegion = !selectedRegion || task.region === selectedRegion;
+    const matchesDistrict = !selectedDistrict || task.district === selectedDistrict;
+
+    return matchesSearch && matchesCountry && matchesRegion && matchesDistrict;
   });
 
   const handleDateClick = (event) => setAnchorEl(event.currentTarget);
@@ -290,49 +307,29 @@ export default function NewEnquiry() {
                       height: "34px",
                       fontSize: "12px",
                       borderRadius: "6px",
-                      "& fieldset": {
-                        borderColor: "#d0d0d0",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#a1a1a1",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#029898",
-                      },
+                      "& fieldset": { borderColor: "#d0d0d0" },
+                      "&:hover fieldset": { borderColor: "#a1a1a1" },
+                      "&.Mui-focused fieldset": { borderColor: "#029898" },
                     },
-                    "& .MuiInputLabel-root": {
-                      fontSize: "12px",
-                    },
-                    "& .MuiSelect-select": {
-                      fontSize: "12px",
-                      padding: "6px 10px",
-                    },
+                    "& .MuiInputLabel-root": { fontSize: "12px" },
+                    "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
                   }}
                 >
                   <InputLabel>Country</InputLabel>
                   <Select
-                    value={selectedDistrict}
-                    onChange={(e) => setSelectedDistrict(e.target.value)}
+                    value={selectedCountry}
+                    onChange={(e) => setSelectedCountry(e.target.value)}
                     label="Country"
-                    sx={{
-                      height: "34px",
-                      fontSize: "12px",
-                      "& .MuiSelect-select": {
-                        padding: "6px 10px",
-                        fontSize: "12px",
-                      },
-                    }}
+                    sx={{ height: "34px" }}
                   >
                     <MenuItem value="" sx={{ fontSize: "12px" }}>All</MenuItem>
-                    <MenuItem value="Central" sx={{ fontSize: "12px" }}>Central</MenuItem>
-                    <MenuItem value="North" sx={{ fontSize: "12px" }}>North</MenuItem>
-                    <MenuItem value="South" sx={{ fontSize: "12px" }}>South</MenuItem>
-                    <MenuItem value="East" sx={{ fontSize: "12px" }}>East</MenuItem>
-                    <MenuItem value="West" sx={{ fontSize: "12px" }}>West</MenuItem>
+                    {countries.map((c) => (
+                      <MenuItem key={c._id} value={c.countryName} sx={{ fontSize: "12px" }}>{c.countryName}</MenuItem>
+                    ))}
                   </Select>
-
                 </FormControl>
 
+                {/* Region Filter */}
                 <FormControl
                   size="small"
                   sx={{
@@ -343,49 +340,29 @@ export default function NewEnquiry() {
                       height: "34px",
                       fontSize: "12px",
                       borderRadius: "6px",
-                      "& fieldset": {
-                        borderColor: "#d0d0d0",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#a1a1a1",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#029898",
-                      },
+                      "& fieldset": { borderColor: "#d0d0d0" },
+                      "&:hover fieldset": { borderColor: "#a1a1a1" },
+                      "&.Mui-focused fieldset": { borderColor: "#029898" },
                     },
-                    "& .MuiInputLabel-root": {
-                      fontSize: "12px",
-                    },
-                    "& .MuiSelect-select": {
-                      fontSize: "12px",
-                      padding: "6px 10px",
-                    },
+                    "& .MuiInputLabel-root": { fontSize: "12px" },
+                    "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
                   }}
                 >
                   <InputLabel>Region</InputLabel>
                   <Select
-                    value={selectedDistrict}
-                    onChange={(e) => setSelectedDistrict(e.target.value)}
-                    label="Country"
-                    sx={{
-                      height: "34px",
-                      fontSize: "12px",
-                      "& .MuiSelect-select": {
-                        padding: "6px 10px",
-                        fontSize: "12px",
-                      },
-                    }}
+                    value={selectedRegion}
+                    onChange={(e) => setSelectedRegion(e.target.value)}
+                    label="Region"
+                    sx={{ height: "34px" }}
                   >
                     <MenuItem value="" sx={{ fontSize: "12px" }}>All</MenuItem>
-                    <MenuItem value="Central" sx={{ fontSize: "12px" }}>Central</MenuItem>
-                    <MenuItem value="North" sx={{ fontSize: "12px" }}>North</MenuItem>
-                    <MenuItem value="South" sx={{ fontSize: "12px" }}>South</MenuItem>
-                    <MenuItem value="East" sx={{ fontSize: "12px" }}>East</MenuItem>
-                    <MenuItem value="West" sx={{ fontSize: "12px" }}>West</MenuItem>
+                    {regions.map((r) => (
+                      <MenuItem key={r._id} value={r.regionName} sx={{ fontSize: "12px" }}>{r.regionName}</MenuItem>
+                    ))}
                   </Select>
-
                 </FormControl>
 
+                {/* District Filter */}
                 <FormControl
                   size="small"
                   sx={{
@@ -396,47 +373,26 @@ export default function NewEnquiry() {
                       height: "34px",
                       fontSize: "12px",
                       borderRadius: "6px",
-                      "& fieldset": {
-                        borderColor: "#d0d0d0",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#a1a1a1",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#029898",
-                      },
+                      "& fieldset": { borderColor: "#d0d0d0" },
+                      "&:hover fieldset": { borderColor: "#a1a1a1" },
+                      "&.Mui-focused fieldset": { borderColor: "#029898" },
                     },
-                    "& .MuiInputLabel-root": {
-                      fontSize: "12px",
-                    },
-                    "& .MuiSelect-select": {
-                      fontSize: "12px",
-                      padding: "6px 10px",
-                    },
+                    "& .MuiInputLabel-root": { fontSize: "12px" },
+                    "& .MuiSelect-select": { fontSize: "12px", padding: "6px 10px" },
                   }}
                 >
                   <InputLabel>District</InputLabel>
                   <Select
                     value={selectedDistrict}
                     onChange={(e) => setSelectedDistrict(e.target.value)}
-                    label="Country"
-                    sx={{
-                      height: "34px",
-                      fontSize: "12px",
-                      "& .MuiSelect-select": {
-                        padding: "6px 10px",
-                        fontSize: "12px",
-                      },
-                    }}
+                    label="District"
+                    sx={{ height: "34px" }}
                   >
                     <MenuItem value="" sx={{ fontSize: "12px" }}>All</MenuItem>
-                    <MenuItem value="Central" sx={{ fontSize: "12px" }}>Central</MenuItem>
-                    <MenuItem value="North" sx={{ fontSize: "12px" }}>North</MenuItem>
-                    <MenuItem value="South" sx={{ fontSize: "12px" }}>South</MenuItem>
-                    <MenuItem value="East" sx={{ fontSize: "12px" }}>East</MenuItem>
-                    <MenuItem value="West" sx={{ fontSize: "12px" }}>West</MenuItem>
+                    {districts.map((d) => (
+                      <MenuItem key={d._id} value={d.districtName} sx={{ fontSize: "12px" }}>{d.districtName}</MenuItem>
+                    ))}
                   </Select>
-
                 </FormControl>
 
                 {/* ---- SEARCH FIELD ---- */}
